@@ -5,6 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 :root{
   --bg:#000;--neon:#00ffd5;--neon2:#ff00aa;--neon3:#ffe600;
@@ -264,39 +265,82 @@ select:focus{border-color:var(--neon);box-shadow:0 0 6px var(--neon)}
 .toast.show{display:block;animation:tIn .25s ease-out}
 @keyframes tIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
 
+/* ============ MINIMIZE / WINDOW EXTRAS ============ */
+.window.minimized{height:auto !important;min-height:0 !important}
+.window.minimized .win-body, .window.minimized .win-resize{display:none}
+.win-btn.min{border-color:var(--neon3);color:var(--neon3)}
+.win-btn.min:hover{background:var(--neon3);color:#000}
 
+/* ============ SPLITTERS ============ */
+.splitter{flex:0 0 6px;background:linear-gradient(180deg,rgba(0,255,213,.12),rgba(0,255,213,.04));cursor:ns-resize;position:relative;transition:background .15s}
+.splitter::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:2px;background:var(--neon);opacity:.4;border-radius:2px;box-shadow:0 0 4px var(--neon)}
+.splitter:hover{background:rgba(0,255,213,.25)}
+.splitter:hover::before{opacity:1}
 
-/* ============ NEW PERFORMANCE / LAYOUT / VISUALIZER UPDATES ============ */
-#app{--piano-height:240px;--topbar-pad-y:6px;--black-key-height:62%;--key-label-scale:1}
-.topbar{padding-top:var(--topbar-pad-y);padding-bottom:var(--topbar-pad-y)}
-.piano-host{height:var(--piano-height)}
-.bkey{height:var(--black-key-height)}
-.wkey-sc,.bkey-sc,.chroma-sc{font-size:calc(12px * var(--key-label-scale))}
-.layout-panel{display:flex;flex-direction:column;gap:8px;font-family:'VT323',monospace;font-size:13px;color:var(--text)}
-.collap{border:1px solid var(--stroke);background:rgba(0,255,213,.035);padding:6px}
-.collap summary{cursor:pointer;color:var(--neon);text-shadow:0 0 5px var(--neon);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
-.ctrl-row{display:grid;grid-template-columns:92px 1fr 48px;gap:7px;align-items:center;margin:5px 0}
-.ctrl-row label{color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
-.ctrl-row input[type=range]{width:100%;height:4px;-webkit-appearance:none;appearance:none;background:linear-gradient(90deg,var(--neon),var(--neon2));outline:none;border:1px solid var(--stroke)}
-.ctrl-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--neon3);box-shadow:0 0 7px var(--neon3);border:1px solid #000}
-.ctrl-row input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--neon3);box-shadow:0 0 7px var(--neon3);border:1px solid #000}
-.ctrl-row .read{color:var(--neon3);text-align:right;text-shadow:0 0 4px var(--neon3)}
-.slot.phrase{border-color:var(--neon2);box-shadow:inset 0 0 10px rgba(255,0,170,.32)}
-.slot.pad-held{background:rgba(0,255,213,.22);box-shadow:inset 0 0 14px var(--neon),0 0 12px var(--neon)}
-.slot.rec-target{border-color:#ff2255;animation:flick .5s infinite;background:rgba(255,34,85,.14)}
-.pad-mini{font-size:9px;color:var(--dim);letter-spacing:.04em;text-align:center;margin-top:2px}
-.btn.viz{border-color:#8a5cff;color:#d9cbff;text-shadow:0 0 6px #8a5cff;box-shadow:0 0 8px rgba(138,92,255,.25)}
-.btn.viz:hover,.btn.viz.on{background:#8a5cff;color:#000;box-shadow:0 0 18px #8a5cff}
-#viz-stage{position:fixed;inset:0;z-index:6000;background:#000;display:none;overflow:hidden}
-#viz-stage.active{display:block}
-#viz-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;background:#000;touch-action:none}
-.viz-hud{position:absolute;left:10px;top:10px;font-family:'VT323',monospace;color:rgba(207,238,251,.78);font-size:13px;letter-spacing:.08em;text-shadow:0 0 8px #00ffd5;pointer-events:none;max-width:72vw}
-.viz-hud b{color:var(--neon3)}
-.viz-return{position:absolute;right:14px;bottom:14px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(0,255,213,.4);background:rgba(0,255,213,.3);box-shadow:0 0 16px rgba(0,255,213,.35);display:none;z-index:2}
-#viz-stage.performance .viz-hud{display:none}
-#viz-stage.performance .viz-return{display:block}
-#viz-stage.performance{cursor:none}
-body.viz-performance .topbar,body.viz-performance .desktop,body.viz-performance .piano-bar,body.viz-performance .modal,body.viz-performance .toast{display:none!important}
+/* ============ SPECIAL TOPBAR BUTTONS ============ */
+.btn-vis{font-family:'Press Start 2P',monospace;font-size:9px;padding:6px 10px;background:linear-gradient(135deg,#ff00aa,#00ffd5,#ffe600);background-size:200% 200%;color:#000;border:1px solid #fff;letter-spacing:.1em;text-shadow:0 0 4px rgba(0,0,0,.5);box-shadow:0 0 10px var(--neon),0 0 14px var(--neon2);animation:visGlow 3s ease-in-out infinite;font-weight:bold}
+.btn-vis:hover{transform:translateY(-1px);box-shadow:0 0 18px var(--neon),0 0 24px var(--neon2),0 0 28px var(--neon3)}
+@keyframes visGlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.btn-perf{font-family:'Press Start 2P',monospace;font-size:9px;padding:6px 10px;background:#000;color:#fff;border:1px solid #fff;letter-spacing:.1em;box-shadow:inset 0 0 8px rgba(255,255,255,.2)}
+.btn-perf:hover{background:#fff;color:#000}
+
+/* ============ MOD WHEEL ============ */
+.mw-vert{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px}
+.mw-track{width:36px;height:160px;background:linear-gradient(180deg,#0a0a18,#000);border:2px solid var(--stroke);position:relative;border-radius:18px;overflow:hidden}
+.mw-thumb{position:absolute;left:2px;right:2px;height:24px;background:linear-gradient(180deg,var(--neon),var(--neon2));border-radius:10px;box-shadow:0 0 10px var(--neon),0 0 6px var(--neon2);top:calc(50% - 12px);transition:top .12s ease-out;cursor:ns-resize}
+.mw-track::before,.mw-track::after{content:"";position:absolute;left:0;right:0;height:1px;background:rgba(0,255,213,.2)}
+.mw-track::before{top:50%}
+.mw-meter{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--neon);text-shadow:0 0 5px var(--neon);text-align:center;letter-spacing:.1em;min-height:14px}
+.mw-row{display:flex;justify-content:space-between;align-items:center;font-family:'VT323',monospace;font-size:12px;color:var(--dim);gap:6px;width:100%}
+.mw-row input[type=range]{flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--stroke);outline:none}
+.mw-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--neon3);cursor:pointer;box-shadow:0 0 4px var(--neon3)}
+.mw-row input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--neon3);cursor:pointer;box-shadow:0 0 4px var(--neon3);border:0}
+.mw-row .v{color:var(--neon);min-width:34px;text-align:right;font-size:11px}
+
+/* ============ PADS REWORK ============ */
+.spad{aspect-ratio:1;background:#000;border:1px solid var(--stroke);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'VT323',monospace;cursor:pointer;position:relative;overflow:hidden;min-height:54px;transition:all .08s}
+.spad.shape{border-color:var(--neon3);background:rgba(255,230,0,.06)}
+.spad.has-seq{border-color:#ff00aa;background:rgba(255,0,170,.08)}
+.spad.has-sample{border-color:var(--neon3);background:rgba(255,230,0,.08)}
+.spad.armed-rec{border-color:var(--neon2);box-shadow:0 0 10px var(--neon2),inset 0 0 10px rgba(255,0,170,.3);animation:flick .6s infinite}
+.spad.sustained{border-color:var(--neon);box-shadow:inset 0 0 16px var(--neon),0 0 12px var(--neon)}
+.spad.playing{transform:scale(0.95);box-shadow:inset 0 0 18px var(--neon),0 0 14px var(--neon)}
+.spad-tag{position:absolute;top:2px;right:3px;font-size:9px;color:var(--dim);letter-spacing:.05em}
+.spad.has-sample .spad-tag{color:var(--neon3)}
+.spad.has-seq .spad-tag{color:var(--neon2)}
+.spad.shape .spad-tag{color:var(--neon3)}
+
+/* ============ FULLSCREEN VISUALIZER ============ */
+#visualizer{position:fixed;inset:0;z-index:8000;display:none;background:#000;overflow:hidden}
+#visualizer.active{display:block}
+#viz-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.viz-hud{position:absolute;top:10px;left:10px;display:flex;gap:6px;z-index:8050;font-family:'VT323',monospace}
+.viz-btn{background:rgba(0,0,0,.5);border:1px solid rgba(0,255,213,.4);color:var(--neon);font-family:'VT323',monospace;font-size:13px;padding:5px 10px;cursor:pointer;letter-spacing:.08em;backdrop-filter:blur(6px)}
+.viz-btn:hover{background:rgba(0,255,213,.2)}
+.viz-btn.gold{border-color:var(--neon3);color:var(--neon3)}
+.viz-btn.warn{border-color:var(--neon2);color:var(--neon2)}
+.viz-info{position:absolute;bottom:10px;left:10px;font-family:'VT323',monospace;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.08em;z-index:8050;line-height:1.5;pointer-events:none}
+.viz-controls{position:absolute;top:50px;right:10px;width:280px;background:rgba(6,5,15,.86);border:1px solid var(--stroke);backdrop-filter:blur(8px);padding:10px;z-index:8050;font-family:'VT323',monospace;font-size:13px;max-height:80vh;overflow:auto;transition:transform .25s}
+.viz-controls.collapsed{transform:translateX(310px)}
+.viz-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:3px 0}
+.viz-row label{flex:1;color:var(--dim);font-size:12px;letter-spacing:.05em}
+.viz-row input[type=range]{flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--stroke);outline:none;min-width:80px}
+.viz-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--neon);cursor:pointer;box-shadow:0 0 6px var(--neon)}
+.viz-row input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--neon);cursor:pointer;box-shadow:0 0 6px var(--neon);border:0}
+.viz-row .v{color:var(--neon);min-width:36px;text-align:right;font-size:11px}
+.viz-h2{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--neon);letter-spacing:.15em;text-shadow:0 0 5px var(--neon);margin:8px 0 5px}
+.scene-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-bottom:6px}
+.scene-btn{font-family:'VT323',monospace;font-size:11px;padding:5px;background:rgba(0,0,0,.5);border:1px solid var(--stroke);color:var(--text);text-align:center;letter-spacing:.04em;cursor:pointer;line-height:1.1}
+.scene-btn:hover{background:rgba(0,255,213,.1)}
+.scene-btn.active{background:var(--neon);color:#000;box-shadow:0 0 8px var(--neon)}
+
+/* ============ PERFORMANCE MODE ============ */
+body.performance #app{display:none !important}
+body.performance #visualizer{display:block}
+body.performance .viz-hud,body.performance .viz-controls,body.performance .viz-info,body.performance .toast{display:none !important}
+.perf-return{position:fixed;bottom:14px;right:14px;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.4);border:2px solid var(--neon);color:var(--neon);z-index:9999;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:11px;display:none;align-items:center;justify-content:center;text-shadow:0 0 6px var(--neon);box-shadow:0 0 8px var(--neon);opacity:.3;transition:opacity .2s}
+body.performance .perf-return{display:flex}
+.perf-return:hover{opacity:1}
 
 /* responsive */
 @media (max-width:850px){
@@ -340,9 +384,6 @@ body.viz-performance .topbar,body.viz-performance .desktop,body.viz-performance 
     <div class="div-v"></div>
     <button class="btn warn" id="btn-chroma">CHROMATIC [TAB]</button>
     <button class="btn" id="btn-piano-toggle">↕ HIDE KEYS</button>
-    <button class="btn gold" id="btn-fullscreen">⛶ FULL</button>
-    <button class="btn viz" id="btn-viz">✦ VISUALIZER</button>
-    <button class="btn tiny" id="btn-performance">PERFORM</button>
 
     <div class="div-v"></div>
     <button class="btn gold" id="btn-loop">LOOP [L]</button>
@@ -363,16 +404,21 @@ body.viz-performance .topbar,body.viz-performance .desktop,body.viz-performance 
     <button class="btn" id="btn-color">🎨</button>
     <button class="btn" id="btn-save">💾</button>
     <button class="btn" id="btn-load">📁</button>
+    <button class="btn" id="btn-fullscreen">⛶ FULL</button>
+    <button class="btn-vis" id="btn-vis">✦ VISUALIZER</button>
+    <button class="btn-perf" id="btn-perf">▣ PERFORMANCE</button>
     <button class="btn" id="btn-help">?</button>
     <input type="file" id="file-load" style="display:none" accept=".hold,.json">
     <input type="file" id="file-audio" style="display:none" accept="audio/*,video/*" multiple>
   </header>
 
+  <div class="splitter" id="split-top" title="Drag to resize topbar"></div>
   <div class="desktop" id="desktop">
     <!-- Floating windows are appended here at runtime -->
   </div>
+  <div class="splitter" id="split-bot" title="Drag to resize piano area"></div>
 
-  <div class="piano-bar">
+  <div class="piano-bar" id="piano-bar">
     <!-- Bank/patch dropdowns directly above piano -->
     <div class="pb-row1">
       <div class="field"><label>BANK</label>
@@ -406,13 +452,6 @@ body.viz-performance .topbar,body.viz-performance .desktop,body.viz-performance 
   </div>
 </div>
 
-
-<div id="viz-stage" aria-hidden="true">
-  <canvas id="viz-canvas"></canvas>
-  <div class="viz-hud" id="viz-hud"><b>VISUALIZER</b> — arrows pan • +/- zoom • V view • R random</div>
-  <button class="viz-return" id="viz-return" title="Show controls"></button>
-</div>
-
 <!-- Color modal -->
 <div class="modal" id="color-modal"><div class="modal-box">
   <div class="modal-title">▣ INTERFACE COLOR SCHEME</div>
@@ -431,7 +470,7 @@ body.viz-performance .topbar,body.viz-performance .desktop,body.viz-performance 
   <div class="modal-title">▣ KEYBOARD MAP & USAGE</div>
   <div style="font-family:'VT323',monospace;font-size:14px;line-height:1.6;color:var(--text)">
 <b style="color:var(--neon)">PIANO:</b> <span class="kbd-cap">Z</span>–<span class="kbd-cap">M</span>+<span class="kbd-cap">,</span><span class="kbd-cap">.</span><span class="kbd-cap">/</span> = lower whites · <span class="kbd-cap">S D G H J L ;</span> = lower blacks · <span class="kbd-cap">Q</span>–<span class="kbd-cap">]</span> = upper whites · <span class="kbd-cap">2 3 5 6 7 9 0 =</span> upper blacks<br><br>
-<b style="color:var(--neon3)">PERFORMANCE PADS:</b> <span class="kbd-cap">1</span>–<span class="kbd-cap">0</span> trigger/toggle pads 1–10 · right-click a pad to arm · <span class="kbd-cap">A</span>/<span class="kbd-cap">'</span> bend down/up · <span class="kbd-cap">V</span> changes visualizer views<br><br>
+<b style="color:var(--neon3)">CHORD SLOTS:</b> <span class="kbd-cap">1</span>–<span class="kbd-cap">0</span> trigger slots 1–10 · <span class="kbd-cap">,</span><span class="kbd-cap">.</span> with <span class="kbd-cap">SHIFT</span> cycles slots in order<br><br>
 <b style="color:var(--neon2)">GLOBAL:</b> <span class="kbd-cap">SPACE</span> sustain · <span class="kbd-cap">TAB</span> chromatic · <span class="kbd-cap">L</span> loop · <span class="kbd-cap">K</span> stop loop · <span class="kbd-cap">T</span> tap · <span class="kbd-cap">[</span><span class="kbd-cap">]</span> oct · <span class="kbd-cap">−</span><span class="kbd-cap">=</span> trans<br><br>
 <b style="color:var(--neon)">SAMPLER:</b> <span class="kbd-cap">F1</span>–<span class="kbd-cap">F8</span> trigger pads 1–8 · pads 9–16 are configurable<br><br>
 <b style="color:var(--neon3)">WINDOWS:</b> Click launcher buttons above piano to toggle windows. Drag titles to move. Drag bottom-right corner to resize. Last-clicked window comes to front.<br><br>
@@ -444,6 +483,23 @@ body.viz-performance .topbar,body.viz-performance .desktop,body.viz-performance 
 
 <div class="toast" id="toast"></div>
 
+<!-- Visualizer fullscreen overlay -->
+<div id="visualizer">
+  <canvas id="viz-canvas"></canvas>
+  <div class="viz-hud">
+    <button class="viz-btn warn" id="viz-close">× EXIT</button>
+    <button class="viz-btn gold" id="viz-rand">⟲ RANDOMIZE</button>
+    <button class="viz-btn" id="viz-toggle-controls">⚙ CONTROLS</button>
+  </div>
+  <div class="viz-info" id="viz-info">
+    [V1-V5] presets · [Q/E] yaw · [W/S] pitch · [A/D] strafe · [Z/X] zoom · [R] randomize · [ESC] exit
+  </div>
+  <div class="viz-controls" id="viz-controls"></div>
+</div>
+
+<!-- Performance-mode return circle -->
+<button class="perf-return" id="perf-return" title="Exit performance mode">×</button>
+
 <script>
 /* ============ HOLD IT DOWN — engine ============ */
 const $=q=>document.querySelector(q);
@@ -453,11 +509,12 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 /* ===== AUDIO CORE ===== */
 const AC=window.AudioContext||window.webkitAudioContext;
-let ctx=null,master=null,fxIn=null,kill=null,analyser=null;
+let ctx=null,master=null,fxIn=null,kill=null;
 let eqLow,eqMid,eqHigh,distortion;
 let chorus={},phaser={},tremMod,tremGain,tremPath;
 let delayL,delayR,dlyFB,dlyMixWet,dlyMixDry;
 let revConv,revWet,revDry,comp,recordTap;
+let analyser=null,analyserData=null,analyserTime=null;
 
 function makeDistCurve(amount){const k=amount*100,n=1024,c=new Float32Array(n);
   for(let i=0;i<n;i++){const x=i*2/n-1;c[i]=(3+k)*x*20*Math.PI/180/(Math.PI+k*Math.abs(x))}return c}
@@ -521,10 +578,13 @@ function initAudio(){
   const aRev=ctx.createGain();revDry.connect(aRev);revWet.connect(aRev);
   // record tap before kill so KILL doesn't kill recordings
   recordTap=ctx.createGain();recordTap.gain.value=1;
+  // analyser for visualizer (taps after recordTap, pre-kill so visualizer always sees audio)
   analyser=ctx.createAnalyser();analyser.fftSize=1024;analyser.smoothingTimeConstant=0.78;
-  aRev.connect(comp);
-  comp.connect(analyser);
-  comp.connect(recordTap).connect(kill).connect(master).connect(ctx.destination);
+  analyserData=new Uint8Array(analyser.frequencyBinCount);
+  analyserTime=new Uint8Array(analyser.fftSize);
+  aRev.connect(comp).connect(recordTap);
+  recordTap.connect(analyser);
+  recordTap.connect(kill).connect(master).connect(ctx.destination);
 }
 
 /* ===== PATCH BANKS (5 banks x 20 patches) ===== */
@@ -704,53 +764,64 @@ const STATE={
     reverbOn:true,reverbMix:.18,reverbSize:2.5},
   slots:new Array(10).fill(null),
   slotIdx:0,
-  padLatch:true,padExclusive:false,
-  padRecord:{state:'idle',slotIdx:0,events:[],startAt:0,length:0},
-  pitch:{value:0,target:0,range:2,glide:0.12},
-  layout:{topPad:6,pianoHeight:240,blackHeight:62,labelScale:1},
-  viz:{active:false,performance:false,mode:0,sensitivity:1.35,abundance:0.65,motion:0.65,color:0.55,depth:0.75,zoom:1,panX:0,panY:0,viewIdx:0},
   activeNotes:new Map(),
   shapeNotes:new Set(),
   activeChord:null,
   taps:[],
   custom:[],
   loop:{state:'idle',events:[],startAt:0,length:0,playStart:0,quantize:false,raf:null,_lastT:-1,_fired:new Set()},
-  sampler:{mode:'pads',pads:new Array(16).fill(null),keyMap:new Map(),buffers:[]}
+  sampler:{mode:'pads',pads:new Array(16).fill(null),keyMap:new Map(),buffers:[]},
+  // === PAD SYSTEM (independent of synth) ===
+  // pads[i] = {kind:'sample'|'shape'|'sequence', name, sample?, shape?, sequence?, patchSnapshot?, sustain?:bool, ...}
+  pads:new Array(16).fill(null),
+  padArmedRec:-1,             // index of pad currently armed for recording (-1 = none)
+  padCaptureStart:0,           // ctx.currentTime when capture began
+  padCaptureEvents:[],         // collected events during arm
+  padCaptureTimer:null,        // timeout to auto-finalize capture
+  padPlayingVoices:new Map(),  // padIdx -> [voice,voice,...] (sustained voices)
+  padPlayingSequences:new Map(),// padIdx -> {raf,startAt,events,sustained}
+  padSustainMode:true,        // when true, tap once = play+sustain, tap again = stop
+  // === MOD WHEEL ===
+  modWheel:{value:0,rangeUp:2,rangeDown:2,glide:0.06,active:0,target:0,raf:null},
+  // === VISUALIZER ===
+  viz:{active:false,scene:'cosmos',sensitivity:1.2,particleCount:1.0,motion:1.0,colorShift:0,bloom:1.0,fog:0.5,
+    cam:{yaw:0,pitch:0,distance:25,truckX:0,truckY:0},keysDown:new Set(),
+    flashes:[],preset:0,raf:null}
 };
-const PAD_GROUPS=new Map();
-let pitchAnim=null;
-
 
 /* ===== SYNTH VOICES ===== */
 const freqOf=m=>440*Math.pow(2,(m-69)/12);
 const isBlack=m=>{const n=((m%12)+12)%12;return [1,3,6,8,10].includes(n)};
 const octOf=m=>Math.floor(m/12)-1;
 
-function startVoice(midi,vel=0.78,opts={}){
+function startVoice(midi,vel=0.78,snap=null){
   if(!ctx)initAudio();
-  const patch=opts.patch||BANKS[opts.bank||STATE.bank].patches[(opts.patchIdx??STATE.patchIdx)];
+  // snap allows a pad to lock in patch + sound design at capture time, immune to live changes
+  const patch=snap?snap.patch:BANKS[STATE.bank].patches[STATE.patchIdx];
+  const liveAmp=snap?snap.amp:STATE.amp;
+  const liveFilt=snap?snap.filt:STATE.filt;
+  const liveMod=snap?snap.mod:STATE.mod;
   const t0=ctx.currentTime;
   const amp={
-    a:STATE.amp.a??patch.env.a, d:STATE.amp.d??patch.env.d,
-    s:STATE.amp.s??patch.env.s, r:STATE.amp.r??patch.env.r };
-  const filtCo=STATE.filt.co??patch.filt.co;
-  const filtQ=STATE.filt.q??patch.filt.Q;
+    a:liveAmp.a??patch.env.a, d:liveAmp.d??patch.env.d,
+    s:liveAmp.s??patch.env.s, r:liveAmp.r??patch.env.r };
+  const filtCo=liveFilt.co??patch.filt.co;
+  const filtQ=liveFilt.q??patch.filt.Q;
   const fEnv=patch.fEnv||{a:.005,d:.3,s:.5,r:.3,amt:0};
-  const lfoR=STATE.mod.lfoR??(patch.lfo?.r||0);
-  const lfoD=STATE.mod.lfoD??(patch.lfo?.d||0);
+  const lfoR=liveMod.lfoR??(patch.lfo?.r||0);
+  const lfoD=liveMod.lfoD??(patch.lfo?.d||0);
   const lfoT=patch.lfo?.t||'pitch';
-  const drive=STATE.mod.drive??(patch.drive||0);
+  const drive=liveMod.drive??(patch.drive||0);
   const f=freqOf(midi);
   const oscs=[];
   const sum=ctx.createGain();sum.gain.value=1;
   for(const o of patch.osc){
     const osc=ctx.createOscillator();osc.type=o.t;
     osc.frequency.value=f*Math.pow(2,(o.o||0));
-    const baseDetune=o.d||0;
-    osc.detune.value=baseDetune+((STATE.pitch?.value||0)*100);
+    osc.detune.value=o.d||0;
     const og=ctx.createGain();og.gain.value=(o.g||1)*.25;
     osc.connect(og);og.connect(sum);
-    oscs.push({osc,gain:og,baseDetune});
+    oscs.push({osc,gain:og});
   }
   let fmOsc=null,fmGain=null;
   if(patch.fm){
@@ -772,7 +843,7 @@ function startVoice(midi,vel=0.78,opts={}){
     const sh=ctx.createWaveShaper();sh.curve=makeDistCurve(drive);sh.oversample='2x';
     ampN.connect(sh);outNode=ctx.createGain();sh.connect(outNode);
   }
-  const pan=ctx.createStereoPanner();pan.pan.value=STATE.mod.pan||0;
+  const pan=ctx.createStereoPanner();pan.pan.value=liveMod.pan||0;
   outNode.connect(pan).connect(fxIn);
   const peak=vel;
   ampN.gain.cancelScheduledValues(t0);
@@ -793,9 +864,21 @@ function startVoice(midi,vel=0.78,opts={}){
     else if(lfoT==='cutoff'){lfoG.gain.value=lfoD*1000;lfoG.connect(filt.frequency)}
     lfo.connect(lfoG);lfo.start(t0);
   }
+  // apply current mod wheel offset to all oscillator detunes
+  const mwCents=STATE.modWheel.active*100;
+  for(const v of oscs)v.osc.detune.setValueAtTime((v.osc.detune.value||0)+mwCents,t0);
   for(const v of oscs)v.osc.start(t0);
   if(fmOsc)fmOsc.start(t0);
   return {midi,oscs,fmOsc,filt,ampN,outNode,pan,lfo,started:t0,releasing:false,_amp:amp,
+    setDetuneOffset(cents){
+      // applied to detune of each osc in addition to its own d offset
+      for(const v of this.oscs){
+        try{v.osc.detune.cancelScheduledValues(ctx.currentTime);
+          // we don't know the original d; we'll just smoothly target current+delta over a short slope
+          v.osc.detune.setTargetAtTime(cents,ctx.currentTime,0.04)
+        }catch{}
+      }
+    },
     release(){if(this.releasing)return;this.releasing=true;
       const t=ctx.currentTime;const g=this.ampN.gain;
       g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);
@@ -827,7 +910,6 @@ function pressNote(midi,vel=0.78){
   highlightKey(m,'lit',true);
   recordEvent({type:'on',midi:m,vel});
   updateTape();
-  pulseViz(m,.78);
 }
 function releaseNote(midi){
   const m=midi+STATE.octave*12+STATE.transpose;
@@ -979,9 +1061,11 @@ function pressNoteByDisplay(displayMidi){
   STATE.activeNotes.set(m,v);
   highlightKey(m,'lit',true);
   recordEvent({type:'on',midi:m,vel:.78});
-  padRecordEvent('on',m,.78);
-  pulseViz(m,.78);
+  // Pad capture: if a pad is armed for recording, capture this event
+  if(STATE.padArmedRec>=0)padCaptureNote(m,'on');
   updateTape();
+  // visualizer flash
+  if(STATE.viz.active)vizPulse(m,1);
 }
 function releaseNoteByDisplay(displayMidi){
   const v=STATE.activeNotes.get(displayMidi);
@@ -991,7 +1075,7 @@ function releaseNoteByDisplay(displayMidi){
   STATE.activeNotes.delete(displayMidi);
   highlightKey(displayMidi,'lit',false);
   recordEvent({type:'off',midi:displayMidi});
-  padRecordEvent('off',displayMidi,.78);
+  if(STATE.padArmedRec>=0)padCaptureNote(displayMidi,'off');
 }
 function refreshShortcuts(){
   $$('.wkey').forEach(k=>{const m=+k.dataset.midi;const sc=k.querySelector('.wkey-sc');if(sc)sc.textContent=shortcutFor(m)||''});
@@ -1028,22 +1112,22 @@ let zCounter=100;
 
 function makeWindow(id,title,bodyHTML,opts={}){
   const w=document.createElement('div');w.className='window hidden';w.id='win-'+id;w.dataset.win=id;
-  const def={x:60+Object.keys(WIN).length*30,y:60+Object.keys(WIN).length*20,w:340,h:300};
-  Object.assign(def,opts);
-  const desk=$('#desktop');
-  def.w=Math.min(def.w,Math.max(230,(desk?.clientWidth||def.w)-8));
-  def.h=Math.min(def.h,Math.max(140,(desk?.clientHeight||def.h)-8));
-  def.x=clamp(def.x,4,Math.max(4,(desk?.clientWidth||def.x+def.w)-50));
-  def.y=clamp(def.y,4,Math.max(4,(desk?.clientHeight||def.y+def.h)-34));
-  w.style.left=def.x+'px';w.style.top=def.y+'px';w.style.width=def.w+'px';w.style.height=def.h+'px';
-  w.innerHTML=`<div class="win-title"><span class="win-title-text">▣ ${title}</span><div class="win-actions"><button class="win-btn close" title="Close">×</button></div></div><div class="win-body">${bodyHTML}</div><div class="win-resize"></div>`;
+  const dw=$('#desktop').clientWidth||window.innerWidth;
+  const dh=$('#desktop').clientHeight||(window.innerHeight*0.5);
+  // clamp opts so window is fully inside desktop on creation
+  const wid=Math.min(opts.w||340,dw-20);
+  const hgt=Math.min(opts.h||300,dh-30);
+  const xx=clamp(opts.x??60,0,dw-wid);
+  const yy=clamp(opts.y??50,0,Math.max(0,dh-hgt));
+  w.style.left=xx+'px';w.style.top=yy+'px';w.style.width=wid+'px';w.style.height=hgt+'px';
+  w.innerHTML=`<div class="win-title"><span class="win-title-text">▣ ${title}</span><div class="win-actions"><button class="win-btn min" title="Minimize">_</button><button class="win-btn close" title="Close">×</button></div></div><div class="win-body">${bodyHTML}</div><div class="win-resize"></div>`;
   $('#desktop').appendChild(w);
-  WIN[id]={el:w,opts:def};
+  WIN[id]={el:w,opts:{x:xx,y:yy,w:wid,h:hgt},minimized:false,prevH:hgt};
   // drag
   const titleBar=w.querySelector('.win-title');
   let drag=false,sx=0,sy=0,sl=0,st=0;
   titleBar.addEventListener('pointerdown',e=>{
-    if(e.target.classList.contains('win-btn'))return;
+    if(e.target.closest('.win-btn'))return;
     drag=true;sx=e.clientX;sy=e.clientY;
     const r=w.getBoundingClientRect();const dr=$('#desktop').getBoundingClientRect();
     sl=r.left-dr.left;st=r.top-dr.top;
@@ -1052,8 +1136,10 @@ function makeWindow(id,title,bodyHTML,opts={}){
   });
   titleBar.addEventListener('pointermove',e=>{
     if(!drag)return;
-    const nx=clamp(sl+e.clientX-sx,4,$('#desktop').clientWidth-40);
-    const ny=clamp(st+e.clientY-sy,4,$('#desktop').clientHeight-30);
+    const ddw=$('#desktop').clientWidth,ddh=$('#desktop').clientHeight;
+    // keep title fully visible — top must be >= 0 and <= ddh-28 so titlebar always reachable
+    const nx=clamp(sl+e.clientX-sx,-(w.offsetWidth-80),ddw-40);
+    const ny=clamp(st+e.clientY-sy,0,Math.max(0,ddh-28));
     w.style.left=nx+'px';w.style.top=ny+'px';
   });
   titleBar.addEventListener('pointerup',e=>{drag=false;bringToFront(id);try{titleBar.releasePointerCapture(e.pointerId)}catch{}});
@@ -1067,13 +1153,14 @@ function makeWindow(id,title,bodyHTML,opts={}){
   rs.addEventListener('pointermove',e=>{
     if(!rdrag)return;
     w.style.width=Math.max(220,rsw+e.clientX-rsx)+'px';
-    w.style.height=Math.max(120,rsh+e.clientY-rsy)+'px';
+    w.style.height=Math.max(80,rsh+e.clientY-rsy)+'px';
   });
   rs.addEventListener('pointerup',e=>{rdrag=false;bringToFront(id);try{rs.releasePointerCapture(e.pointerId)}catch{}});
-  // focus on click
   w.addEventListener('pointerdown',()=>bringToFront(id),true);
   // close
   w.querySelector('.win-btn.close').addEventListener('click',()=>toggleWindow(id,false));
+  // minimize
+  w.querySelector('.win-btn.min').addEventListener('click',e=>{e.stopPropagation();toggleMinimize(id)});
   return w;
 }
 function bringToFront(id){
@@ -1090,6 +1177,12 @@ function toggleWindow(id,force){
   const lb=document.querySelector(`.launcher-btn[data-w="${id}"]`);
   if(lb)lb.classList.toggle('open',want);
   if(want)bringToFront(id);
+}
+function toggleMinimize(id){
+  const w=WIN[id];if(!w)return;
+  w.minimized=!w.minimized;
+  if(w.minimized){w.prevH=w.el.offsetHeight;w.el.classList.add('minimized');w.el.style.height='auto'}
+  else{w.el.classList.remove('minimized');w.el.style.height=w.prevH+'px'}
 }
 
 /* ===== WINDOW CONTENTS ===== */
@@ -1305,7 +1398,7 @@ function buildSlotsWindow(){
   }
 }
 
-/* ===== SAMPLER ===== */
+/* ===== SAMPLER + UNIFIED PADS ===== */
 async function decodeAudioFile(file){
   const buf=await file.arrayBuffer();
   return new Promise((res,rej)=>ctx.decodeAudioData(buf.slice(0),res,rej));
@@ -1317,74 +1410,274 @@ function playSampleBuffer(buffer,vel=1){
   src.connect(g).connect(fxIn);
   src.start();return src;
 }
-function buildSamplerWindow(){
-  const w=WIN.sampler;if(!w)return;
-  const body=w.el.querySelector('.win-body');
-  const padKeys=['F1','F2','F3','F4','F5','F6','F7','F8','sF1','sF2','sF3','sF4','sF5','sF6','sF7','sF8'];
-  const padLabels=['F1','F2','F3','F4','F5','F6','F7','F8','⇧F1','⇧F2','⇧F3','⇧F4','⇧F5','⇧F6','⇧F7','⇧F8'];
-  body.innerHTML=`
-    <div class="sampler-toolbar">
-      <button class="btn tiny ${STATE.sampler.mode==='pads'?'on':''}" data-mode="pads">PAD MODE</button>
-      <button class="btn tiny ${STATE.sampler.mode==='keys'?'on':''}" data-mode="keys">KEY MODE</button>
-      <button class="btn tiny gold" id="smp-import">+ IMPORT AUDIO</button>
-      <button class="btn tiny warn" id="smp-clear">CLEAR ALL</button>
-    </div>
-    <div id="smp-body"></div>`;
-  body.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{STATE.sampler.mode=b.dataset.mode;buildSamplerWindow()});
-  body.querySelector('#smp-import').onclick=()=>$('#file-audio').click();
-  body.querySelector('#smp-clear').onclick=()=>{
-    if(!confirm('Clear all samples?'))return;
-    STATE.sampler.pads=new Array(16).fill(null);STATE.sampler.keyMap=new Map();STATE.sampler.buffers=[];
-    buildSamplerWindow();
+
+const PAD_KEY_LABELS=['F1','F2','F3','F4','F5','F6','F7','F8','⇧F1','⇧F2','⇧F3','⇧F4','⇧F5','⇧F6','⇧F7','⇧F8'];
+
+function snapshotPatch(){
+  return {
+    bank:STATE.bank,patchIdx:STATE.patchIdx,
+    patch:BANKS[STATE.bank].patches[STATE.patchIdx], // reference is fine; banks are immutable
+    amp:{...STATE.amp},filt:{...STATE.filt},mod:{...STATE.mod}
   };
-  const sb=body.querySelector('#smp-body');
-  if(STATE.sampler.mode==='pads'){
-    sb.innerHTML='<div class="sample-pads" id="smp-pads"></div><div style="font-family:VT323;font-size:11px;color:var(--dim);padding:5px 7px;letter-spacing:.08em">CLICK pad to trigger • DRAG audio file onto pad to load • SHIFT-CLICK to clear pad</div>';
-    const pg=sb.querySelector('#smp-pads');
-    for(let i=0;i<16;i++){
-      const pad=document.createElement('div');pad.className='spad'+(STATE.sampler.pads[i]?' loaded':'');
-      pad.innerHTML=`<span class="spad-key">${padLabels[i]}</span><span class="${STATE.sampler.pads[i]?'spad-name':'spad-empty'}">${STATE.sampler.pads[i]?STATE.sampler.pads[i].name:'EMPTY'}</span>`;
-      pad.addEventListener('click',e=>{
-        const p=STATE.sampler.pads[i];
-        if(e.shiftKey){STATE.sampler.pads[i]=null;buildSamplerWindow();return}
-        if(p){pad.classList.add('playing');playSampleBuffer(p.buffer,1);setTimeout(()=>pad.classList.remove('playing'),200);
-          recordEvent({type:'sample',padIdx:i})}
-        else $('#file-audio').click();
-      });
-      pad.addEventListener('dragover',e=>{e.preventDefault();pad.style.borderColor='var(--neon)'});
-      pad.addEventListener('dragleave',()=>{pad.style.borderColor=''});
-      pad.addEventListener('drop',async e=>{e.preventDefault();pad.style.borderColor='';
-        const f=e.dataTransfer.files[0];if(!f)return;
-        try{const buf=await decodeAudioFile(f);STATE.sampler.pads[i]={name:f.name.replace(/\.[^.]+$/,'').slice(0,16),buffer:buf,key:padKeys[i]};buildSamplerWindow();toast('Loaded to pad '+(i+1))}
-        catch{toast('Decode failed')}
-      });
-      pg.appendChild(pad);
-    }
+}
+
+function padArmCapture(idx){
+  // Cancel previous arm if any
+  if(STATE.padArmedRec>=0&&STATE.padArmedRec!==idx)padCancelCapture();
+  STATE.padArmedRec=idx;
+  STATE.padCaptureStart=0;          // will be set when first note arrives
+  STATE.padCaptureEvents=[];
+  buildPadsWindow();
+  toast(`Pad ${idx+1} ARMED — play piano (held=shape, sequence=sequence)`);
+}
+function padCancelCapture(){
+  STATE.padArmedRec=-1;
+  STATE.padCaptureStart=0;
+  STATE.padCaptureEvents=[];
+  if(STATE.padCaptureTimer){clearTimeout(STATE.padCaptureTimer);STATE.padCaptureTimer=null}
+  buildPadsWindow();
+}
+function padCaptureNote(midi,onOff){
+  if(STATE.padArmedRec<0)return;
+  if(!STATE.padCaptureStart)STATE.padCaptureStart=ctx.currentTime;
+  const t=ctx.currentTime-STATE.padCaptureStart;
+  STATE.padCaptureEvents.push({t,midi,type:onOff});
+  // Reset auto-finalize timer (1.6s after last activity)
+  if(STATE.padCaptureTimer)clearTimeout(STATE.padCaptureTimer);
+  STATE.padCaptureTimer=setTimeout(padFinalizeCapture,1600);
+}
+function padFinalizeCapture(){
+  const idx=STATE.padArmedRec;
+  if(idx<0||!STATE.padCaptureEvents.length){padCancelCapture();return}
+  const evs=STATE.padCaptureEvents.slice();
+  // Detect shape vs sequence: if all 'on' events occurred within 200ms, treat as held shape
+  const ons=evs.filter(e=>e.type==='on');
+  const last=evs[evs.length-1].t;
+  const onsSpread=ons.length?(ons[ons.length-1].t-ons[0].t):0;
+  let pad;
+  if(ons.length>=2&&onsSpread<0.2){
+    // SHAPE: held simultaneously
+    const notes=Array.from(new Set(ons.map(e=>e.midi))).sort((a,b)=>a-b);
+    pad={kind:'shape',name:'SHAPE',notes,patchSnapshot:snapshotPatch(),sustain:STATE.padSustainMode};
+  } else if(ons.length===1&&onsSpread===0){
+    // single note still treat as shape with one note
+    pad={kind:'shape',name:'NOTE '+nName(ons[0].midi)+octOf(ons[0].midi),notes:[ons[0].midi],patchSnapshot:snapshotPatch(),sustain:STATE.padSustainMode};
   } else {
-    let html='<div style="padding:6px;font-family:VT323;font-size:12px;color:var(--dim);letter-spacing:.08em">Click a sample below, then click a piano key to assign. Triggered alongside synth on that key.</div><div class="sample-list" id="smp-list"></div>';
-    sb.innerHTML=html;
-    const list=sb.querySelector('#smp-list');
-    if(!STATE.sampler.buffers.length){list.innerHTML='<div style="color:var(--dim);font-family:VT323;font-size:13px;padding:8px;text-align:center">No samples imported yet. Click + IMPORT AUDIO above.</div>'}
-    STATE.sampler.buffers.forEach((s,i)=>{
-      const row=document.createElement('div');row.className='sample-row';
-      const assigned=[];STATE.sampler.keyMap.forEach((v,k)=>{if(v===i)assigned.push(nName(k)+octOf(k))});
-      row.innerHTML=`<button class="btn tiny gold">▶</button><span class="nm">${s.name}</span><span style="color:var(--dim);font-size:10px">${assigned.join(',')||'unassigned'}</span><button class="btn tiny warn" data-act="rm">×</button><button class="btn tiny" data-act="asn">ASSIGN</button>`;
-      row.querySelector('.btn.gold').onclick=()=>playSampleBuffer(s.buffer,1);
-      row.querySelector('[data-act=rm]').onclick=()=>{STATE.sampler.buffers.splice(i,1);
-        const nm=new Map();STATE.sampler.keyMap.forEach((v,k)=>{if(v<i)nm.set(k,v);else if(v>i)nm.set(k,v-1)});
-        STATE.sampler.keyMap=nm;buildSamplerWindow()};
-      row.querySelector('[data-act=asn]').onclick=()=>{
-        toast('Click a piano key to assign');
-        const handler=(ev)=>{const t=ev.target.closest('.wkey,.bkey,.chroma-key');if(!t)return;
-          const m=+t.dataset.midi;STATE.sampler.keyMap.set(m,i);
-          $('#piano').removeEventListener('click',handler,true);$('#chroma').removeEventListener('click',handler,true);
-          buildSamplerWindow();toast(`Assigned to ${nName(m)}${octOf(m)}`)};
-        $('#piano').addEventListener('click',handler,true);$('#chroma').addEventListener('click',handler,true);
-      };
-      list.appendChild(row);
-    });
+    // SEQUENCE: timed events, unquantized
+    pad={kind:'sequence',name:'SEQ '+(idx+1),events:evs,duration:Math.max(0.4,last+0.4),patchSnapshot:snapshotPatch(),sustain:STATE.padSustainMode};
+  }
+  STATE.pads[idx]=pad;
+  STATE.padArmedRec=-1;
+  STATE.padCaptureEvents=[];
+  STATE.padCaptureStart=0;
+  if(STATE.padCaptureTimer){clearTimeout(STATE.padCaptureTimer);STATE.padCaptureTimer=null}
+  buildPadsWindow();
+  toast(`Pad ${idx+1} = ${pad.kind.toUpperCase()} (${pad.kind==='shape'?pad.notes.length+' notes':ons.length+' events'})`);
+}
+
+function padTrigger(idx){
+  const p=STATE.pads[idx];
+  if(!p){
+    // empty: arm for capture
+    padArmCapture(idx);
+    return;
+  }
+  // Visual feedback
+  const padEl=document.querySelectorAll('#pads-grid .spad')[idx];
+  if(padEl){padEl.classList.add('playing');setTimeout(()=>padEl.classList.remove('playing'),180)}
+  recordEvent({type:'pad',padIdx:idx});
+
+  if(p.kind==='sample'){
+    playSampleBuffer(p.buffer,1);
+    return;
+  }
+  // For shape/sequence: respect sustain mode
+  if(p.sustain){
+    // tap-toggle: if already playing and sustained, stop it (with crossfade)
+    if(STATE.padPlayingVoices.has(idx)||STATE.padPlayingSequences.has(idx)){
+      padStop(idx,true);
+      return;
+    }
+    padPlay(idx,true);
+  } else {
+    // one-shot: play through and stop based on shape/seq logic
+    padPlay(idx,false);
   }
 }
+
+function padPlay(idx,sustain){
+  const p=STATE.pads[idx];if(!p)return;
+  // If sustained pads: optionally fade out other sustained pads for smooth transition
+  if(sustain){
+    // crossfade — gentle fadeOut of all other pads
+    for(const [otherIdx] of STATE.padPlayingVoices){
+      if(otherIdx!==idx)padStop(otherIdx,true);
+    }
+    for(const [otherIdx] of STATE.padPlayingSequences){
+      if(otherIdx!==idx)padStop(otherIdx,true);
+    }
+  }
+  if(p.kind==='shape'){
+    const voices=[];
+    for(const m of p.notes){
+      const v=startVoice(m+STATE.octave*12+STATE.transpose,0.78,p.patchSnapshot);
+      voices.push(v);
+      const padEl=document.querySelectorAll('#pads-grid .spad')[idx];
+      if(padEl&&sustain)padEl.classList.add('sustained');
+    }
+    STATE.padPlayingVoices.set(idx,voices);
+    if(!sustain){
+      // schedule release after a generous time so envelope tail handles it naturally
+      setTimeout(()=>padStop(idx,false),900);
+    }
+  } else if(p.kind==='sequence'){
+    // Schedule events relative to ctx.currentTime
+    const startT=ctx.currentTime;
+    const voices=new Map();
+    const padEl=document.querySelectorAll('#pads-grid .spad')[idx];
+    if(padEl&&sustain)padEl.classList.add('sustained');
+    const seq={voices,timers:[],sustain};
+    for(const ev of p.events){
+      const tm=setTimeout(()=>{
+        if(ev.type==='on'){
+          const real=ev.midi+STATE.octave*12+STATE.transpose;
+          const v=startVoice(real,0.78,p.patchSnapshot);
+          voices.set(ev.midi,v);
+        } else if(ev.type==='off'){
+          const v=voices.get(ev.midi);
+          if(v){v.release();voices.delete(ev.midi)}
+        }
+      },ev.t*1000);
+      seq.timers.push(tm);
+    }
+    // Schedule end-of-sequence release (unless sustain mode keeps last notes ringing)
+    if(!sustain){
+      const end=setTimeout(()=>padStop(idx,false),(p.duration+0.1)*1000);
+      seq.timers.push(end);
+    }
+    STATE.padPlayingSequences.set(idx,seq);
+  }
+}
+
+function padStop(idx,smooth=true){
+  const padEl=document.querySelectorAll('#pads-grid .spad')[idx];
+  if(padEl)padEl.classList.remove('sustained','playing');
+  const vs=STATE.padPlayingVoices.get(idx);
+  if(vs){
+    for(const v of vs){if(smooth)v.fadeOut(120);else v.release()}
+    STATE.padPlayingVoices.delete(idx);
+  }
+  const seq=STATE.padPlayingSequences.get(idx);
+  if(seq){
+    seq.timers.forEach(clearTimeout);
+    seq.voices.forEach(v=>{if(smooth)v.fadeOut(120);else v.release()});
+    STATE.padPlayingSequences.delete(idx);
+  }
+}
+function padStopAll(smooth=true){
+  for(const idx of [...STATE.padPlayingVoices.keys()])padStop(idx,smooth);
+  for(const idx of [...STATE.padPlayingSequences.keys()])padStop(idx,smooth);
+}
+
+async function loadPadSample(idx,file){
+  if(!ctx)initAudio();
+  try{
+    const buf=await decodeAudioFile(file);
+    const name=file.name.replace(/\.[^.]+$/,'').slice(0,16);
+    STATE.pads[idx]={kind:'sample',name,buffer:buf};
+    buildPadsWindow();toast('Loaded to pad '+(idx+1));
+  }catch{toast('Decode failed')}
+}
+
+function buildPadsWindow(){
+  const w=WIN.sampler;if(!w)return;
+  const body=w.el.querySelector('.win-body');
+  body.innerHTML=`
+    <div class="sampler-toolbar" style="border-bottom:1px solid var(--stroke);background:rgba(0,255,213,.04)">
+      <button class="btn tiny gold" id="pads-import">+ IMPORT AUDIO</button>
+      <button class="btn tiny ${STATE.padSustainMode?'on':''}" id="pads-sustain-mode">SUSTAIN: ${STATE.padSustainMode?'ON':'OFF'}</button>
+      <button class="btn tiny ${STATE.padArmedRec>=0?'warn on':''}" id="pads-arm-toggle">${STATE.padArmedRec>=0?'CANCEL ARM':'ARM PAD…'}</button>
+      <button class="btn tiny" id="pads-stop-all">■ STOP ALL PADS</button>
+      <button class="btn tiny warn" id="pads-clear">CLEAR ALL</button>
+    </div>
+    <div style="padding:5px 7px;font-family:VT323;font-size:11px;color:var(--dim);letter-spacing:.06em;line-height:1.4">
+      EMPTY pad = arm for capture · play piano · held=SHAPE, sequential=SEQUENCE (auto-finalizes ~1.6s after last note)<br>
+      LOADED pad: TAP to trigger · DRAG audio to load sample · SHIFT-TAP clear · RIGHT-CLICK toggle pad's own sustain
+    </div>
+    <div class="sample-pads" id="pads-grid"></div>
+    <div style="border-top:1px solid var(--stroke);padding:5px 7px;font-family:VT323;font-size:12px;color:var(--neon);letter-spacing:.08em">SAMPLE→PIANO KEY ASSIGNMENT</div>
+    <div style="padding:0 7px 7px;font-family:VT323;font-size:11px;color:var(--dim)">Layered with synth on assigned keys. Click ASSIGN, then a piano key.</div>
+    <div class="sample-list" id="pads-keymap-list" style="padding:0 5px 6px"></div>`;
+
+  body.querySelector('#pads-import').onclick=()=>$('#file-audio').click();
+  body.querySelector('#pads-sustain-mode').onclick=()=>{STATE.padSustainMode=!STATE.padSustainMode;buildPadsWindow()};
+  body.querySelector('#pads-arm-toggle').onclick=()=>{
+    if(STATE.padArmedRec>=0){padCancelCapture();return}
+    // arm next empty pad
+    const idx=STATE.pads.findIndex(p=>!p);
+    if(idx>=0)padArmCapture(idx);else toast('All pads full — shift-click one to clear first');
+  };
+  body.querySelector('#pads-stop-all').onclick=()=>padStopAll(true);
+  body.querySelector('#pads-clear').onclick=()=>{
+    if(!confirm('Clear all 16 pads?'))return;
+    padStopAll(false);
+    STATE.pads=new Array(16).fill(null);
+    buildPadsWindow();
+  };
+
+  const grid=body.querySelector('#pads-grid');
+  for(let i=0;i<16;i++){
+    const p=STATE.pads[i];
+    const pad=document.createElement('div');
+    pad.className='spad';
+    if(p&&p.kind==='sample')pad.classList.add('has-sample');
+    else if(p&&p.kind==='shape')pad.classList.add('shape');
+    else if(p&&p.kind==='sequence')pad.classList.add('has-seq');
+    if(STATE.padArmedRec===i)pad.classList.add('armed-rec');
+    if(STATE.padPlayingVoices.has(i)||STATE.padPlayingSequences.has(i))pad.classList.add('sustained');
+    const tag=p?(p.kind==='sample'?'WAV':p.kind==='shape'?'CHRD':'SEQ'):(STATE.padArmedRec===i?'REC':'•');
+    pad.innerHTML=`<span class="spad-key">${PAD_KEY_LABELS[i]}</span><span class="spad-tag">${tag}</span><span class="${p?'spad-name':'spad-empty'}">${p?p.name:(STATE.padArmedRec===i?'ARMED':'EMPTY')}</span>`;
+    pad.addEventListener('click',e=>{
+      if(e.shiftKey){padStop(i,false);STATE.pads[i]=null;buildPadsWindow();toast('Pad '+(i+1)+' cleared');return}
+      padTrigger(i);
+    });
+    pad.addEventListener('contextmenu',e=>{
+      e.preventDefault();
+      const pp=STATE.pads[i];
+      if(pp&&pp.kind!=='sample'){pp.sustain=!pp.sustain;buildPadsWindow();toast(`Pad ${i+1} sustain ${pp.sustain?'ON':'OFF'}`)}
+    });
+    pad.addEventListener('dragover',e=>{e.preventDefault();pad.style.borderColor='var(--neon)'});
+    pad.addEventListener('dragleave',()=>{pad.style.borderColor=''});
+    pad.addEventListener('drop',e=>{e.preventDefault();pad.style.borderColor='';
+      const f=e.dataTransfer.files[0];if(f)loadPadSample(i,f);
+    });
+    grid.appendChild(pad);
+  }
+
+  // Sample→Key assignment list (legacy KEY MODE, kept as section)
+  const list=body.querySelector('#pads-keymap-list');
+  if(!STATE.sampler.buffers.length){list.innerHTML='<div style="color:var(--dim);font-family:VT323;font-size:12px;padding:6px;text-align:center">No standalone samples imported. Import audio above and toggle MODE here to assign to piano keys.</div>'}
+  STATE.sampler.buffers.forEach((s,i)=>{
+    const row=document.createElement('div');row.className='sample-row';
+    const assigned=[];STATE.sampler.keyMap.forEach((v,k)=>{if(v===i)assigned.push(nName(k)+octOf(k))});
+    row.innerHTML=`<button class="btn tiny gold">▶</button><span class="nm">${s.name}</span><span style="color:var(--dim);font-size:10px">${assigned.join(',')||'—'}</span><button class="btn tiny warn" data-act="rm">×</button><button class="btn tiny" data-act="asn">ASSIGN</button>`;
+    row.querySelector('.btn.gold').onclick=()=>playSampleBuffer(s.buffer,1);
+    row.querySelector('[data-act=rm]').onclick=()=>{STATE.sampler.buffers.splice(i,1);
+      const nm=new Map();STATE.sampler.keyMap.forEach((v,k)=>{if(v<i)nm.set(k,v);else if(v>i)nm.set(k,v-1)});
+      STATE.sampler.keyMap=nm;buildPadsWindow()};
+    row.querySelector('[data-act=asn]').onclick=()=>{
+      toast('Click a piano key to assign');
+      const handler=(ev)=>{const t=ev.target.closest('.wkey,.bkey,.chroma-key');if(!t)return;
+        const m=+t.dataset.midi;STATE.sampler.keyMap.set(m,i);
+        $('#piano').removeEventListener('click',handler,true);$('#chroma').removeEventListener('click',handler,true);
+        buildPadsWindow();toast(`Assigned to ${nName(m)}${octOf(m)}`)};
+      $('#piano').addEventListener('click',handler,true);$('#chroma').addEventListener('click',handler,true);
+    };
+    list.appendChild(row);
+  });
+}
+// Backwards alias so init still works
+function buildSamplerWindow(){return buildPadsWindow()}
 
 $('#file-audio').addEventListener('change',async e=>{
   const files=Array.from(e.target.files||[]);
@@ -1392,15 +1685,13 @@ $('#file-audio').addEventListener('change',async e=>{
     try{
       const buf=await decodeAudioFile(f);
       const name=f.name.replace(/\.[^.]+$/,'').slice(0,18);
-      if(STATE.sampler.mode==='pads'){
-        const idx=STATE.sampler.pads.findIndex(p=>!p);
-        if(idx>=0)STATE.sampler.pads[idx]={name,buffer:buf,key:['F1','F2','F3','F4','F5','F6','F7','F8','sF1','sF2','sF3','sF4','sF5','sF6','sF7','sF8'][idx]};
-      } else {
-        STATE.sampler.buffers.push({name,buffer:buf});
-      }
+      // first try to fill an empty pad as a sample
+      const idx=STATE.pads.findIndex(p=>!p);
+      if(idx>=0)STATE.pads[idx]={kind:'sample',name,buffer:buf};
+      else STATE.sampler.buffers.push({name,buffer:buf});
     } catch(err){toast('Failed: '+f.name)}
   }
-  buildSamplerWindow();
+  buildPadsWindow();
   e.target.value='';
 });
 
@@ -1595,7 +1886,6 @@ $('#master-vol').addEventListener('input',e=>{
 $('#kill-btn').addEventListener('click',()=>{
   if(!ctx)return;
   killAllVoices();
-  stopAllPadGroups(12);
   loopStopReset();
   // brief duck of kill node to slam everything quiet then restore
   const t=ctx.currentTime;
@@ -1644,9 +1934,6 @@ $('#btn-piano-toggle').addEventListener('click',()=>{
   const c=$('#piano-host').classList.contains('collapsed');
   $('#btn-piano-toggle').textContent=c?'↕ SHOW KEYS':'↕ HIDE KEYS';
 });
-$('#btn-fullscreen').addEventListener('click',toggleFullscreen);
-$('#btn-viz').addEventListener('click',()=>toggleVisualizer(!STATE.viz.active,false));
-$('#btn-performance').addEventListener('click',()=>toggleVisualizer(true,true));
 $('#btn-loop').addEventListener('click',loopArm);
 $('#btn-loopstop').addEventListener('click',loopStopReset);
 $('#oct-up').onclick=()=>{STATE.octave=clamp(STATE.octave+1,-3,3);$('#oct-val').textContent=STATE.octave;refreshShortcuts();updateTape()};
@@ -1687,7 +1974,6 @@ $('#btn-save').onclick=()=>{
   const data={
     v:1,bank:STATE.bank,patchIdx:STATE.patchIdx,octave:STATE.octave,transpose:STATE.transpose,bpm:STATE.bpm,delayDiv:STATE.delayDiv,
     sustain:STATE.sustain,chromatic:STATE.chromatic,
-    padLatch:STATE.padLatch,padExclusive:STATE.padExclusive,pitch:STATE.pitch,layout:STATE.layout,viz:STATE.viz,
     amp:STATE.amp,filt:STATE.filt,mod:STATE.mod,fx:STATE.fx,
     slots:STATE.slots,custom:STATE.custom,colors:cv
   };
@@ -1702,8 +1988,6 @@ $('#file-load').addEventListener('change',async e=>{
     const text=await f.text();const d=JSON.parse(text);
     Object.assign(STATE,{bank:d.bank,patchIdx:d.patchIdx,octave:d.octave,transpose:d.transpose,bpm:d.bpm,delayDiv:d.delayDiv,sustain:!!d.sustain,chromatic:!!d.chromatic});
     if(d.amp)STATE.amp=d.amp;if(d.filt)STATE.filt=d.filt;if(d.mod)STATE.mod=d.mod;if(d.fx)STATE.fx=d.fx;
-    if(d.pitch)STATE.pitch=Object.assign(STATE.pitch,d.pitch);if(d.layout)STATE.layout=Object.assign(STATE.layout,d.layout);if(d.viz)STATE.viz=Object.assign(STATE.viz,d.viz);
-    if(typeof d.padLatch==='boolean')STATE.padLatch=d.padLatch;if(typeof d.padExclusive==='boolean')STATE.padExclusive=d.padExclusive;
     if(d.slots)STATE.slots=d.slots;if(d.custom)STATE.custom=d.custom;
     if(d.colors)for(const [k,v] of Object.entries(d.colors)){document.documentElement.style.setProperty(k,v);const inp=document.querySelector(`input[data-cv="${k}"]`);if(inp)inp.value=v}
     $('#bpm').value=STATE.bpm;$('#bpm-val').textContent=STATE.bpm;
@@ -1713,7 +1997,7 @@ $('#file-load').addEventListener('change',async e=>{
     $('#chroma').classList.toggle('active',STATE.chromatic);
     $('#piano').style.display=STATE.chromatic?'none':'flex';
     buildBankSelect();buildBankWindow();buildFXWindow();buildSoundDesignWindow();buildSlotsWindow();buildChordBankWindow();
-    refreshShortcuts();applyFXState();applyLayoutState();updateTape();
+    refreshShortcuts();applyFXState();updateTape();
     toast('Loaded preset');
   } catch(err){toast('Load failed')}
   e.target.value='';
@@ -1727,33 +2011,25 @@ window.addEventListener('keydown',e=>{
   downKeys.add(e.code);
   if(e.code==='Space'){e.preventDefault();$('#btn-sustain').click();return}
   if(e.code==='Tab'){e.preventDefault();$('#btn-chroma').click();return}
-  if(e.code==='Escape'){$('#color-modal').classList.remove('active');$('#help-modal').classList.remove('active');if(STATE.viz.active&&!STATE.viz.performance)toggleVisualizer(false,false);return}
-  if(e.code==='KeyA'){e.preventDefault();setPitchBend(-STATE.pitch.range);return}
-  if(e.code==='Quote'){e.preventDefault();setPitchBend(STATE.pitch.range);return}
-  if(STATE.viz.active){
-    if(e.code==='ArrowLeft'){STATE.viz.panX-=36;e.preventDefault();return}
-    if(e.code==='ArrowRight'){STATE.viz.panX+=36;e.preventDefault();return}
-    if(e.code==='ArrowUp'){STATE.viz.panY-=36;e.preventDefault();return}
-    if(e.code==='ArrowDown'){STATE.viz.panY+=36;e.preventDefault();return}
-    if(e.code==='KeyV'){nextVizView();e.preventDefault();return}
-    if(e.code==='KeyR'){randomizeVisualizer();e.preventDefault();return}
-    if(e.code==='NumpadAdd'||(e.code==='Equal'&&e.shiftKey)){STATE.viz.zoom=clamp(STATE.viz.zoom+.1,.3,4);e.preventDefault();return}
-    if(e.code==='NumpadSubtract'||e.code==='Minus'){STATE.viz.zoom=clamp(STATE.viz.zoom-.1,.3,4);e.preventDefault();return}
-  }
-  // function keys for sampler pads 1-8 (with shift = 9-16)
+  if(e.code==='Escape'){$('#color-modal').classList.remove('active');$('#help-modal').classList.remove('active');return}
+  // function keys for pads 1-8 (with shift = 9-16)
   if(SAMPLER_F_KEYS.includes(e.code)){
     e.preventDefault();
     const idx=SAMPLER_F_KEYS.indexOf(e.code)+(e.shiftKey?8:0);
-    const p=STATE.sampler.pads[idx];
-    if(p){playSampleBuffer(p.buffer,1);recordEvent({type:'sample',padIdx:idx});
-      const padEl=document.querySelectorAll('.spad')[idx];if(padEl){padEl.classList.add('playing');setTimeout(()=>padEl.classList.remove('playing'),200)}}
+    padTrigger(idx);
     return;
   }
+  // mod wheel — bend down with comma+shift+alt? simpler: backtick = down, single quote = up
+  // Use Backquote for bend-down, Quote for bend-up (avoids conflict with note keys)
+  if(e.code==='Backquote'){e.preventDefault();modWheelKey(-1,true);return}
+  if(e.code==='Quote'){e.preventDefault();modWheelKey(1,true);return}
+  // Visualizer toggle (Ctrl/Cmd+V)
+  if(e.code==='KeyV'&&(e.ctrlKey||e.metaKey)){e.preventDefault();toggleVisualizer();return}
   // slot triggers
   if(SLOT_KEYS.includes(e.code)&&!e.shiftKey&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
     const i=SLOT_KEYS.indexOf(e.code);
     const s=STATE.slots[i];
-    if(s){triggerSlot(i);return}
+    if(s){STATE.slotIdx=i;playChord(s);buildSlotsWindow();return}
   }
   // cycle slots with shift+,/.
   if(e.shiftKey&&(e.code==='Comma'||e.code==='Period')){
@@ -1761,7 +2037,7 @@ window.addEventListener('keydown',e=>{
     if(!filled.length)return;
     let cur=filled.indexOf(STATE.slotIdx);
     if(cur<0)cur=0;else cur=(cur+(e.code==='Period'?1:-1)+filled.length)%filled.length;
-    STATE.slotIdx=filled[cur];triggerSlot(STATE.slotIdx);
+    STATE.slotIdx=filled[cur];playChord(STATE.slots[STATE.slotIdx]);buildSlotsWindow();
     return;
   }
   // single-letter shortcuts
@@ -1793,283 +2069,14 @@ window.addEventListener('keydown',e=>{
 window.addEventListener('keyup',e=>{
   downKeys.delete(e.code);
   if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA')return;
-  if(e.code==='KeyA'||e.code==='Quote'){setPitchBend(0);return}
+  if(e.code==='Backquote'){modWheelKey(-1,false);return}
+  if(e.code==='Quote'){modWheelKey(1,false);return}
   if(KB_NOTES[e.code]!==undefined&&!STATE.build){
     const baseM=KB_NOTES[e.code];
     const m=baseM+STATE.octave*12+STATE.transpose;
     releaseNoteByDisplay(m);
   }
 });
-
-
-
-/* ===== PERFORMANCE PAD / LAYOUT / MOD WHEEL / VISUALIZER EXTENSIONS ===== */
-function patchSnapshot(){return {bank:STATE.bank,patchIdx:STATE.patchIdx,patch:JSON.parse(JSON.stringify(BANKS[STATE.bank].patches[STATE.patchIdx]))}}
-function savedPatch(slot){
-  if(slot?.patch)return slot.patch;
-  const bk=slot?.bank||STATE.bank, pi=slot?.patchIdx??STATE.patchIdx;
-  return BANKS[bk]?.patches?.[pi]||BANKS[STATE.bank].patches[STATE.patchIdx];
-}
-function groupClasses(){return '.slot'}
-function clearSlotHeldClass(i){const el=document.querySelectorAll('.slot')[i];if(el)el.classList.remove('pad-held')}
-function markSlotHeld(i,on){const el=document.querySelectorAll('.slot')[i];if(el)el.classList.toggle('pad-held',on)}
-function stopPadGroup(i,fade=90){
-  const g=PAD_GROUPS.get(i);if(!g)return;
-  (g.timeouts||[]).forEach(id=>clearTimeout(id));
-  (g.voices||[]).forEach(v=>{try{v.fadeOut(fade)}catch{}});
-  PAD_GROUPS.delete(i);markSlotHeld(i,false);updateTape();
-}
-function stopAllPadGroups(fade=90){Array.from(PAD_GROUPS.keys()).forEach(i=>stopPadGroup(i,fade))}
-function startPadVoice(slot,midi,vel=0.78){
-  const v=startVoice(midi,vel,{patch:savedPatch(slot),bank:slot.bank,patchIdx:slot.patchIdx});
-  applyPitchToVoice(v);
-  return v;
-}
-function triggerSlot(i){
-  const s=STATE.slots[i];if(!s)return;
-  if(PAD_GROUPS.has(i)){stopPadGroup(i,120);return}
-  if(STATE.padExclusive)stopAllPadGroups(120);
-  STATE.slotIdx=i;
-  const group={voices:[],timeouts:[],slot:s};
-  PAD_GROUPS.set(i,group);markSlotHeld(i,true);buildSlotsWindow();
-  const latch=STATE.padLatch||s.latch;
-  if(s.events&&s.events.length){
-    const t0=performance.now();
-    for(const ev of s.events){
-      const id=setTimeout(()=>{
-        const live=PAD_GROUPS.get(i);if(!live)return;
-        if(ev.type==='on'){
-          const v=startPadVoice(s,ev.midi,ev.vel||.78);live.voices.push(v);highlightKey(ev.midi,'lit',true);pulseViz(ev.midi,ev.vel||.78);
-        }else if(ev.type==='off'&&!latch){
-          const v=live.voices.find(x=>x.midi===ev.midi&&!x.releasing);if(v)v.release();highlightKey(ev.midi,'lit',false);
-        }
-      },Math.max(0,ev.t*1000));
-      group.timeouts.push(id);
-    }
-    if(!latch){
-      const off=setTimeout(()=>stopPadGroup(i,180),Math.max(250,(s.length||1)*1000+400));
-      group.timeouts.push(off);
-    }
-  }else{
-    const notes=(s.customNotes&&s.customNotes.length)?s.customNotes.slice():(s.ints||[]).map(x=>60+(s.rootIdx??0)+x);
-    for(const m of notes){const v=startPadVoice(s,m,.78);group.voices.push(v);highlightKey(m,'lit',true);pulseViz(m,.78)}
-    if(!latch){group.timeouts.push(setTimeout(()=>stopPadGroup(i,180),1200))}
-  }
-  updateTape();
-}
-function captureShapeToSlot(i){
-  const set=Array.from(STATE.shapeNotes).sort((a,b)=>a-b);
-  if(!set.length){toast('Build a shape first');return}
-  const snap=patchSnapshot();
-  STATE.slots[i]={kind:'shape',name:'PAD '+(i+1)+' SHAPE',customNotes:set,rootIdx:0,ints:[],bank:snap.bank,patchIdx:snap.patchIdx,patch:snap.patch,latch:STATE.padLatch};
-  buildSlotsWindow();toast(`Pad ${i+1} captured shape`);
-}
-function armPadRecord(i=STATE.slotIdx){
-  if(!ctx)initAudio();
-  STATE.padRecord={state:'armed',slotIdx:i,events:[],startAt:0,length:0};
-  STATE.slotIdx=i;buildSlotsWindow();updateTape();toast(`Pad ${i+1} armed — first key starts recording`);
-}
-function finishPadRecord(){
-  const r=STATE.padRecord;
-  if(r.state==='idle'){toast('No pad recording armed');return}
-  if(r.state==='armed'||!r.events.length){STATE.padRecord={state:'idle',slotIdx:r.slotIdx,events:[],startAt:0,length:0};buildSlotsWindow();toast('Pad record cancelled');return}
-  const len=Math.max(r.length||0.25, r.events[r.events.length-1]?.t||0.25, .25);
-  const snap=patchSnapshot();
-  STATE.slots[r.slotIdx]={kind:'phrase',name:'PAD '+(r.slotIdx+1)+' PHRASE',events:r.events.map(e=>Object.assign({},e)),length:len,bank:snap.bank,patchIdx:snap.patchIdx,patch:snap.patch,latch:STATE.padLatch};
-  STATE.padRecord={state:'idle',slotIdx:r.slotIdx,events:[],startAt:0,length:0};
-  buildSlotsWindow();updateTape();toast(`Pad ${r.slotIdx+1} saved unquantized phrase`);
-}
-function padRecordEvent(type,midi,vel=.78){
-  const r=STATE.padRecord;if(!ctx||r.state==='idle')return;
-  if(r.state==='armed'&&type==='on'){r.state='recording';r.startAt=ctx.currentTime;r.events=[];r.length=0;toast('PAD RECORDING')}
-  if(r.state!=='recording')return;
-  const t=Math.max(0,ctx.currentTime-r.startAt);
-  r.events.push({type,midi,vel,t:+t.toFixed(4)});r.length=t;updateTape();buildSlotsWindow();
-}
-function applyPitchToVoice(v){
-  if(!ctx||!v||!v.oscs)return;
-  const t=ctx.currentTime, glide=Math.max(.01,STATE.pitch.glide||.12), cents=(STATE.pitch.value||0)*100;
-  for(const o of v.oscs){try{o.osc.detune.cancelScheduledValues(t);o.osc.detune.setTargetAtTime((o.baseDetune||0)+cents,t,glide)}catch{}}
-}
-function applyPitchBend(){
-  for(const [,v] of STATE.activeNotes)applyPitchToVoice(v);
-  for(const g of PAD_GROUPS.values())for(const v of (g.voices||[]))applyPitchToVoice(v);
-  updateModMeter();
-}
-function setPitchBend(semi){
-  STATE.pitch.target=clamp(semi,-STATE.pitch.range,STATE.pitch.range);
-  if(pitchAnim)cancelAnimationFrame(pitchAnim);
-  const tick=()=>{
-    const cur=STATE.pitch.value||0, target=STATE.pitch.target||0;
-    const glide=clamp(STATE.pitch.glide||.12,.02,1.5);
-    STATE.pitch.value=cur+(target-cur)*clamp(0.18/glide,.05,.45);
-    if(Math.abs(STATE.pitch.value-target)<0.01)STATE.pitch.value=target;else pitchAnim=requestAnimationFrame(tick);
-    applyPitchBend();
-  };
-  tick();
-}
-function updateModMeter(){
-  const el=document.querySelector('#mod-meter-fill');if(el)el.style.transform=`scaleX(${(Math.abs(STATE.pitch.value||0)/Math.max(.01,STATE.pitch.range)).toFixed(3)})`;
-  const txt=document.querySelector('#mod-read');if(txt)txt.textContent=(STATE.pitch.value>=0?'+':'')+STATE.pitch.value.toFixed(2)+' st';
-}
-function applyLayoutState(){
-  const r=document.documentElement;
-  r.style.setProperty('--topbar-pad-y',(STATE.layout.topPad??6)+'px');
-  r.style.setProperty('--piano-height',(STATE.layout.pianoHeight??240)+'px');
-  r.style.setProperty('--black-key-height',(STATE.layout.blackHeight??62)+'%');
-  r.style.setProperty('--key-label-scale',(STATE.layout.labelScale??1));
-  sanitizeWindows();
-}
-function sanitizeWindows(){
-  const d=$('#desktop');if(!d)return;
-  Object.values(WIN).forEach(w=>{
-    const maxL=Math.max(0,d.clientWidth-50), maxT=Math.max(0,d.clientHeight-34);
-    const l=clamp(parseFloat(w.el.style.left)||0,4,maxL);
-    const t=clamp(parseFloat(w.el.style.top)||0,4,maxT);
-    w.el.style.left=l+'px';w.el.style.top=t+'px';
-  });
-}
-function toggleFullscreen(){
-  const el=$('#app')||document.documentElement;
-  if(!document.fullscreenElement){(el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen)?.call(el);}
-  else{(document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen)?.call(document);}
-}
-function buildPerformanceWindow(){
-  const w=WIN.performance;if(!w)return;
-  const body=w.el.querySelector('.win-body');
-  body.innerHTML=`<div class="layout-panel">
-    <details class="collap" open><summary>Layout sliders</summary>
-      ${rangeRow('lay-top','Top display',0,18,STATE.layout.topPad,1,'px')}
-      ${rangeRow('lay-piano','Piano height',110,390,STATE.layout.pianoHeight,1,'px')}
-      ${rangeRow('lay-black','Black key depth',42,80,STATE.layout.blackHeight,1,'%')}
-      ${rangeRow('lay-label','Key label scale',.65,1.45,STATE.layout.labelScale,.01,'x')}
-      <button class="btn tiny" id="lay-safe">KEEP WINDOWS VISIBLE</button>
-    </details>
-    <details class="collap" open><summary>Pads / shape recorder</summary>
-      <div class="loop-row"><button class="btn gold" id="pad-rec">ARM PAD REC</button><button class="btn warn" id="pad-stop-rec">STOP/SAVE REC</button><button class="btn" id="pad-cap">SAVE LIT TO PAD</button></div>
-      <div class="loop-row"><button class="btn tiny ${STATE.padLatch?'on':''}" id="pad-latch">PAD SUSTAIN:${STATE.padLatch?'ON':'OFF'}</button><button class="btn tiny ${STATE.padExclusive?'on':''}" id="pad-exclusive">EXCLUSIVE:${STATE.padExclusive?'ON':'OFF'}</button><button class="btn tiny warn" id="pad-stop-all">STOP ALL PADS</button></div>
-      <div style="font-size:11px;color:var(--dim);line-height:1.35">Right-click a pad slot to arm it. Arm Pad Rec waits on standby; your first key starts unquantized capture. Ctrl-click a slot or use Save Lit to Pad for manual shape capture.</div>
-    </details>
-    <details class="collap" open><summary>Mod wheel / pitch bend</summary>
-      <div class="ctrl-row"><label>Shortcuts</label><div style="color:var(--text)"><span class="kbd-cap">A</span> down • <span class="kbd-cap">'</span> up</div><span class="read" id="mod-read">0.00 st</span></div>
-      <div style="height:8px;border:1px solid var(--stroke);background:#000;overflow:hidden"><div id="mod-meter-fill" style="height:100%;background:linear-gradient(90deg,var(--neon2),var(--neon3));transform-origin:left center;transform:scaleX(0)"></div></div>
-      ${rangeRow('bend-range','Bend range',1,12,STATE.pitch.range,1,'st')}
-      ${rangeRow('bend-glide','Glide',.02,.75,STATE.pitch.glide,.01,'s')}
-    </details>
-    <details class="collap"><summary>Visualizer controls</summary>
-      <div class="loop-row"><button class="btn viz" id="viz-open">OPEN VISUALIZER</button><button class="btn gold" id="viz-rand">RANDOMIZE</button><button class="btn" id="viz-view">NEXT VIEW</button></div>
-      ${rangeRow('viz-sens','Sensitivity',.2,3,STATE.viz.sensitivity,.01,'x')}
-      ${rangeRow('viz-abun','Abundance',.05,1,STATE.viz.abundance,.01,'')}
-      ${rangeRow('viz-motion','Motion',.05,1.4,STATE.viz.motion,.01,'')}
-      ${rangeRow('viz-color','Color drift',0,1,STATE.viz.color,.01,'')}
-      ${rangeRow('viz-depth','Depth',.05,1,STATE.viz.depth,.01,'')}
-    </details>
-  </div>`;
-  bindRange(body,'lay-top',v=>{STATE.layout.topPad=v;applyLayoutState()},v=>v+'px');
-  bindRange(body,'lay-piano',v=>{STATE.layout.pianoHeight=v;applyLayoutState()},v=>v+'px');
-  bindRange(body,'lay-black',v=>{STATE.layout.blackHeight=v;applyLayoutState()},v=>v+'%');
-  bindRange(body,'lay-label',v=>{STATE.layout.labelScale=v;applyLayoutState()},v=>v.toFixed(2)+'x');
-  body.querySelector('#lay-safe').onclick=sanitizeWindows;
-  body.querySelector('#pad-rec').onclick=()=>armPadRecord(STATE.slotIdx);
-  body.querySelector('#pad-stop-rec').onclick=finishPadRecord;
-  body.querySelector('#pad-cap').onclick=()=>captureShapeToSlot(STATE.slotIdx);
-  body.querySelector('#pad-latch').onclick=()=>{STATE.padLatch=!STATE.padLatch;buildPerformanceWindow();buildSlotsWindow()};
-  body.querySelector('#pad-exclusive').onclick=()=>{STATE.padExclusive=!STATE.padExclusive;buildPerformanceWindow()};
-  body.querySelector('#pad-stop-all').onclick=()=>stopAllPadGroups(120);
-  bindRange(body,'bend-range',v=>{STATE.pitch.range=v;setPitchBend(0)},v=>v+'st');
-  bindRange(body,'bend-glide',v=>{STATE.pitch.glide=v},v=>v.toFixed(2)+'s');
-  body.querySelector('#viz-open').onclick=()=>toggleVisualizer(true,false);
-  body.querySelector('#viz-rand').onclick=randomizeVisualizer;
-  body.querySelector('#viz-view').onclick=nextVizView;
-  bindRange(body,'viz-sens',v=>{STATE.viz.sensitivity=v},v=>v.toFixed(2)+'x');
-  bindRange(body,'viz-abun',v=>{STATE.viz.abundance=v},v=>v.toFixed(2));
-  bindRange(body,'viz-motion',v=>{STATE.viz.motion=v},v=>v.toFixed(2));
-  bindRange(body,'viz-color',v=>{STATE.viz.color=v},v=>v.toFixed(2));
-  bindRange(body,'viz-depth',v=>{STATE.viz.depth=v},v=>v.toFixed(2));
-  updateModMeter();
-}
-function rangeRow(id,label,min,max,val,step,suf){return `<div class="ctrl-row"><label>${label}</label><input id="${id}" type="range" min="${min}" max="${max}" step="${step}" value="${val}"><span class="read" data-read="${id}">${val}${suf}</span></div>`}
-function bindRange(root,id,fn,fmt){const el=root.querySelector('#'+id), rd=root.querySelector(`[data-read="${id}"]`);if(!el)return;el.oninput=e=>{const v=parseFloat(e.target.value);if(rd)rd.textContent=fmt?fmt(v):v;fn(v)}}
-
-/* Override slots with phrase/manual pad support */
-function buildSlotsWindow(){
-  const w=WIN.slots;if(!w)return;
-  const body=w.el.querySelector('.win-body');
-  const rec=STATE.padRecord;
-  body.innerHTML=`<div class="loop-row" style="padding:4px"><button class="btn tiny gold" id="slots-arm-rec">ARM REC</button><button class="btn tiny warn" id="slots-stop-rec">STOP/SAVE</button><button class="btn tiny" id="slots-capture">CAPTURE SHAPE</button><button class="btn tiny ${STATE.padLatch?'on':''}" id="slots-latch">SUSTAIN</button></div><div class="slot-grid" id="slot-grid-inner"></div><div style="padding:4px 7px;font-family:VT323;font-size:11px;color:var(--dim);border-top:1px solid var(--stroke)">CLICK: trigger/toggle pad • SHIFT-CLICK: clear • RIGHT-CLICK: arm pad • CTRL-CLICK: capture illuminated shape • keys 1-0 trigger pads.</div>`;
-  body.querySelector('#slots-arm-rec').onclick=()=>armPadRecord(STATE.slotIdx);
-  body.querySelector('#slots-stop-rec').onclick=finishPadRecord;
-  body.querySelector('#slots-capture').onclick=()=>captureShapeToSlot(STATE.slotIdx);
-  body.querySelector('#slots-latch').onclick=()=>{STATE.padLatch=!STATE.padLatch;buildSlotsWindow();buildPerformanceWindow()};
-  const grid=body.querySelector('#slot-grid-inner');
-  for(let i=0;i<10;i++){
-    const s=STATE.slots[i];const held=PAD_GROUPS.has(i);const isRec=(rec.state!=='idle'&&rec.slotIdx===i);
-    const el=document.createElement('div');el.className='slot'+(i===STATE.slotIdx?' armed':'')+(s?' active':'')+(s?.kind==='phrase'?' phrase':'')+(held?' pad-held':'')+(isRec?' rec-target':'');
-    const num=i+1===10?0:i+1;const typ=s?.kind==='phrase'?'PHR':(s?'SHP':'EMPTY');
-    el.innerHTML=`<span class="slot-num">${num}</span><span class="${s?'slot-name':'slot-empty'}">${s?s.name:'—'}</span><div class="pad-mini">${typ}${isRec?' • REC':''}</div>`;
-    el.addEventListener('click',e=>{
-      if(e.shiftKey){stopPadGroup(i,80);STATE.slots[i]=null;buildSlotsWindow();toast(`Pad ${i+1} cleared`);return}
-      if(e.ctrlKey||e.metaKey){captureShapeToSlot(i);return}
-      if(s){triggerSlot(i)}else{STATE.slotIdx=i;buildSlotsWindow();toast(`Armed empty pad ${i+1}`)}
-    });
-    el.addEventListener('contextmenu',e=>{e.preventDefault();STATE.slotIdx=i;buildSlotsWindow();toast(`Armed pad ${i+1}`)});
-    grid.appendChild(el);
-  }
-}
-
-/* ===== VISUALIZER ===== */
-let vizRAF=null,vizPulse=[];const VIZ_NAMES=['Sonoran Desert Dream','Cosmos Sparkle Field','Mirror Prism Dimension','Flying Through Clouds','16/32 Bit Reality Scape','Portal Bloom','Mandala Current','Light Beam Cathedral','Glitter Mist Lagoon','Neon Canyon Skyline'];
-function toggleVisualizer(on=true,performance=false){
-  if(!ctx)initAudio();
-  STATE.viz.active=on;STATE.viz.performance=!!performance;
-  const st=$('#viz-stage');st.classList.toggle('active',on);st.classList.toggle('performance',!!performance);document.body.classList.toggle('viz-performance',on&&performance);
-  $('#btn-viz')?.classList.toggle('on',on);$('#btn-performance')?.classList.toggle('on',on&&performance);
-  if(on){resizeViz();startViz();try{st.requestFullscreen?.()}catch{}}else{document.body.classList.remove('viz-performance');}
-}
-function resizeViz(){const c=$('#viz-canvas');if(!c)return;const dpr=Math.min(2,window.devicePixelRatio||1);c.width=Math.floor(innerWidth*dpr);c.height=Math.floor(innerHeight*dpr);c.getContext('2d').setTransform(dpr,0,0,dpr,0,0)}
-window.addEventListener('resize',resizeViz);
-$('#viz-return')?.addEventListener('click',()=>toggleVisualizer(false,false));
-function pulseViz(midi,vel=.8){vizPulse.push({midi,vel,t:performance.now(),life:1000});if(vizPulse.length>80)vizPulse.shift()}
-function randomizeVisualizer(){
-  STATE.viz.mode=Math.floor(Math.random()*10);STATE.viz.sensitivity=+(0.6+Math.random()*2.2).toFixed(2);STATE.viz.abundance=+(0.2+Math.random()*0.8).toFixed(2);STATE.viz.motion=+(0.15+Math.random()*1.15).toFixed(2);STATE.viz.color=Math.random();STATE.viz.depth=+(0.25+Math.random()*0.75).toFixed(2);STATE.viz.zoom=+(0.75+Math.random()*1.8).toFixed(2);STATE.viz.panX=(Math.random()-.5)*240;STATE.viz.panY=(Math.random()-.5)*160;buildPerformanceWindow();toast('Visualizer randomized');
-}
-function nextVizView(){
-  const views=[{zoom:1,panX:0,panY:0},{zoom:1.35,panX:-130,panY:45},{zoom:.82,panX:0,panY:-100},{zoom:1.65,panX:120,panY:-30},{zoom:1.1,panX:0,panY:110}];
-  STATE.viz.viewIdx=(STATE.viz.viewIdx+1)%views.length;Object.assign(STATE.viz,views[STATE.viz.viewIdx]);
-}
-function audioLevel(){
-  if(!analyser)return 0;const arr=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(arr);let sum=0;for(let i=0;i<arr.length;i++)sum+=arr[i];return (sum/arr.length/255)*STATE.viz.sensitivity;
-}
-function startViz(){if(vizRAF)return;const c=$('#viz-canvas'),g=c.getContext('2d');let t0=performance.now();function tick(now){vizRAF=requestAnimationFrame(tick);drawViz(g,innerWidth,innerHeight,(now-t0)/1000,audioLevel());}tick(t0)}
-function drawViz(g,w,h,t,lvl){
-  const v=STATE.viz;const mode=v.mode%10;g.save();g.globalCompositeOperation='source-over';g.fillStyle='rgba(0,0,0,.18)';g.fillRect(0,0,w,h);g.translate(w/2+v.panX,h/2+v.panY);g.scale(v.zoom,v.zoom);
-  const hue=(t*18+v.color*260+mode*31)%360;const pulse=1+lvl*1.8;const count=Math.floor(55+v.abundance*220);
-  drawBackdrop(g,w,h,mode,hue,t,lvl);
-  g.globalCompositeOperation='lighter';
-  for(let i=0;i<count;i++){
-    const a=i*2.399+t*(.12+v.motion*.5);const rad=(i/count)*(Math.min(w,h)*.58)*(0.35+v.depth)+Math.sin(t+i)*18*lvl;
-    let x=Math.cos(a)*rad,y=Math.sin(a*(mode%3+1))*rad*.55;
-    if(mode===3){x=((i*47+t*140*v.motion)%(w*1.4))-w*.7;y=Math.sin(i*.4+t*2)*90+(i%9)*28-h*.15}
-    if(mode===4){x=Math.round(x/16)*16;y=Math.round(y/16)*16}
-    if(mode===0){y+=Math.abs(x)*.11+80*Math.sin(i+t*.7)}
-    const sz=(1.2+(i%7)*.55+lvl*8)*(mode===4?1.7:1);
-    g.fillStyle=`hsla(${(hue+i*1.8)%360},100%,${58+lvl*28}%,${.22+v.abundance*.28})`;
-    if(mode===6){g.rotate(0.0005);g.strokeStyle=g.fillStyle;g.lineWidth=1+lvl*4;g.beginPath();g.arc(0,0,rad*.65,0,Math.PI*2);g.stroke();}
-    else if(mode===7){g.strokeStyle=g.fillStyle;g.lineWidth=1+lvl*5;g.beginPath();g.moveTo(0,0);g.lineTo(x,y);g.stroke();}
-    else{g.beginPath();g.arc(x,y,sz,0,Math.PI*2);g.fill();}
-  }
-  const now=performance.now();vizPulse=vizPulse.filter(p=>now-p.t<p.life);for(const p of vizPulse){const age=(now-p.t)/p.life;const n=(p.midi%12)/12*Math.PI*2;const rr=(1-age)*260+70;g.strokeStyle=`hsla(${(hue+p.midi*7)%360},100%,70%,${1-age})`;g.lineWidth=2+p.vel*8;g.beginPath();g.arc(Math.cos(n)*rr,Math.sin(n)*rr,20+age*180,0,Math.PI*2);g.stroke();}
-  g.restore();const hud=$('#viz-hud');if(hud)hud.innerHTML=`<b>${VIZ_NAMES[mode]}</b> • sens ${v.sensitivity.toFixed(2)} • zoom ${v.zoom.toFixed(2)} • level ${lvl.toFixed(2)}`;
-}
-function drawBackdrop(g,w,h,mode,hue,t,lvl){
-  const grd=g.createRadialGradient(0,0,20,0,0,Math.max(w,h));grd.addColorStop(0,`hsla(${hue},100%,12%,.9)`);grd.addColorStop(1,'rgba(0,0,0,.95)');g.fillStyle=grd;g.fillRect(-w,-h,w*2,h*2);
-  g.strokeStyle=`hsla(${hue+80},100%,60%,${.18+lvl*.25})`;g.lineWidth=1;
-  if(mode===0||mode===9){for(let i=-12;i<=12;i++){g.beginPath();g.moveTo(i*80,-h*.1+Math.sin(i+t)*30);g.lineTo(i*160,h*.55);g.stroke()}g.fillStyle=`hsla(${hue+35},80%,35%,.35)`;for(let i=0;i<18;i++){const x=-w*.6+i*80;g.beginPath();g.moveTo(x,h*.35);g.lineTo(x+30,h*.15-Math.sin(t+i)*40);g.lineTo(x+70,h*.35);g.fill();}}
-  else if(mode===1){for(let i=0;i<120;i++){g.fillStyle=`hsla(${hue+i},100%,80%,${.15+lvl*.35})`;g.fillRect(((i*97+t*20)%w)-w/2,((i*57)%h)-h/2,1.5,1.5)}}
-  else if(mode===2){for(let i=0;i<18;i++){g.rotate(Math.PI/18);g.strokeRect(-w*.18-i*9,-h*.18-i*9,w*.36+i*18,h*.36+i*18)}}
-  else if(mode===3||mode===8){for(let i=0;i<18;i++){g.beginPath();g.ellipse(Math.sin(t+i)*220,(i-9)*38,260+lvl*90,28+lvl*45,Math.sin(t*.2+i),0,Math.PI*2);g.stroke()}}
-  else if(mode===5){for(let i=0;i<7;i++){g.beginPath();g.arc(0,0,80+i*55+Math.sin(t+i)*20,0,Math.PI*2);g.stroke()}}
-}
 
 /* ===== INIT (called by launch button) ===== */
 function initApp(){
@@ -2085,12 +2092,12 @@ function initApp(){
   makeWindow('sound','SOUND DESIGN','',{x:300,y:250,w:380,h:300});
   makeWindow('chords','CHORD BANK','',{x:Math.max(300,dw-360),y:10,w:340,h:Math.min(440,dh-30)});
   makeWindow('slots','CHORD SLOTS','',{x:Math.max(300,dw-360),y:Math.min(450,dh-220),w:340,h:200});
-  makeWindow('sampler','SAMPLER','',{x:120,y:Math.min(200,dh-260),w:420,h:340});
-  makeWindow('loop','LOOP RECORDER','',{x:Math.max(20,dw-700),y:Math.min(120,dh-280),w:300,h:300});
-  makeWindow('performance','PERFORMANCE CTRL','',{x:20,y:Math.min(120,dh-360),w:360,h:360});
+  makeWindow('sampler','PADS / SAMPLER','',{x:80,y:40,w:460,h:Math.min(440,dh-50)});
+  makeWindow('loop','LOOP RECORDER','',{x:Math.max(20,dw-700),y:40,w:300,h:300});
+  makeWindow('modwheel','MOD WHEEL','',{x:Math.max(540,dw-300),y:Math.min(280,dh-280),w:240,h:260});
   // Build window contents
   buildBankWindow();buildFXWindow();buildSoundDesignWindow();buildChordBankWindow();
-  buildSlotsWindow();buildSamplerWindow();buildLoopWindow();buildPerformanceWindow();applyLayoutState();
+  buildSlotsWindow();buildPadsWindow();buildLoopWindow();buildModWheelWindow();
   // Build launcher buttons
   const lb=$('#launcher-bar');
   const items=[
@@ -2099,9 +2106,9 @@ function initApp(){
     {id:'sound',label:'SOUND DESIGN'},
     {id:'chords',label:'CHORD BANK'},
     {id:'slots',label:'SLOTS'},
-    {id:'sampler',label:'SAMPLER'},
+    {id:'sampler',label:'PADS / SAMPLER'},
     {id:'loop',label:'LOOP / EXPORT'},
-    {id:'performance',label:'PERFORMANCE'},
+    {id:'modwheel',label:'MOD WHEEL'}
   ];
   for(const it of items){
     const b=document.createElement('button');b.className='launcher-btn';b.dataset.w=it.id;b.textContent=it.label;
@@ -2112,23 +2119,650 @@ function initApp(){
   toggleWindow('chords',true);
   toggleWindow('slots',true);
   toggleWindow('fx',true);
-  toggleWindow('performance',true);
+  toggleWindow('modwheel',true);
   // Apply FX baseline
   applyFXState();
   // Master vol baseline
   master.gain.value=parseFloat($('#master-vol').value);
   $('#master-val').textContent=Math.round(master.gain.value*100);
+  // Splitters
+  setupSplitters();
+  // Visualizer init
+  setupVisualizer();
   updateTape();
+  // Mod wheel pulse loop
+  modWheelLoop();
   // Re-flow on resize
   window.addEventListener('resize',()=>{
     Object.entries(WIN).forEach(([id,w])=>{
       const r=w.el.getBoundingClientRect();
       const dr=$('#desktop').getBoundingClientRect();
       if(r.left>dr.right-60)w.el.style.left=(dr.width-Math.min(w.el.offsetWidth,dr.width-20)-10)+'px';
-      if(r.top>dr.bottom-60)w.el.style.top=Math.max(4,(dr.height-Math.min(w.el.offsetHeight,Math.max(40,dr.height-30))-10))+'px';
+      if(r.top>dr.bottom-60)w.el.style.top=(dr.height-Math.min(w.el.offsetHeight,dr.height-30)-10)+'px';
     });
+    if(viz3d&&viz3d.renderer){
+      const c=$('#viz-canvas');viz3d.renderer.setSize(c.clientWidth,c.clientHeight,false);
+      viz3d.camera.aspect=c.clientWidth/c.clientHeight;viz3d.camera.updateProjectionMatrix();
+    }
   });
 }
+
+/* =====================================================================
+   ===== MOD WHEEL + SPLITTERS + FULLSCREEN + VISUALIZER + PERF MODE =====
+   ===================================================================== */
+
+/* ===== MOD WHEEL ===== */
+function modWheelKey(direction,down){
+  // direction: -1 down, +1 up. down: keydown vs keyup
+  STATE.modWheel.target=down?direction:0;
+}
+function modWheelLoop(){
+  const mw=STATE.modWheel;
+  const cur=mw.active;
+  const tgt=mw.target;
+  const range=tgt>0?mw.rangeUp:mw.rangeDown;
+  const desired=tgt*range;
+  // smooth glide using exponential approach — 'glide' tunes the time constant
+  const k=Math.max(0.005,Math.min(0.5,mw.glide));
+  const next=cur+(desired-cur)*k;
+  if(Math.abs(next-cur)>0.0001){
+    mw.active=next;
+    // apply to all currently active synth voices (manual + pad voices)
+    const cents=next*100;
+    const apply=v=>{try{
+      for(const o of v.oscs){
+        // we previously initialized osc.detune to (orig + initial mwCents). Just reset to current cents on top of original 'd'
+        // simplify: target current cents (assumes osc.detune was 0 originally and any offset is mw)
+        o.osc.detune.setTargetAtTime(cents+(o.osc._origDetune||0),ctx.currentTime,0.04);
+      }
+    }catch{}};
+    if(STATE.activeNotes)for(const [,v] of STATE.activeNotes)apply(v);
+    for(const [,vs] of STATE.padPlayingVoices)for(const v of vs)apply(v);
+    for(const [,seq] of STATE.padPlayingSequences)seq.voices.forEach(apply);
+    // update meter UI
+    const meter=$('#mw-meter');if(meter)meter.textContent=(next>=0?'+':'')+next.toFixed(2)+' st';
+    const thumb=$('#mw-thumb');if(thumb){const trk=$('#mw-track');if(trk){const h=trk.clientHeight-24;const ratio=(next+mw.rangeDown)/(mw.rangeUp+mw.rangeDown);thumb.style.top=clamp(h-ratio*h,0,h)+'px'}}
+  }
+  requestAnimationFrame(modWheelLoop);
+}
+function buildModWheelWindow(){
+  const w=WIN.modwheel;if(!w)return;
+  const body=w.el.querySelector('.win-body');
+  body.innerHTML=`
+    <div class="mw-vert">
+      <div class="mw-meter" id="mw-meter">+0.00 st</div>
+      <div class="mw-track" id="mw-track"><div class="mw-thumb" id="mw-thumb"></div></div>
+      <div style="font-family:VT323;font-size:11px;color:var(--dim);text-align:center;letter-spacing:.05em">[\`] BEND DOWN · ['] BEND UP</div>
+      <div class="mw-row"><label>UP RNG</label><input type="range" id="mw-rng-up" min="1" max="12" step="1" value="${STATE.modWheel.rangeUp}"><span class="v" id="mw-rng-up-v">${STATE.modWheel.rangeUp}</span></div>
+      <div class="mw-row"><label>DN RNG</label><input type="range" id="mw-rng-dn" min="1" max="12" step="1" value="${STATE.modWheel.rangeDown}"><span class="v" id="mw-rng-dn-v">${STATE.modWheel.rangeDown}</span></div>
+      <div class="mw-row"><label>GLIDE</label><input type="range" id="mw-glide" min="0.005" max="0.4" step="0.005" value="${STATE.modWheel.glide}"><span class="v" id="mw-glide-v">${(STATE.modWheel.glide*100).toFixed(0)}%</span></div>
+      <div style="font-family:VT323;font-size:10px;color:var(--dim);text-align:center;line-height:1.4;margin-top:6px">Default ±2 semitones · Right-click thumb to recenter</div>
+    </div>`;
+  body.querySelector('#mw-rng-up').oninput=e=>{STATE.modWheel.rangeUp=+e.target.value;body.querySelector('#mw-rng-up-v').textContent=e.target.value};
+  body.querySelector('#mw-rng-dn').oninput=e=>{STATE.modWheel.rangeDown=+e.target.value;body.querySelector('#mw-rng-dn-v').textContent=e.target.value};
+  body.querySelector('#mw-glide').oninput=e=>{STATE.modWheel.glide=+e.target.value;body.querySelector('#mw-glide-v').textContent=Math.round(e.target.value*100)+'%'};
+  // drag thumb
+  const track=body.querySelector('#mw-track');
+  const thumb=body.querySelector('#mw-thumb');
+  let mwd=false;
+  thumb.addEventListener('pointerdown',e=>{mwd=true;thumb.setPointerCapture(e.pointerId)});
+  thumb.addEventListener('pointermove',e=>{
+    if(!mwd)return;
+    const r=track.getBoundingClientRect();const ratio=clamp((e.clientY-r.top)/r.height,0,1);
+    const semis=(1-ratio)*(STATE.modWheel.rangeUp+STATE.modWheel.rangeDown)-STATE.modWheel.rangeDown;
+    STATE.modWheel.target=semis/(semis>=0?STATE.modWheel.rangeUp:STATE.modWheel.rangeDown);
+  });
+  thumb.addEventListener('pointerup',e=>{mwd=false;STATE.modWheel.target=0;try{thumb.releasePointerCapture(e.pointerId)}catch{}});
+  thumb.addEventListener('contextmenu',e=>{e.preventDefault();STATE.modWheel.target=0});
+}
+
+/* ===== SPLITTERS ===== */
+function setupSplitters(){
+  const top=$('#split-top');const bot=$('#split-bot');
+  let topbarH=$('header.topbar').offsetHeight;
+  let pianoH=$('#piano-host').offsetHeight;
+  // top splitter resizes topbar (via min-height)
+  let dragT=false,sy=0,sH=0;
+  top.addEventListener('pointerdown',e=>{dragT=true;sy=e.clientY;sH=$('header.topbar').offsetHeight;top.setPointerCapture(e.pointerId)});
+  top.addEventListener('pointermove',e=>{if(!dragT)return;
+    const nh=clamp(sH+(e.clientY-sy),32,window.innerHeight*0.4);
+    $('header.topbar').style.minHeight=nh+'px';$('header.topbar').style.height=nh+'px';
+    $('header.topbar').style.overflow='auto';
+  });
+  top.addEventListener('pointerup',e=>{dragT=false;try{top.releasePointerCapture(e.pointerId)}catch{}});
+  // bottom splitter resizes piano-host
+  let dragB=false,sy2=0,sH2=0;
+  bot.addEventListener('pointerdown',e=>{dragB=true;sy2=e.clientY;sH2=$('#piano-host').offsetHeight;bot.setPointerCapture(e.pointerId)});
+  bot.addEventListener('pointermove',e=>{if(!dragB)return;
+    // dragging UP increases piano height
+    const nh=clamp(sH2-(e.clientY-sy2),60,window.innerHeight*0.7);
+    $('#piano-host').style.height=nh+'px';
+    $('#piano-host').classList.remove('collapsed');
+  });
+  bot.addEventListener('pointerup',e=>{dragB=false;try{bot.releasePointerCapture(e.pointerId)}catch{}});
+}
+
+/* ===== FULLSCREEN ===== */
+$('#btn-fullscreen').addEventListener('click',()=>{
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+});
+
+/* ===== PERFORMANCE MODE ===== */
+$('#btn-perf').addEventListener('click',()=>{
+  if(!STATE.viz.active)toggleVisualizer(true);
+  document.body.classList.add('performance');
+  // attempt fullscreen too
+  document.documentElement.requestFullscreen?.().catch(()=>{});
+  toast('PERFORMANCE MODE — bottom-right circle to exit');
+});
+$('#perf-return').addEventListener('click',()=>{
+  document.body.classList.remove('performance');
+  document.exitFullscreen?.().catch(()=>{});
+  toast('Performance mode off');
+});
+
+/* ===== VISUALIZER (Three.js) ===== */
+let viz3d=null;
+
+function toggleVisualizer(on){
+  const want=on===undefined?!STATE.viz.active:on;
+  STATE.viz.active=want;
+  $('#visualizer').classList.toggle('active',want);
+  if(want){
+    if(!viz3d)setupVisualizer();
+    if(!STATE.viz.raf)vizLoop();
+    // ensure analyser is hooked
+    if(!ctx)initAudio();
+  } else {
+    if(STATE.viz.raf){cancelAnimationFrame(STATE.viz.raf);STATE.viz.raf=null}
+  }
+}
+$('#btn-vis').addEventListener('click',()=>toggleVisualizer());
+$('#viz-close').addEventListener('click',()=>toggleVisualizer(false));
+$('#viz-rand').addEventListener('click',vizRandomize);
+$('#viz-toggle-controls').addEventListener('click',()=>{
+  $('#viz-controls').classList.toggle('collapsed');
+});
+
+const VIZ_SCENES=[
+  {id:'cosmos',name:'COSMOS',desc:'starfield + nebulae'},
+  {id:'mirror',name:'MIRROR DIM',desc:'recursive prisms'},
+  {id:'clouds',name:'CLOUDSCAPE',desc:'volumetric clouds'},
+  {id:'bits',name:'16-BIT REALM',desc:'pixel cube field'},
+  {id:'desert',name:'AZ DESERT',desc:'mesa terrain'},
+  {id:'mandala',name:'MANDALA',desc:'sacred geometry'},
+  {id:'aurora',name:'AURORA',desc:'particle ribbons'},
+  {id:'crystal',name:'CRYSTAL CAVE',desc:'gem refractions'},
+  {id:'beams',name:'LIGHT BEAMS',desc:'volumetric rays'},
+  {id:'vapor',name:'VAPOR FIELD',desc:'glittery mist'}
+];
+
+function buildVizControls(){
+  const c=$('#viz-controls');
+  let html='<div class="viz-h2">▣ SCENE</div><div class="scene-grid">';
+  for(const s of VIZ_SCENES)html+=`<button class="scene-btn ${s.id===STATE.viz.scene?'active':''}" data-s="${s.id}" title="${s.desc}">${s.name}</button>`;
+  html+=`</div>
+    <div class="viz-h2">▣ FIELD</div>
+    <div class="viz-row"><label>SENSITIVITY</label><input type="range" id="vc-sens" min="0.2" max="3" step="0.05" value="${STATE.viz.sensitivity}"><span class="v" id="vc-sens-v">${STATE.viz.sensitivity.toFixed(2)}</span></div>
+    <div class="viz-row"><label>PARTICLES</label><input type="range" id="vc-p" min="0.3" max="2.5" step="0.05" value="${STATE.viz.particleCount}"><span class="v" id="vc-p-v">${STATE.viz.particleCount.toFixed(2)}</span></div>
+    <div class="viz-row"><label>MOTION</label><input type="range" id="vc-mot" min="0" max="3" step="0.05" value="${STATE.viz.motion}"><span class="v" id="vc-mot-v">${STATE.viz.motion.toFixed(2)}</span></div>
+    <div class="viz-row"><label>HUE SHIFT</label><input type="range" id="vc-h" min="0" max="360" step="1" value="${STATE.viz.colorShift}"><span class="v" id="vc-h-v">${STATE.viz.colorShift|0}°</span></div>
+    <div class="viz-row"><label>BLOOM</label><input type="range" id="vc-bl" min="0" max="2.5" step="0.05" value="${STATE.viz.bloom}"><span class="v" id="vc-bl-v">${STATE.viz.bloom.toFixed(2)}</span></div>
+    <div class="viz-row"><label>FOG</label><input type="range" id="vc-fog" min="0" max="1.5" step="0.02" value="${STATE.viz.fog}"><span class="v" id="vc-fog-v">${STATE.viz.fog.toFixed(2)}</span></div>
+    <div class="viz-h2">▣ CAMERA</div>
+    <div class="viz-row"><label>ZOOM</label><input type="range" id="vc-zoom" min="6" max="80" step="0.5" value="${STATE.viz.cam.distance}"><span class="v" id="vc-zoom-v">${STATE.viz.cam.distance.toFixed(0)}</span></div>
+    <div style="font-family:VT323;font-size:11px;color:var(--dim);line-height:1.5;padding:5px 0">Q/E yaw · W/S pitch · A/D strafe · Z/X zoom · 1-5 presets · R randomize</div>
+    <button class="viz-btn gold" style="width:100%;margin-top:5px" id="vc-rand">⟲ RANDOMIZE</button>`;
+  c.innerHTML=html;
+  c.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{vizSetScene(b.dataset.s);buildVizControls()});
+  const wire=(id,key,disp,scale=1)=>{const el=c.querySelector('#'+id);const v=c.querySelector('#'+id+'-v');if(!el)return;
+    el.oninput=e=>{const val=+e.target.value;
+      if(key.includes('.')){const [a,b]=key.split('.');STATE.viz[a][b]=val}else STATE.viz[key]=val;
+      v.textContent=disp(val);
+      if(viz3d)viz3d.applySettings();
+    }};
+  wire('vc-sens','sensitivity',v=>v.toFixed(2));
+  wire('vc-p','particleCount',v=>v.toFixed(2));
+  wire('vc-mot','motion',v=>v.toFixed(2));
+  wire('vc-h','colorShift',v=>v|0+'°');
+  wire('vc-bl','bloom',v=>v.toFixed(2));
+  wire('vc-fog','fog',v=>v.toFixed(2));
+  wire('vc-zoom','cam.distance',v=>v.toFixed(0));
+  c.querySelector('#vc-rand').onclick=vizRandomize;
+}
+
+function setupVisualizer(){
+  buildVizControls();
+  const canvas=$('#viz-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+  renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  const camera=new THREE.PerspectiveCamera(60,canvas.clientWidth/canvas.clientHeight,0.1,2000);
+  camera.position.set(0,0,STATE.viz.cam.distance);
+  const scene=new THREE.Scene();
+  scene.fog=new THREE.FogExp2(0x000000,0.012);
+  viz3d={renderer,camera,scene,objs:[],uniforms:{time:{value:0}},
+    applySettings(){
+      // updated dynamically; per-scene logic uses STATE.viz directly
+      scene.fog.density=0.005+STATE.viz.fog*0.04;
+    },
+    setScene(id){vizSetScene(id)}
+  };
+  vizSetScene(STATE.viz.scene);
+}
+
+/* ----- scene management ----- */
+function clearViz(){
+  for(const o of viz3d.objs){
+    viz3d.scene.remove(o);
+    if(o.geometry)o.geometry.dispose();
+    if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose()}
+  }
+  viz3d.objs=[];
+}
+
+function vizSetScene(id){
+  STATE.viz.scene=id;
+  if(!viz3d)return;
+  clearViz();
+  const builder={
+    cosmos:vizSceneCosmos,mirror:vizSceneMirror,clouds:vizSceneClouds,bits:vizSceneBits,
+    desert:vizSceneDesert,mandala:vizSceneMandala,aurora:vizSceneAurora,
+    crystal:vizSceneCrystal,beams:vizSceneBeams,vapor:vizSceneVapor
+  }[id]||vizSceneCosmos;
+  builder();
+  // refresh button highlight
+  $$('.scene-btn').forEach(b=>b.classList.toggle('active',b.dataset.s===id));
+  toast('Scene: '+id.toUpperCase());
+}
+
+const VIZ_PALETTES=[
+  [0x00ffd5,0xff00aa,0xffe600],
+  [0xff66cc,0x66ffcc,0xffaa44],
+  [0x88aaff,0xffaaff,0xffffaa],
+  [0xff5566,0x55ffaa,0x99aaff],
+  [0xffe066,0xff8855,0xaa66ff],
+  [0x66ddff,0xff66dd,0x66ff99]
+];
+function paletteColor(){
+  const palIdx=Math.floor(STATE.viz.colorShift/60)%VIZ_PALETTES.length;
+  return VIZ_PALETTES[palIdx];
+}
+
+function rand(a,b){return a+Math.random()*(b-a)}
+
+/* ----- 1. COSMOS ----- */
+function vizSceneCosmos(){
+  const N=Math.floor(2400*STATE.viz.particleCount);
+  const g=new THREE.BufferGeometry();
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3);
+  const pal=paletteColor().map(c=>new THREE.Color(c));
+  for(let i=0;i<N;i++){
+    const r=rand(20,200);const th=rand(0,Math.PI*2);const ph=Math.acos(rand(-1,1));
+    pos[i*3]=r*Math.sin(ph)*Math.cos(th);
+    pos[i*3+1]=r*Math.sin(ph)*Math.sin(th);
+    pos[i*3+2]=r*Math.cos(ph);
+    const c=pal[i%pal.length];col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+  }
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const m=new THREE.PointsMaterial({size:0.6,vertexColors:true,sizeAttenuation:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false});
+  const stars=new THREE.Points(g,m);viz3d.scene.add(stars);viz3d.objs.push(stars);stars.userData.kind='stars';
+  // Nebula clouds — large transparent spheres
+  for(let i=0;i<5;i++){
+    const sg=new THREE.SphereGeometry(rand(15,40),16,12);
+    const sm=new THREE.MeshBasicMaterial({color:pal[i%pal.length],transparent:true,opacity:0.06,blending:THREE.AdditiveBlending,depthWrite:false});
+    const sph=new THREE.Mesh(sg,sm);
+    sph.position.set(rand(-80,80),rand(-50,50),rand(-80,80));
+    sph.userData.kind='neb';sph.userData.r=sm.opacity;
+    viz3d.scene.add(sph);viz3d.objs.push(sph);
+  }
+}
+
+/* ----- 2. MIRROR DIMENSION ----- */
+function vizSceneMirror(){
+  const pal=paletteColor();
+  for(let i=0;i<14;i++){
+    const g=new THREE.BoxGeometry(rand(2,5),rand(2,5),rand(2,5));
+    const m=new THREE.MeshBasicMaterial({color:pal[i%pal.length],wireframe:false,transparent:true,opacity:0.8});
+    const cube=new THREE.Mesh(g,m);
+    cube.position.set(rand(-25,25),rand(-25,25),rand(-25,25));
+    cube.userData.kind='mirror';
+    cube.userData.spinX=rand(0.005,0.03);cube.userData.spinY=rand(0.005,0.03);
+    viz3d.scene.add(cube);viz3d.objs.push(cube);
+  }
+  // ground reflective grid
+  const grid=new THREE.GridHelper(120,40,pal[0],pal[1]);
+  grid.position.y=-15;
+  viz3d.scene.add(grid);viz3d.objs.push(grid);
+  const grid2=grid.clone();grid2.position.y=15;grid2.rotation.x=Math.PI;
+  viz3d.scene.add(grid2);viz3d.objs.push(grid2);
+}
+
+/* ----- 3. CLOUDSCAPE ----- */
+function vizSceneClouds(){
+  const N=Math.floor(160*STATE.viz.particleCount);
+  for(let i=0;i<N;i++){
+    const sg=new THREE.SphereGeometry(rand(2,6),8,6);
+    const c=new THREE.Color(0xffffff).offsetHSL((STATE.viz.colorShift/360)+rand(-0.05,0.05),0.4,0);
+    const sm=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:rand(0.04,0.14),blending:THREE.AdditiveBlending,depthWrite:false});
+    const sph=new THREE.Mesh(sg,sm);
+    sph.position.set(rand(-60,60),rand(-15,15),rand(-60,60));
+    sph.userData.kind='cloud';sph.userData.bob=rand(0.005,0.02);sph.userData.phase=rand(0,Math.PI*2);
+    viz3d.scene.add(sph);viz3d.objs.push(sph);
+  }
+  // sun
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(4,24,16),new THREE.MeshBasicMaterial({color:0xffaa44}));
+  sun.position.set(30,15,-40);sun.userData.kind='sun';
+  viz3d.scene.add(sun);viz3d.objs.push(sun);
+}
+
+/* ----- 4. 16-BIT REALM ----- */
+function vizSceneBits(){
+  const N=Math.floor(120*STATE.viz.particleCount);
+  const pal=paletteColor();
+  for(let i=0;i<N;i++){
+    const s=rand(0.6,2.5);
+    const g=new THREE.BoxGeometry(s,s,s);
+    const c=pal[Math.floor(rand(0,pal.length))];
+    const m=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.85});
+    const cube=new THREE.Mesh(g,m);
+    cube.position.set(Math.round(rand(-30,30)),Math.round(rand(-15,15)),Math.round(rand(-30,30)));
+    cube.userData.kind='bit';cube.userData.baseY=cube.position.y;cube.userData.phase=rand(0,Math.PI*2);
+    cube.userData.spin=rand(0.003,0.02);
+    viz3d.scene.add(cube);viz3d.objs.push(cube);
+  }
+}
+
+/* ----- 5. ARIZONA DESERT ----- */
+function vizSceneDesert(){
+  // mesas: stacked boxes
+  for(let i=0;i<10;i++){
+    const w=rand(8,18),d=rand(8,18),h=rand(6,14);
+    const g=new THREE.BoxGeometry(w,h,d);
+    const c=new THREE.Color().setHSL(0.05+rand(-0.02,0.04),0.7,0.35+rand(-0.1,0.1));
+    const m=new THREE.MeshBasicMaterial({color:c});
+    const mesa=new THREE.Mesh(g,m);
+    mesa.position.set(rand(-50,50),h/2-12,rand(-50,50));
+    mesa.userData.kind='mesa';
+    viz3d.scene.add(mesa);viz3d.objs.push(mesa);
+  }
+  // ground
+  const gg=new THREE.PlaneGeometry(300,300);
+  const gm=new THREE.MeshBasicMaterial({color:0xaa6633});
+  const ground=new THREE.Mesh(gg,gm);ground.rotation.x=-Math.PI/2;ground.position.y=-12;
+  viz3d.scene.add(ground);viz3d.objs.push(ground);
+  // sky stars
+  const N=Math.floor(900*STATE.viz.particleCount);
+  const g=new THREE.BufferGeometry();
+  const pos=new Float32Array(N*3);
+  for(let i=0;i<N;i++){
+    pos[i*3]=rand(-150,150);pos[i*3+1]=rand(15,80);pos[i*3+2]=rand(-150,150);
+  }
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const m=new THREE.PointsMaterial({color:0xffeecc,size:0.4,sizeAttenuation:true,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending});
+  const stars=new THREE.Points(g,m);stars.userData.kind='stars';
+  viz3d.scene.add(stars);viz3d.objs.push(stars);
+  // moon
+  const moon=new THREE.Mesh(new THREE.SphereGeometry(3,16,12),new THREE.MeshBasicMaterial({color:0xfff8dc}));
+  moon.position.set(40,40,-60);moon.userData.kind='moon';
+  viz3d.scene.add(moon);viz3d.objs.push(moon);
+}
+
+/* ----- 6. MANDALA ----- */
+function vizSceneMandala(){
+  const pal=paletteColor();
+  for(let layer=0;layer<6;layer++){
+    const N=8+layer*2;
+    for(let i=0;i<N;i++){
+      const a=(i/N)*Math.PI*2;
+      const r=4+layer*3;
+      const sg=new THREE.OctahedronGeometry(0.6,0);
+      const sm=new THREE.MeshBasicMaterial({color:pal[(i+layer)%pal.length],transparent:true,opacity:0.85});
+      const m=new THREE.Mesh(sg,sm);
+      m.position.set(Math.cos(a)*r,0,Math.sin(a)*r);
+      m.userData.kind='mandala';
+      m.userData.layer=layer;m.userData.angle=a;m.userData.radius=r;
+      viz3d.scene.add(m);viz3d.objs.push(m);
+    }
+  }
+  // central portal
+  const pg=new THREE.RingGeometry(0.4,1.2,32);
+  const pm=new THREE.MeshBasicMaterial({color:pal[0],side:THREE.DoubleSide,transparent:true,opacity:0.7,blending:THREE.AdditiveBlending});
+  const portal=new THREE.Mesh(pg,pm);portal.userData.kind='portal';
+  viz3d.scene.add(portal);viz3d.objs.push(portal);
+}
+
+/* ----- 7. AURORA ----- */
+function vizSceneAurora(){
+  const N=Math.floor(2200*STATE.viz.particleCount);
+  const g=new THREE.BufferGeometry();
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3);
+  const pal=paletteColor().map(c=>new THREE.Color(c));
+  for(let i=0;i<N;i++){
+    const x=rand(-40,40);
+    const y=rand(-15,25);
+    const z=rand(-40,10);
+    pos[i*3]=x;pos[i*3+1]=y;pos[i*3+2]=z;
+    const c=pal[i%pal.length];col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+  }
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const m=new THREE.PointsMaterial({size:0.55,vertexColors:true,sizeAttenuation:true,transparent:true,opacity:0.85,blending:THREE.AdditiveBlending,depthWrite:false});
+  const aur=new THREE.Points(g,m);aur.userData.kind='aurora';
+  viz3d.scene.add(aur);viz3d.objs.push(aur);
+}
+
+/* ----- 8. CRYSTAL CAVE ----- */
+function vizSceneCrystal(){
+  const pal=paletteColor();
+  for(let i=0;i<28;i++){
+    const g=new THREE.ConeGeometry(rand(0.6,2),rand(3,9),5);
+    const c=new THREE.Color(pal[i%pal.length]);
+    const m=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.85,wireframe:false});
+    const cone=new THREE.Mesh(g,m);
+    cone.position.set(rand(-20,20),rand(-8,8),rand(-20,20));
+    cone.rotation.set(rand(0,Math.PI),rand(0,Math.PI),rand(0,Math.PI));
+    cone.userData.kind='crystal';cone.userData.basescale=1;
+    viz3d.scene.add(cone);viz3d.objs.push(cone);
+  }
+}
+
+/* ----- 9. LIGHT BEAMS ----- */
+function vizSceneBeams(){
+  const pal=paletteColor();
+  for(let i=0;i<24;i++){
+    const g=new THREE.CylinderGeometry(0.18,0.18,rand(20,60),6);
+    const c=new THREE.Color(pal[i%pal.length]);
+    const m=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.45,blending:THREE.AdditiveBlending,depthWrite:false});
+    const beam=new THREE.Mesh(g,m);
+    beam.position.set(rand(-30,30),rand(-15,15),rand(-30,30));
+    beam.rotation.set(rand(-1,1),rand(-1,1),rand(-1,1));
+    beam.userData.kind='beam';
+    viz3d.scene.add(beam);viz3d.objs.push(beam);
+  }
+}
+
+/* ----- 10. VAPOR FIELD ----- */
+function vizSceneVapor(){
+  const N=Math.floor(3000*STATE.viz.particleCount);
+  const g=new THREE.BufferGeometry();
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3);
+  const pal=paletteColor().map(c=>new THREE.Color(c));
+  for(let i=0;i<N;i++){
+    pos[i*3]=rand(-50,50);pos[i*3+1]=rand(-25,25);pos[i*3+2]=rand(-50,50);
+    const c=pal[i%pal.length];col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+  }
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const m=new THREE.PointsMaterial({size:0.35,vertexColors:true,sizeAttenuation:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false});
+  const v=new THREE.Points(g,m);v.userData.kind='vapor';
+  viz3d.scene.add(v);viz3d.objs.push(v);
+}
+
+/* ----- pulse hook (called from press) ----- */
+function vizPulse(midi,strength=1){
+  STATE.viz.flashes.push({t:performance.now(),midi,s:strength});
+  if(STATE.viz.flashes.length>40)STATE.viz.flashes.shift();
+}
+
+/* ----- camera presets ----- */
+const VIZ_PRESETS=[
+  {yaw:0,pitch:0,distance:25},
+  {yaw:Math.PI*0.5,pitch:0.2,distance:30},
+  {yaw:Math.PI,pitch:-0.3,distance:35},
+  {yaw:Math.PI*1.5,pitch:0.4,distance:18},
+  {yaw:Math.PI*0.25,pitch:0.7,distance:45}
+];
+let presetTransition=null;
+function vizApplyPreset(idx){
+  const p=VIZ_PRESETS[idx];if(!p)return;
+  presetTransition={from:{...STATE.viz.cam},to:p,start:performance.now(),dur:1100};
+}
+
+function vizRandomize(){
+  STATE.viz.scene=VIZ_SCENES[Math.floor(Math.random()*VIZ_SCENES.length)].id;
+  STATE.viz.sensitivity=rand(0.6,2.2);
+  STATE.viz.particleCount=rand(0.6,2);
+  STATE.viz.motion=rand(0.5,2.4);
+  STATE.viz.colorShift=Math.random()*360;
+  STATE.viz.bloom=rand(0.5,2);
+  STATE.viz.fog=rand(0.1,1.0);
+  STATE.viz.cam.distance=rand(15,55);
+  vizSetScene(STATE.viz.scene);
+  buildVizControls();
+  toast('VIZ randomized');
+}
+
+/* ----- main render loop ----- */
+function vizLoop(){
+  if(!STATE.viz.active)return;
+  STATE.viz.raf=requestAnimationFrame(vizLoop);
+  if(!viz3d)return;
+  const t=performance.now()*0.001;
+  // Audio reactivity
+  let bass=0,mid=0,high=0,energy=0;
+  if(analyser){
+    analyser.getByteFrequencyData(analyserData);
+    const N=analyserData.length;
+    for(let i=0;i<N*0.08;i++)bass+=analyserData[i];bass/=(N*0.08*255);
+    for(let i=N*0.08;i<N*0.4;i++)mid+=analyserData[i];mid/=(N*0.32*255);
+    for(let i=N*0.4;i<N;i++)high+=analyserData[i];high/=(N*0.6*255);
+    energy=(bass+mid+high)/3;
+  }
+  const sens=STATE.viz.sensitivity;
+  const motion=STATE.viz.motion;
+  const eb=bass*sens,em=mid*sens,eh=high*sens;
+  // Camera keyboard control
+  const k=STATE.viz.keysDown;const cam=STATE.viz.cam;
+  const sp=0.04*motion;
+  if(k.has('KeyQ'))cam.yaw-=sp;
+  if(k.has('KeyE'))cam.yaw+=sp;
+  if(k.has('KeyW'))cam.pitch+=sp;
+  if(k.has('KeyS'))cam.pitch-=sp;
+  if(k.has('KeyA'))cam.truckX-=0.4*motion;
+  if(k.has('KeyD'))cam.truckX+=0.4*motion;
+  if(k.has('KeyZ'))cam.distance=Math.max(5,cam.distance-0.4*motion);
+  if(k.has('KeyX'))cam.distance=Math.min(120,cam.distance+0.4*motion);
+  cam.pitch=clamp(cam.pitch,-1.4,1.4);
+  // preset transition
+  if(presetTransition){
+    const p=presetTransition;const ratio=clamp((performance.now()-p.start)/p.dur,0,1);
+    const ease=0.5-Math.cos(ratio*Math.PI)/2;
+    cam.yaw=p.from.yaw+(p.to.yaw-p.from.yaw)*ease;
+    cam.pitch=p.from.pitch+(p.to.pitch-p.from.pitch)*ease;
+    cam.distance=p.from.distance+(p.to.distance-p.from.distance)*ease;
+    if(ratio>=1)presetTransition=null;
+  }
+  // place camera
+  const camX=Math.sin(cam.yaw)*Math.cos(cam.pitch)*cam.distance+cam.truckX;
+  const camY=Math.sin(cam.pitch)*cam.distance+cam.truckY;
+  const camZ=Math.cos(cam.yaw)*Math.cos(cam.pitch)*cam.distance;
+  viz3d.camera.position.set(camX,camY,camZ);
+  viz3d.camera.lookAt(cam.truckX,cam.truckY,0);
+  // animate scene
+  const sceneId=STATE.viz.scene;
+  for(const o of viz3d.objs){
+    const k=o.userData.kind;
+    if(k==='stars'||k==='vapor'||k==='aurora'){
+      o.rotation.y+=0.0008*motion+eb*0.01*motion;
+      const sz=0.4+(k==='aurora'?0.7:0.2)+em*1.2;
+      if(o.material)o.material.size=sz*(0.6+STATE.viz.bloom*0.5);
+    } else if(k==='neb'){
+      o.rotation.y+=0.0015;
+      o.material.opacity=o.userData.r+em*0.18;
+    } else if(k==='mirror'){
+      o.rotation.x+=o.userData.spinX*motion+eb*0.05;
+      o.rotation.y+=o.userData.spinY*motion+em*0.05;
+      const sc=1+eh*1.4*sens;
+      o.scale.set(sc,sc,sc);
+    } else if(k==='cloud'){
+      o.position.x+=0.04*motion;
+      if(o.position.x>60)o.position.x=-60;
+      o.position.y=Math.sin(t*o.userData.bob+o.userData.phase)*2;
+      o.material.opacity=Math.max(0.04,o.material.opacity*0.98+em*0.05);
+    } else if(k==='sun'){
+      const sc=1+eb*1.5;
+      o.scale.set(sc,sc,sc);
+      o.material.color.offsetHSL((STATE.viz.colorShift/360)*0.001,0,0);
+    } else if(k==='bit'){
+      o.rotation.x+=o.userData.spin*motion;
+      o.rotation.y+=o.userData.spin*0.7*motion;
+      o.position.y=o.userData.baseY+Math.sin(t*1.5+o.userData.phase)*(1+em*4);
+      o.material.color.setHSL(((STATE.viz.colorShift+t*30)/360)%1,0.8,0.5+eh*0.4);
+    } else if(k==='mesa'){
+      // subtle scale on bass
+      o.scale.y=1+eb*0.4;
+    } else if(k==='moon'||k==='sun'){
+      const sc=1+eb*1.2;
+      o.scale.set(sc,sc,sc);
+    } else if(k==='mandala'){
+      const layer=o.userData.layer;
+      o.userData.angle+=(0.005+(layer%2?-1:1)*0.01)*motion+em*0.03;
+      o.position.x=Math.cos(o.userData.angle)*(o.userData.radius+eb*4);
+      o.position.z=Math.sin(o.userData.angle)*(o.userData.radius+eb*4);
+      o.position.y=Math.sin(t*2+layer)*(0.5+eh*3);
+      o.rotation.x+=0.04;o.rotation.y+=0.03;
+      const sc=0.8+eh*2.2;o.scale.set(sc,sc,sc);
+    } else if(k==='portal'){
+      o.rotation.z+=0.02*motion;
+      const sc=1+eb*3;o.scale.set(sc,sc,sc);
+      o.material.opacity=0.5+em*0.5;
+    } else if(k==='crystal'){
+      o.rotation.y+=0.01*motion;
+      const sc=1+em*1.5;o.scale.set(sc,sc,sc);
+      o.material.opacity=0.6+eh*0.4;
+    } else if(k==='beam'){
+      o.rotation.x+=0.005*motion;
+      o.rotation.z+=0.008*motion;
+      o.material.opacity=0.2+em*0.7;
+      const sc=1+eb*1.2;
+      o.scale.set(sc,1+eh*2,sc);
+    }
+  }
+  // flashes — temporarily boost overall scale on recent press (simple)
+  // (already baked into per-scene reactivity via energy from analyser)
+
+  viz3d.renderer.render(viz3d.scene,viz3d.camera);
+}
+
+// Visualizer keyboard handling
+window.addEventListener('keydown',e=>{
+  if(!STATE.viz.active)return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  STATE.viz.keysDown.add(e.code);
+  if(e.code==='Escape'&&!document.body.classList.contains('performance')){toggleVisualizer(false);return}
+  if(e.code==='KeyR')vizRandomize();
+  if(['Digit1','Digit2','Digit3','Digit4','Digit5'].includes(e.code)){
+    // only intercept presets if visualizer focused (i.e. when active and not in INPUT)
+    e.preventDefault();
+    vizApplyPreset(['Digit1','Digit2','Digit3','Digit4','Digit5'].indexOf(e.code));
+  }
+});
+window.addEventListener('keyup',e=>{
+  STATE.viz.keysDown.delete(e.code);
+});
 
 /* ===== LAUNCH ===== */
 $('#launch-btn').addEventListener('click',()=>{
