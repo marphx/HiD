@@ -1095,6 +1095,31 @@ input[type=range].range-active{filter:drop-shadow(0 0 6px var(--neon3));}
 .arp-help-panel.show{display:block}
 .arp-help-panel b{color:var(--neon3);font-weight:400;text-shadow:0 0 4px var(--neon3)}
 
+
+
+/* ===== REMOTE CONTROL BOARD EXPANSION ===== */
+.remote-root{font-size:14px}
+.remote-root .btn:disabled{opacity:.38;pointer-events:none}
+.remote-board{display:grid;grid-template-columns:1.05fr 1.1fr 1fr;gap:8px;align-items:start}
+.remote-board-col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.remote-panel-card{border:1px solid var(--stroke);background:linear-gradient(180deg,rgba(0,255,213,.055),rgba(0,0,0,.62));padding:7px;box-shadow:inset 0 0 18px rgba(0,0,0,.34)}
+.remote-panel-card.gold{border-color:rgba(255,230,0,.38);background:linear-gradient(180deg,rgba(255,230,0,.05),rgba(0,0,0,.62))}
+.remote-panel-card.mag{border-color:rgba(255,0,170,.35);background:linear-gradient(180deg,rgba(255,0,170,.05),rgba(0,0,0,.62))}
+.remote-mini-title{font-family:'Press Start 2P',monospace;font-size:7px;letter-spacing:.16em;color:var(--neon3);text-shadow:0 0 4px var(--neon3);margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;align-items:center;line-height:1.4}.remote-mini-title span:last-child{color:var(--dim);font-family:'VT323';font-size:11px;letter-spacing:.08em;text-shadow:none}
+.remote-pad-grid.big{grid-template-columns:repeat(4,minmax(58px,1fr));gap:6px}
+.remote-pad-cell{border:1px solid var(--stroke);background:#000;padding:4px;min-width:0;display:flex;flex-direction:column;gap:3px;touch-action:none;position:relative;overflow:hidden}
+.remote-pad-cell.sel{border-color:var(--neon3);box-shadow:0 0 12px rgba(255,230,0,.28)}
+.remote-pad-trigger{min-height:46px;border:1px solid rgba(0,255,213,.26);background:linear-gradient(180deg,rgba(0,255,213,.08),rgba(0,0,0,.85));font-family:'VT323',monospace;color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:3px;touch-action:none}.remote-pad-trigger b{color:var(--neon3);font-weight:400;text-shadow:0 0 4px var(--neon3)}.remote-pad-trigger span{font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.remote-pad-trigger.empty{opacity:.45}.remote-pad-trigger.hit{background:var(--neon);color:#000;transform:scale(.96);box-shadow:0 0 12px var(--neon)}
+.remote-pad-mini{display:grid;grid-template-columns:26px 1fr 24px;gap:3px;align-items:center;font-size:10px;color:var(--dim)}.remote-pad-mini input{min-width:0;width:100%;height:5px}.remote-pad-mini .v{color:var(--neon);font-size:10px;text-align:right}.remote-pad-pb{position:absolute;right:2px;top:2px;font-family:'VT323';font-size:10px;padding:1px 3px;border:1px solid rgba(255,230,0,.4);background:#000;color:var(--neon3);z-index:2}.remote-pad-pb.off{opacity:.38;color:var(--dim);border-color:rgba(90,122,134,.35)}
+.remote-slot-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.remote-slot{min-height:40px;background:#000;border:1px solid var(--stroke);font-family:'VT323';font-size:11px;color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;padding:3px}.remote-slot b{color:var(--neon);font-weight:400}.remote-slot.active{border-color:var(--neon3);box-shadow:0 0 9px rgba(255,230,0,.22)}.remote-slot.off{opacity:.38}.remote-slot.empty{opacity:.35}
+.remote-knob-table{display:grid;grid-template-columns:1fr;gap:5px}.remote-param{display:grid;grid-template-columns:74px 1fr 42px;gap:5px;align-items:center;font-family:'VT323';font-size:12px;color:var(--dim)}.remote-param label{min-width:0!important;color:var(--dim);letter-spacing:.08em}.remote-param input[type=range]{width:100%;min-width:80px;height:6px}.remote-param .v{font-size:12px;color:var(--neon);text-shadow:0 0 4px var(--neon);text-align:right}.remote-param.compact{grid-template-columns:54px 1fr 38px}
+.remote-toggle-row{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}.remote-toggle-row.three{grid-template-columns:repeat(3,1fr)}
+.remote-wheel-zone{touch-action:none;overscroll-behavior:contain;-webkit-user-select:none;user-select:none}.remote-wheel-zone input,.remote-wheel-zone *{touch-action:none}.remote-wheel-pad{height:62px;border:1px solid rgba(255,230,0,.35);background:radial-gradient(circle at 50% 50%,rgba(255,230,0,.16),rgba(0,0,0,.9));display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P';font-size:8px;color:var(--neon3);letter-spacing:.12em;text-align:center;touch-action:none;position:relative;overflow:hidden}.remote-wheel-pad::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,230,0,.45);box-shadow:0 0 8px var(--neon3)}.remote-wheel-pad.active{box-shadow:0 0 15px rgba(255,230,0,.35);background:radial-gradient(circle at 50% 50%,rgba(255,230,0,.27),rgba(0,0,0,.9))}
+.remote-window-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}.remote-window-grid .btn{font-size:12px;padding:4px 5px}.remote-open-strip{display:flex;gap:5px;flex-wrap:wrap}.remote-open-strip .btn{flex:1;min-width:68px}
+.remote-scope-strip{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}.remote-scope-strip .btn{font-size:12px}.remote-select-row{display:grid;grid-template-columns:70px 1fr;gap:5px;align-items:center;margin:4px 0}.remote-select-row label{font-size:12px;color:var(--dim);letter-spacing:.08em}.remote-select-row select{width:100%;min-width:0}
+@media(max-width:980px){.remote-board{grid-template-columns:1fr}.window:has(.remote-root){width:min(96vw,580px)!important}.remote-pad-grid.big{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:560px){.remote-board{grid-template-columns:1fr}.remote-pad-grid.big{grid-template-columns:repeat(2,1fr)}.remote-slot-grid{grid-template-columns:repeat(2,1fr)}.remote-param{grid-template-columns:62px 1fr 36px}.remote-window-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -5854,25 +5879,40 @@ function updateVizMicBands(){
 }
 function vizAutoPanStep(t,bass,mid,high,energy){
   if(!STATE.viz.autoPan)return;
-  const cam=STATE.viz.cam; const sp=STATE.viz.autoSpeed||1;
-  if(!STATE.viz.autoTarget || performance.now()-(STATE.viz.autoLast||0)>2200/sp){
-    STATE.viz.autoLast=performance.now();
-    STATE.viz.autoTarget={yaw:rand(-Math.PI,Math.PI),pitch:rand(-1.05,1.05),distance:rand(10,70),truckX:rand(-18,18),truckY:rand(-12,14),sens:rand(.55,2.8),pc:rand(.45,2.5),mot:rand(.25,3.2),hue:rand(0,360),bloom:rand(.25,2.5),fog:rand(.05,1.45)};
+  const cam=STATE.viz.cam;
+  const sp=clamp(STATE.viz.autoSpeed||1,0.1,6);
+  const now=performance.now();
+  // Faster target changes and more dramatic parameter travel, but clamp every value so long sessions do not drift into unstable camera/scene states.
+  if(!STATE.viz.autoTarget || now-(STATE.viz.autoLast||0)>Math.max(260,1050/sp)){
+    STATE.viz.autoLast=now;
+    STATE.viz.autoTarget={
+      yaw:cam.yaw+rand(-Math.PI*1.65,Math.PI*1.65),
+      pitch:rand(-1.18,1.18),
+      distance:rand(7,78),truckX:rand(-24,24),truckY:rand(-16,18),
+      sens:rand(.45,3.35),pc:rand(.35,2.8),mot:rand(.25,3.8),hue:rand(0,360),bloom:rand(.25,2.7),fog:rand(.03,1.5)
+    };
   }
-  const tg=STATE.viz.autoTarget; const k=0.006*sp;
-  cam.yaw+=(tg.yaw-cam.yaw)*k + Math.sin(t*0.37*sp)*0.002*sp;
-  cam.pitch+=(tg.pitch-cam.pitch)*k + Math.cos(t*0.23*sp)*0.0015*sp;
-  cam.distance+=(tg.distance-cam.distance)*k + Math.sin(t*0.51*sp)*0.015*sp;
-  cam.truckX+=(tg.truckX-cam.truckX)*k;
-  cam.truckY+=(tg.truckY-cam.truckY)*k;
-  const micBoost=STATE.viz.liveMic?(energy*0.8):0;
-  STATE.viz.sensitivity+=(tg.sens+micBoost-STATE.viz.sensitivity)*(0.0028*sp);
-  STATE.viz.particleCount+=(tg.pc+high*0.35-STATE.viz.particleCount)*(0.003*sp);
-  STATE.viz.motion+=(tg.mot+mid*0.45-STATE.viz.motion)*(0.003*sp);
-  STATE.viz.colorShift=(STATE.viz.colorShift+(0.18*sp)+(high*1.4))%360;
-  STATE.viz.bloom+=(tg.bloom+high*0.45-STATE.viz.bloom)*(0.0035*sp);
-  STATE.viz.fog+=(tg.fog+bass*0.22-STATE.viz.fog)*(0.003*sp);
-  if(viz3d)viz3d.applySettings();
+  const tg=STATE.viz.autoTarget; const k=clamp(0.024*sp,0.006,0.16);
+  cam.yaw+=(tg.yaw-cam.yaw)*k + Math.sin(t*(0.75+sp*.22))*0.010*sp;
+  cam.pitch+=(tg.pitch-cam.pitch)*k + Math.cos(t*(0.53+sp*.18))*0.007*sp;
+  cam.distance+=(tg.distance-cam.distance)*k + Math.sin(t*(0.85+sp*.25))*0.055*sp;
+  cam.truckX+=(tg.truckX-cam.truckX)*k + Math.sin(t*.61*sp)*0.018*sp;
+  cam.truckY+=(tg.truckY-cam.truckY)*k + Math.cos(t*.49*sp)*0.014*sp;
+  const micBoost=STATE.viz.liveMic?(energy*1.35):0;
+  const pk=clamp(0.018*sp,0.006,0.12);
+  STATE.viz.sensitivity=clamp(STATE.viz.sensitivity+(tg.sens+micBoost-STATE.viz.sensitivity)*pk,0.2,3.4);
+  STATE.viz.particleCount=clamp(STATE.viz.particleCount+(tg.pc+high*0.55-STATE.viz.particleCount)*pk,0.3,2.8);
+  STATE.viz.motion=clamp(STATE.viz.motion+(tg.mot+mid*0.75-STATE.viz.motion)*pk,0.08,3.9);
+  STATE.viz.colorShift=(STATE.viz.colorShift+(0.72*sp)+(high*3.2))%360;
+  STATE.viz.bloom=clamp(STATE.viz.bloom+(tg.bloom+high*0.7-STATE.viz.bloom)*pk,0.2,2.9);
+  STATE.viz.fog=clamp(STATE.viz.fog+(tg.fog+bass*0.38-STATE.viz.fog)*pk,0.02,1.55);
+  cam.pitch=clamp(cam.pitch,-1.35,1.35);
+  cam.distance=clamp(cam.distance,5,90);
+  cam.truckX=clamp(cam.truckX,-34,34);
+  cam.truckY=clamp(cam.truckY,-24,24);
+  // Keep yaw numerically bounded during long auto-pan sessions.
+  if(Math.abs(cam.yaw)>Math.PI*24) cam.yaw=((cam.yaw+Math.PI)%(Math.PI*2))-Math.PI;
+  if(viz3d && (!viz3d._lastApply || now-viz3d._lastApply>90)){viz3d._lastApply=now;viz3d.applySettings();}
 }
 function spatialEmergencySilence(){
   if(!spatialFX)return;
@@ -5903,7 +5943,7 @@ function buildVizControls(){
     <div class="viz-row"><label>HUE SHIFT</label><input type="range" id="vc-h" min="0" max="360" step="1" value="${STATE.viz.colorShift}"><span class="v" id="vc-h-v">${STATE.viz.colorShift|0}°</span></div>
     <div class="viz-row"><label>BLOOM</label><input type="range" id="vc-bl" min="0" max="2.5" step="0.05" value="${STATE.viz.bloom}"><span class="v" id="vc-bl-v">${STATE.viz.bloom.toFixed(2)}</span></div>
     <div class="viz-row"><label>FOG</label><input type="range" id="vc-fog" min="0" max="1.5" step="0.02" value="${STATE.viz.fog}"><span class="v" id="vc-fog-v">${STATE.viz.fog.toFixed(2)}</span></div>
-    <div class="viz-row"><label>AUTO SPEED</label><input type="range" id="vc-auto-speed" min="0.1" max="4" step="0.05" value="${STATE.viz.autoSpeed}"><span class="v" id="vc-auto-speed-v">${STATE.viz.autoSpeed.toFixed(2)}</span></div>
+    <div class="viz-row"><label>AUTO SPEED</label><input type="range" id="vc-auto-speed" min="0.1" max="6" step="0.05" value="${STATE.viz.autoSpeed}"><span class="v" id="vc-auto-speed-v">${STATE.viz.autoSpeed.toFixed(2)}</span></div>
     <div class="viz-row"><label>MIC SENS</label><input type="range" id="vc-mic-sens" min="0.2" max="8" step="0.05" value="${STATE.viz.micSensitivity}"><span class="v" id="vc-mic-sens-v">${STATE.viz.micSensitivity.toFixed(2)}</span></div>
     <div style="display:flex;gap:5px;margin:5px 0;flex-wrap:wrap"><button class="viz-btn ${STATE.viz.autoPan?'on':''}" id="vc-autopan" style="flex:1">AUTO-PAN ${STATE.viz.autoPan?'ON':'OFF'}</button><button class="viz-btn live ${STATE.viz.liveMic?'on':''}" id="vc-mic" style="flex:1">LIVE MIC ${STATE.viz.liveMic?'ON':'OFF'}</button><button class="viz-btn gold" id="vc-clean" style="flex:1">CLEAN FULLSCREEN</button></div>
     <div class="viz-h2">▣ CAMERA</div>
@@ -6709,7 +6749,12 @@ function vizLoop(){
       o.rotation.y+=0.001*motion;
     }
   }
-  viz3d.renderer.render(viz3d.scene,viz3d.camera);
+  try{
+    viz3d.renderer.render(viz3d.scene,viz3d.camera);
+  }catch(err){
+    console.warn('Visualizer render recovered',err);
+    try{vizSetScene(STATE.viz.scene||'cosmos');vizResize();}catch(e){}
+  }
 }
 
 // Visualizer keyboard handling
@@ -6924,293 +6969,82 @@ document.addEventListener('keydown',e=>{
 /* ============ REMOTE CONTROL PATCH — iPad Host + iPhone Controller ============
    Backend-free WebRTC DataChannel control layer for GitHub Pages.
    Pairing is manual: HOST creates offer → CONTROLLER creates answer → HOST accepts answer.
+   Expanded controller board: pads, slots, EQ/FX, sound design, arp, visualizer, windows.
 */
 (function(){
-  const REMOTE={role:null,pc:null,dc:null,connected:false,lastState:null,hostOffer:null,controllerAnswer:null,stateTimer:null,pressed:new Set()};
+  const REMOTE={role:null,pc:null,dc:null,connected:false,lastState:null,hostOffer:null,controllerAnswer:null,stateTimer:null,pressed:new Set(),activeWheel:false,selectedPad:0,soundScope:'global'};
   const rtcCfg={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
-  const enc=obj=>{
-    try{return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));}
-    catch(e){return btoa(JSON.stringify(obj));}
-  };
-  const dec=str=>{
-    try{return JSON.parse(decodeURIComponent(escape(atob((str||'').trim()))));}
-    catch(e){return JSON.parse(atob((str||'').trim()));}
-  };
-  const waitIce=pc=>new Promise(res=>{
-    if(pc.iceGatheringState==='complete') return res();
-    const done=()=>{ if(pc.iceGatheringState==='complete'){ pc.removeEventListener('icegatheringstatechange',done); res(); } };
-    pc.addEventListener('icegatheringstatechange',done);
-    setTimeout(res,3200);
-  });
-  const copyText=async txt=>{
-    try{await navigator.clipboard.writeText(txt); toast('Copied');}
-    catch(e){toast('Select and copy the code manually');}
-  };
-  function remoteStatusText(){
-    if(REMOTE.connected) return 'CONNECTED · '+(REMOTE.role==='host'?'HOST/iPad':'CONTROLLER/iPhone');
-    if(REMOTE.role==='host') return 'HOST READY · WAITING FOR ANSWER';
-    if(REMOTE.role==='controller') return 'CONTROLLER READY · WAITING FOR HOST';
-    return 'NOT PAIRED';
+  const clampLocal=(v,a,b)=>Math.max(a,Math.min(b,+v||0));
+  const esc=s=>String(s??'').replace(/[<>&"']/g,ch=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[ch]));
+  const enc=obj=>{try{return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));}catch(e){return btoa(JSON.stringify(obj));}};
+  const dec=str=>{try{return JSON.parse(decodeURIComponent(escape(atob((str||'').trim()))));}catch(e){return JSON.parse(atob((str||'').trim()));}};
+  const waitIce=pc=>new Promise(res=>{if(pc.iceGatheringState==='complete')return res();const done=()=>{if(pc.iceGatheringState==='complete'){pc.removeEventListener('icegatheringstatechange',done);res();}};pc.addEventListener('icegatheringstatechange',done);setTimeout(res,3200);});
+  const copyText=async txt=>{try{await navigator.clipboard.writeText(txt);toast('Copied');}catch(e){toast('Select and copy the code manually');}};
+  const getPath=(root,path,def=0)=>{try{return path.split('.').reduce((o,k)=>o?.[k],root)??def}catch{return def}};
+  const setPath=(root,path,val)=>{const parts=path.split('.');let o=root;for(let i=0;i<parts.length-1;i++){o[parts[i]]=o[parts[i]]||{};o=o[parts[i]];}o[parts.at(-1)]=val;};
+  const FX_ALLOWED=new Set(['eqLow','eqMid','eqHigh','distAmt','chorusDepth','chorusRate','chorusMix','phaserRate','phaserDepth','phaserMix','tremRate','tremDepth','delayMix','delayFB','reverbMix','reverbSize','stereoEnhanceAmt']);
+  const FX_TOGGLES=new Set(['distOn','chorusOn','phaserOn','tremOn','delayOn','reverbOn','stereoEnhanceOn']);
+  const SOUND_ALLOWED=new Set(['amp.a','amp.d','amp.s','amp.r','filt.co','filt.q','mod.lfoR','mod.lfoD','mod.glide','mod.vol','mod.drive','mod.pan']);
+  function remoteStatusText(){if(REMOTE.connected)return 'CONNECTED · '+(REMOTE.role==='host'?'HOST/iPad':'CONTROLLER/iPhone');if(REMOTE.role==='host')return 'HOST READY · WAITING FOR ANSWER';if(REMOTE.role==='controller')return 'CONTROLLER READY · WAITING FOR HOST';return 'NOT PAIRED';}
+  function closeRemoteConnection(silent=false){try{REMOTE.dc&&REMOTE.dc.close()}catch{}try{REMOTE.pc&&REMOTE.pc.close()}catch{}REMOTE.pc=null;REMOTE.dc=null;REMOTE.connected=false;REMOTE.hostOffer=null;REMOTE.controllerAnswer=null;clearInterval(REMOTE.stateTimer);REMOTE.stateTimer=null;if(!silent)toast('Remote disconnected');buildRemoteWindow();}
+  function makePeer(){const pc=new RTCPeerConnection(rtcCfg);pc.onconnectionstatechange=()=>{if(['failed','disconnected','closed'].includes(pc.connectionState)){REMOTE.connected=false;buildRemoteWindow();}};pc.oniceconnectionstatechange=()=>{if(['failed','disconnected','closed'].includes(pc.iceConnectionState)){REMOTE.connected=false;buildRemoteWindow();}};return pc;}
+  function setupChannel(dc){REMOTE.dc=dc;dc.onopen=()=>{REMOTE.connected=true;toast('Remote connected');buildRemoteWindow();if(REMOTE.role==='host'){remoteSendState();clearInterval(REMOTE.stateTimer);REMOTE.stateTimer=setInterval(remoteSendState,900);}else{remoteSend({type:'requestState'});}};dc.onclose=()=>{REMOTE.connected=false;buildRemoteWindow();};dc.onerror=()=>{REMOTE.connected=false;buildRemoteWindow();};dc.onmessage=e=>{let msg=null;try{msg=JSON.parse(e.data)}catch{return}if(REMOTE.role==='host'){if(msg.type==='cmd')applyRemoteCommand(msg);if(msg.type==='requestState')remoteSendState();}else if(msg.type==='state'){REMOTE.lastState=msg.state;updateControllerState();}};}
+  function remoteSend(obj){if(!REMOTE.dc||REMOTE.dc.readyState!=='open')return false;try{REMOTE.dc.send(JSON.stringify(obj));return true}catch{return false}}
+  function cmd(name,data={}){return remoteSend({type:'cmd',cmd:name,...data,t:Date.now()});}
+  function padState(){return (STATE.pads||[]).map((p,i)=>{p=p?ensurePadDefaults(p,i):null;return p?{i,name:p.name||('PAD '+(i+1)),kind:p.kind||'pad',disabled:!!p.disabled,wheel:p.wheelEnabled!==false,vol:p.volume??1,fxSend:p.fxSend??1,selected:STATE.padEditingIdx===i,source:p.sourceLabel||p.kind||'PAD'}:{i,name:'EMPTY',kind:'empty',disabled:false,wheel:false,vol:0,fxSend:0,selected:false,source:'EMPTY'};});}
+  function slotState(){return (STATE.slots||[]).map((s,i)=>s?{i,name:s.name||('SLOT '+(i+1)),disabled:!!s.disabled,active:STATE.slotIdx===i}:{i,name:'EMPTY',disabled:false,active:false,empty:true});}
+  function currentRemoteState(){return {bpm:STATE.bpm,arp:{...STATE.arp},bank:STATE.bank,patchIdx:STATE.patchIdx,patch:currentPatchLabel?currentPatchLabel():'PATCH',pads:padState(),slots:slotState(),padEditingIdx:STATE.padEditingIdx,scope:STATE.padControlScope,fx:{...STATE.fx},sound:{amp:{...STATE.amp},filt:{...STATE.filt},mod:{...STATE.mod}},viz:{...STATE.viz,cam:{...STATE.viz.cam}}};}
+  function remoteSendState(){if(REMOTE.role==='host'&&REMOTE.connected)remoteSend({type:'state',state:currentRemoteState()});}
+  function rebuildTouchedWindows(){try{buildPadsWindow&&buildPadsWindow()}catch{}try{buildSlotsWindow&&buildSlotsWindow()}catch{}try{buildFXWindow&&buildFXWindow()}catch{}try{buildSoundDesignWindow&&buildSoundDesignWindow()}catch{}try{buildArpWindow&&buildArpWindow()}catch{}try{buildVizControls&&buildVizControls()}catch{}try{updateTape&&updateTape()}catch{}try{buildPatchSelect&&buildPatchSelect()}catch{}try{buildBankSelect&&buildBankSelect()}catch{}try{buildBankWindow&&buildBankWindow()}catch{}}
+  function applyRemoteWheel(semi){if(!STATE?.modWheel)return;const mw=STATE.modWheel;const val=clampLocal(+semi||0,-(mw.rangeDown||12),(mw.rangeUp||12));mw.active=val;mw.target=val===0?0:(val>0?val/(mw.rangeUp||12):val/(mw.rangeDown||12));const cents=val*100;const apply=v=>{try{if(v&&v.wheelEnabled===false)return;for(const o of v.oscs||[])o.osc.detune.setTargetAtTime(cents+(o.osc._origDetune||0),ctx.currentTime,0.018)}catch{}};if(STATE.activeNotes)for(const[,v]of STATE.activeNotes)apply(v);for(const[,vs]of STATE.padPlayingVoices||[])for(const v of(vs.voices||[]))apply(v);for(const[,seq]of STATE.padPlayingSequences||[])for(const v of(seq.allVoices||[]))apply(v);try{applyPitchToActiveSamples&&applyPitchToActiveSamples()}catch{}const meter=$('#mw-meter');if(meter)meter.textContent=(val>=0?'+':'')+val.toFixed(2)+' st';}
+  function setRemoteMaster(v){const val=clampLocal(+v,0,1.2);const el=$('#master-vol');if(el)el.value=val;const mv=$('#master-val');if(mv)mv.textContent=Math.round(val*100);if(master)master.gain.setTargetAtTime(val,ctx?.currentTime||0,0.02);STATE.mod.vol=val;}
+  function selectRemotePad(idx){idx=+idx; if(idx<0||idx>=STATE.pads.length)return; STATE.padEditingIdx=idx; STATE.padControlScope='pad'; STATE.transposeTarget='pad'; REMOTE.selectedPad=idx; rebuildTouchedWindows();}
+  function applyPadParam(idx,key,value){const p=ensurePadDefaults(STATE.pads[idx],idx);if(!p)return; if(key==='volume')p.volume=clampLocal(value,0,2); if(key==='fxSend')p.fxSend=clampLocal(value,0,1); if(key==='wheelEnabled')p.wheelEnabled=!!value; if(key==='transpose')p.transpose=clampLocal(value,-24,24); if(key==='octaveShift')p.octaveShift=clampLocal(value,-3,3); applyPadLiveParams(idx);}
+  function applySoundParam(scope,path,value,padIdx){if(!SOUND_ALLOWED.has(path))return;const val=+value; if(scope==='pad'){const idx=Number.isFinite(+padIdx)?+padIdx:STATE.padEditingIdx;const p=ensurePadDefaults(STATE.pads[idx],idx);if(!p||p.kind==='sample')return;p.patchSnapshot=p.patchSnapshot||snapshotPatch();const [a,b]=path.split('.');p.patchSnapshot[a]=p.patchSnapshot[a]||{};p.patchSnapshot[a][b]=val;applyPadLiveParams(idx);STATE.padEditingIdx=idx;STATE.padControlScope='pad';}else{setPath(STATE,path,val);if(path==='mod.vol')setRemoteMaster(val);} }
+  function applyRemoteCommand(m){try{ensureAudioReady&&ensureAudioReady()}catch{}try{switch(m.cmd){
+    case 'noteOn':pressNoteByDisplay(+m.midi);break;case 'noteOff':releaseNoteByDisplay(+m.midi);break;
+    case 'pad':padTrigger(+m.idx);break;case 'padStop':padStop(+m.idx,true);break;case 'padSelect':selectRemotePad(+m.idx);break;
+    case 'padParam':applyPadParam(+m.idx,m.key,m.value);break;case 'padWheelToggle':{const p=ensurePadDefaults(STATE.pads[+m.idx],+m.idx);if(p){p.wheelEnabled=!(p.wheelEnabled!==false);applyPadLiveParams(+m.idx)}}break;
+    case 'stopAll':stopAll();break;case 'kill':$('#kill-btn')?.click();break;case 'bpm':setGlobalTempo(+m.value,true);break;case 'tap':tapTempo();break;
+    case 'arpToggle':arpSetEnabled(!STATE.arp.enabled);break;case 'arpOn':arpSetEnabled(!!m.value);break;case 'arpParam':if(['bpm','gate','swing','octaves'].includes(m.key)){STATE.arp[m.key]=+m.value;if(m.key==='bpm')setGlobalTempo(+m.value,true);}else if(['rate','direction'].includes(m.key)){STATE.arp[m.key]=String(m.value)}break;
+    case 'master':setRemoteMaster(m.value);break;case 'wheel':applyRemoteWheel(m.value);break;case 'wheelRelease':if(!STATE.modWheel.holdMode)applyRemoteWheel(0);break;case 'sustainToggle':$('#btn-sustain')?.click();break;
+    case 'slot':triggerSlotIndex(+m.idx);break;case 'slotNext':triggerNextSlot();break;case 'slotPrev':triggerPrevSlot();break;case 'slotCount':slotCountdownNext();break;case 'slotToggle':toggleSlotDisabled(+m.idx);break;
+    case 'fxSet':if(FX_ALLOWED.has(m.key)){STATE.fx[m.key]=+m.value;applyFXState();}break;case 'fxToggle':if(FX_TOGGLES.has(m.key)){STATE.fx[m.key]=!STATE.fx[m.key];applyFXState();}break;
+    case 'soundSet':applySoundParam(m.scope,m.path,m.value,m.padIdx);break;case 'soundScope':STATE.padControlScope=m.scope==='pad'?'pad':'global';if(STATE.padControlScope==='pad'&&Number.isFinite(+m.padIdx))STATE.padEditingIdx=+m.padIdx;break;
+    case 'patchNext':$('#patch-next')?.click();break;case 'patchPrev':$('#patch-prev')?.click();break;case 'copyPatchToPad':selectRemotePad(+m.idx);copyCurrentPatchToSelectedPad();break;
+    case 'vizToggle':toggleVisualizer(!STATE.viz.active);break;case 'vizAuto':STATE.viz.autoPan=!STATE.viz.autoPan;STATE.viz.autoTarget=null;if(!STATE.viz.active)toggleVisualizer(true);break;case 'vizClean':toggleVizClean(!!m.value);break;case 'vizRandom':vizRandomize();break;case 'vizParam':{const allowed=['sensitivity','particleCount','motion','colorShift','bloom','fog','autoSpeed','micSensitivity'];if(allowed.includes(m.key)){STATE.viz[m.key]=+m.value;if(viz3d)viz3d.applySettings();}}break;case 'vizScene':vizSetScene(String(m.value));break;
+    case 'openWindow':toggleWindow(m.id,true);break;}
+    rebuildTouchedWindows();remoteSendState();}catch(err){console.warn('remote command failed',err)}}
+  async function startHostPairing(){closeRemoteConnection(true);REMOTE.role='host';const pc=REMOTE.pc=makePeer();const dc=pc.createDataChannel('hold-it-down-remote',{ordered:true});setupChannel(dc);const offer=await pc.createOffer();await pc.setLocalDescription(offer);await waitIce(pc);REMOTE.hostOffer=enc(pc.localDescription);buildRemoteWindow();toast('Host code ready');}
+  async function acceptControllerAnswer(code){if(!REMOTE.pc||REMOTE.role!=='host'){toast('Start HOST first');return}try{await REMOTE.pc.setRemoteDescription(new RTCSessionDescription(dec(code)));toast('Answer accepted');buildRemoteWindow()}catch(e){toast('Could not read controller answer');console.warn(e)}}
+  async function startControllerPairing(offerCode){closeRemoteConnection(true);REMOTE.role='controller';const pc=REMOTE.pc=makePeer();pc.ondatachannel=e=>setupChannel(e.channel);try{await pc.setRemoteDescription(new RTCSessionDescription(dec(offerCode)));const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await waitIce(pc);REMOTE.controllerAnswer=enc(pc.localDescription);buildRemoteWindow();toast('Controller answer ready')}catch(e){toast('Could not read host code');console.warn(e);buildRemoteWindow()}}
+  function noteLabel(m){const names=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return names[((m%12)+12)%12]+(Math.floor(m/12)-1)}
+  function padGridHTML(){const pads=(REMOTE.lastState?.pads||Array.from({length:16},(_,i)=>({i,name:'PAD '+(i+1),kind:'pad',vol:1,fxSend:1,wheel:true}))).slice(0,32);return `<div class="remote-pad-grid big">${pads.map(p=>`<div class="remote-pad-cell ${p.selected?'sel':''}" data-pad-cell="${p.i}"><button class="remote-pad-pb ${p.wheel?'':'off'}" data-rpad-wheel="${p.i}" title="Pitch/mod wheel for this pad">PB</button><button class="remote-pad-trigger ${p.kind==='empty'?'empty':''}" data-rpad="${p.i}"><b>${p.i+1}</b><span>${esc(p.name||'PAD')}</span><span style="color:var(--dim);font-size:9px">${esc(p.source||p.kind||'')}</span></button><div class="remote-pad-mini"><span>VOL</span><input type="range" min="0" max="2" step="0.01" value="${p.vol??1}" data-rpad-vol="${p.i}"><span class="v">${Math.round((p.vol??1)*100)}</span></div><div class="remote-pad-mini"><span>FX</span><input type="range" min="0" max="1" step="0.01" value="${p.fxSend??1}" data-rpad-fx="${p.i}"><span class="v">${Math.round((p.fxSend??1)*100)}</span></div></div>`).join('')}</div>`}
+  function slotGridHTML(){const slots=(REMOTE.lastState?.slots||[]);return `<div class="remote-slot-grid">${slots.map(s=>`<button class="remote-slot ${s.empty?'empty':''} ${s.disabled?'off':''} ${s.active?'active':''}" data-rslot="${s.i}"><b>${s.i+1}</b><span>${esc(s.name||'EMPTY')}</span></button>`).join('')}</div>`}
+  function pianoHTML(){let html='';for(let i=0;i<24;i++){const m=48+i;html+=`<button class="remote-note ${[1,3,6,8,10].includes(m%12)?'black':''}" data-rnote="${m}">${noteLabel(m)}</button>`}return html}
+  function pSlider(label,id,min,max,step,value,attrs='',fmt=''){return `<div class="remote-param"><label>${label}</label><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}" ${attrs}><span class="v">${fmt||value}</span></div>`}
+  function fxControlsHTML(){const fx=REMOTE.lastState?.fx||{};const rows=[['LOW','eqLow',-15,15,.1,fx.eqLow??0,'dB'],['MID','eqMid',-15,15,.1,fx.eqMid??0,'dB'],['HIGH','eqHigh',-15,15,.1,fx.eqHigh??0,'dB'],['DRIVE','distAmt',0,1,.01,fx.distAmt??.3,''],['CHORUS','chorusMix',0,1,.01,fx.chorusMix??.4,''],['PHASER','phaserMix',0,1,.01,fx.phaserMix??.4,''],['TREMOLO','tremDepth',0,1,.01,fx.tremDepth??.5,''],['DELAY','delayMix',0,1,.01,fx.delayMix??.3,''],['DLY FB','delayFB',0,.95,.01,fx.delayFB??.35,''],['REVERB','reverbMix',0,1,.01,fx.reverbMix??.18,''],['STEREO','stereoEnhanceAmt',0,1,.01,fx.stereoEnhanceAmt??.42,'']];const togg=['distOn','chorusOn','phaserOn','tremOn','delayOn','reverbOn','stereoEnhanceOn'];return `<div class="remote-toggle-row three">${togg.map(togg=>`<button class="btn tiny ${fx[togg]?'on':''}" data-rfx-toggle="${togg}">${togg.replace('On','').replace('stereoEnhance','STEREO').toUpperCase()}</button>`).join('')}</div><div class="remote-knob-table" style="margin-top:6px">${rows.map(r=>pSlider(r[0],'rfx-'+r[1],r[2],r[3],r[4],r[5],`data-rfx="${r[1]}"`,r[6]==='dB'?(+r[5]).toFixed(1)+'dB':Math.round((+r[5])*100)+'%')).join('')}</div>`}
+  function soundControlsHTML(){const st=REMOTE.lastState||{};const scope=REMOTE.soundScope||st.scope||'global';const padIdx=Number.isFinite(REMOTE.selectedPad)?REMOTE.selectedPad:(st.padEditingIdx>=0?st.padEditingIdx:0);const src=st.sound||{amp:{},filt:{},mod:{}};const rows=[['ATK','amp.a',0,3,.01,getPath(src,'amp.a',.005),'s'],['DEC','amp.d',0,3,.01,getPath(src,'amp.d',.5),'s'],['SUS','amp.s',0,1,.01,getPath(src,'amp.s',.7),''],['REL','amp.r',0,4,.01,getPath(src,'amp.r',.5),'s'],['CUTOFF','filt.co',80,12000,1,getPath(src,'filt.co',2400),'Hz'],['RES','filt.q',.1,20,.1,getPath(src,'filt.q',3),''],['LFO R','mod.lfoR',0,14,.01,getPath(src,'mod.lfoR',5),'Hz'],['LFO D','mod.lfoD',0,.25,.001,getPath(src,'mod.lfoD',.02),''],['GLIDE','mod.glide',0,1,.01,getPath(src,'mod.glide',0),''],['VOL','mod.vol',0,1.2,.01,getPath(src,'mod.vol',.7),''],['DRIVE','mod.drive',0,1,.01,getPath(src,'mod.drive',.3),''],['PAN','mod.pan',-1,1,.01,getPath(src,'mod.pan',0),'']];return `<div class="remote-scope-strip"><button class="btn tiny ${scope==='global'?'on':''}" data-rscope="global">GLOBAL LIVE PATCH</button><button class="btn tiny ${scope==='pad'?'on':''}" data-rscope="pad">SELECTED PAD</button></div><div class="remote-select-row"><label>PAD</label><select id="remote-sound-pad">${(st.pads||[]).map(p=>`<option value="${p.i}" ${p.i===padIdx?'selected':''}>${p.i+1} · ${esc(p.name||'PAD')}</option>`).join('')}</select></div><div class="remote-open-strip"><button class="btn tiny" data-rcmd="patchPrev">PATCH ◀</button><button class="btn tiny" data-rcmd="patchNext">PATCH ▶</button><button class="btn tiny gold" id="remote-copy-patch">COPY PATCH TO PAD</button></div><div class="remote-hint" style="margin:5px 0">Current live patch: <b style="color:var(--neon3)">${esc(st.patch||'PATCH')}</b></div><div class="remote-knob-table">${rows.map(r=>pSlider(r[0],'rsnd-'+r[1].replace('.','-'),r[2],r[3],r[4],r[5],`data-rsound="${r[1]}"`,r[6]==='Hz'?Math.round(+r[5]):r[6]==='s'?(+r[5]).toFixed(2)+'s':(r[1]==='mod.pan'?(+r[5]).toFixed(2):Math.round((+r[5])*100)+'%'))).join('')}</div>`}
+  function arpVizHTML(){const st=REMOTE.lastState||{},a=st.arp||{},v=st.viz||{};return `<div class="remote-toggle-row"><button class="btn gold ${a.enabled?'on':''}" data-rcmd="arpToggle">ARP ${a.enabled?'ON':'OFF'}</button><button class="btn" data-rcmd="tap">TAP TEMPO</button></div>${pSlider('ARP BPM','rarp-bpm',40,220,1,a.bpm||st.bpm||STATE.bpm,'data-rarp="bpm"',a.bpm||st.bpm||STATE.bpm)}${pSlider('GATE','rarp-gate',0.05,1,.01,a.gate??.55,'data-rarp="gate"',Math.round((a.gate??.55)*100)+'%')}${pSlider('SWING','rarp-swing',0,.7,.01,a.swing??0,'data-rarp="swing"',Math.round((a.swing??0)*100)+'%')}<div class="remote-toggle-row" style="margin-top:6px"><button class="btn ${v.active?'on':''}" data-rviz-cmd="toggle">VISUALIZER</button><button class="btn ${v.autoPan?'on':''}" data-rviz-cmd="auto">AUTO-PAN</button></div>${pSlider('AUTO SPD','rviz-speed',0.1,6,.05,v.autoSpeed||1,'data-rviz="autoSpeed"',(v.autoSpeed||1).toFixed(2))}${pSlider('SENS','rviz-sens',0.2,3.4,.05,v.sensitivity||1.2,'data-rviz="sensitivity"',(v.sensitivity||1.2).toFixed(2))}${pSlider('MOTION','rviz-mot',0.08,3.9,.05,v.motion||1,'data-rviz="motion"',(v.motion||1).toFixed(2))}${pSlider('BLOOM','rviz-bloom',0.2,2.9,.05,v.bloom||1,'data-rviz="bloom"',(v.bloom||1).toFixed(2))}<div class="remote-open-strip" style="margin-top:5px"><button class="btn tiny" data-rviz-cmd="random">RANDOM VIZ</button><button class="btn tiny" data-rviz-cmd="clean">CLEAN DOT</button></div>`}
+  function hostPanelHTML(){return `<div class="remote-section"><div class="remote-subtitle">1 · HOST CODE FROM IPAD</div><textarea id="remote-host-offer" readonly placeholder="Tap START HOST to create a code">${REMOTE.hostOffer||''}</textarea><div class="remote-row"><button class="btn gold" id="remote-start-host">${REMOTE.hostOffer?'RESTART HOST':'START HOST'}</button><button class="btn" id="remote-copy-offer" ${REMOTE.hostOffer?'':'disabled'}>COPY HOST CODE</button></div></div><div class="remote-section"><div class="remote-subtitle">2 · PASTE IPHONE ANSWER HERE</div><textarea id="remote-answer-in" placeholder="Paste the controller answer code from your iPhone"></textarea><div class="remote-row"><button class="btn gold" id="remote-accept-answer">ACCEPT ANSWER</button><button class="btn warn" id="remote-disconnect">DISCONNECT</button></div></div>`}
+  function controllerPanelHTML(){const st=REMOTE.lastState||{};return `<div class="remote-section"><div class="remote-subtitle">1 · PASTE IPAD HOST CODE</div><textarea id="remote-offer-in" placeholder="Paste the host code from your iPad">${REMOTE.hostOffer||''}</textarea><div class="remote-row"><button class="btn gold" id="remote-start-controller">CONNECT AS CONTROLLER</button><button class="btn warn" id="remote-disconnect-c">DISCONNECT</button></div></div><div class="remote-section"><div class="remote-subtitle">2 · COPY THIS ANSWER BACK TO IPAD</div><textarea id="remote-controller-answer" readonly placeholder="Your answer code appears here after connecting">${REMOTE.controllerAnswer||''}</textarea><div class="remote-row"><button class="btn" id="remote-copy-answer" ${REMOTE.controllerAnswer?'':'disabled'}>COPY ANSWER CODE</button></div></div><div class="remote-controller ${REMOTE.connected?'live':'locked'}"><div class="remote-strip"><span>COMPLETE REMOTE CONTROL BOARD</span><b>${REMOTE.connected?'LIVE':'PAIR FIRST'}</b></div><div class="remote-board"><div class="remote-board-col"><div class="remote-panel-card gold"><div class="remote-mini-title">PADS / SAMPLER <span>trigger · select · mix · PB</span></div>${padGridHTML()}</div><div class="remote-panel-card"><div class="remote-mini-title">SLOTS / CHORD BANK <span>window slots</span></div><div class="remote-toggle-row three"><button class="btn tiny" data-rcmd="slotPrev">PREV</button><button class="btn tiny gold" data-rcmd="slotNext">NEXT</button><button class="btn tiny gold" data-rcmd="slotCount">3s COUNT</button></div>${slotGridHTML()}</div></div><div class="remote-board-col"><div class="remote-panel-card"><div class="remote-mini-title">GLOBAL TRANSPORT / MIX <span>${esc(st.patch||'')}</span></div><div class="remote-row remote-transport"><button class="btn warn" data-rcmd="kill">KILL</button><button class="btn warn" data-rcmd="stopAll">STOP ALL</button><button class="btn gold" data-rcmd="tap">TAP</button><button class="btn" data-rcmd="sustainToggle">SUSTAIN</button></div>${pSlider('BPM','remote-bpm',40,220,1,st.bpm||STATE.bpm,'',''+(st.bpm||STATE.bpm))}${pSlider('MASTER','remote-master',0,1.2,.01,getPath(st,'sound.mod.vol',.7),'',Math.round(getPath(st,'sound.mod.vol',.7)*100)+'%')}<div class="remote-wheel-zone"><div class="remote-param"><label>PITCH</label><input type="range" id="remote-wheel" min="-12" max="12" step="0.01" value="0"><span class="v" id="remote-wheel-v">0.00</span></div><div class="remote-wheel-pad" id="remote-wheel-pad">DRAG LEFT / RIGHT · LOCKED NO PAGE SCROLL</div><button class="btn tiny" id="remote-wheel-zero" style="width:100%;margin-top:4px">CENTER PITCH</button></div></div><div class="remote-panel-card mag"><div class="remote-mini-title">EQ / FX RACK <span>global bus</span></div>${fxControlsHTML()}</div></div><div class="remote-board-col"><div class="remote-panel-card gold"><div class="remote-mini-title">SOUND DESIGN <span>global or selected pad</span></div>${soundControlsHTML()}</div><div class="remote-panel-card"><div class="remote-mini-title">ARP / VISUALIZER <span>tempo + autopan</span></div>${arpVizHTML()}</div><div class="remote-panel-card"><div class="remote-mini-title">WINDOW SHORTCUTS <span>open on iPad</span></div><div class="remote-window-grid">${[['pads','PADS'],['slots','SLOTS'],['sound','SOUND'],['fx','FX'],['arp','ARP'],['spatial','3D SOUND'],['bank','BANK'],['help','HELP']].map(w=>`<button class="btn tiny" data-rwin="${w[0]}">${w[1]}</button>`).join('')}</div></div></div></div><div class="remote-subtitle">TWO-OCTAVE NOTE SURFACE</div><div class="remote-note-grid" id="remote-note-grid">${pianoHTML()}</div><div class="remote-hint">The iPhone sends control only. Keep the iPad connected to speakers/headphones. Pitch wheel and pad controls lock touch scrolling while active.</div></div>`}
+  function buildRemoteWindow(){const w=WIN.remote;if(!w)return;const body=w.el.querySelector('.win-body');const role=REMOTE.role||'none';body.innerHTML=`<div class="remote-root"><div class="pad-target-strip"><span>REMOTE LINK: <b>${remoteStatusText()}</b></span><span class="scope">GitHub Pages · WebRTC direct</span></div><div class="remote-role-row"><button class="btn gold ${role==='host'?'on':''}" id="remote-role-host">THIS DEVICE IS iPAD HOST</button><button class="btn ${role==='controller'?'on':''}" id="remote-role-controller">THIS DEVICE IS iPHONE CONTROLLER</button></div><div class="remote-hint">Pair once, then this panel becomes a full mixer/control board for pads, chord slots, sound design, EQ/FX, arp, visualizer, and windows.</div><div id="remote-panel">${role==='host'?hostPanelHTML():role==='controller'?controllerPanelHTML():'<div class="remote-empty">Choose HOST on the iPad, or CONTROLLER on the iPhone.</div>'}</div></div>`;body.querySelector('#remote-role-host')?.addEventListener('click',()=>{REMOTE.role='host';buildRemoteWindow()});body.querySelector('#remote-role-controller')?.addEventListener('click',()=>{REMOTE.role='controller';buildRemoteWindow()});body.querySelector('#remote-start-host')?.addEventListener('click',startHostPairing);body.querySelector('#remote-copy-offer')?.addEventListener('click',()=>copyText(REMOTE.hostOffer||body.querySelector('#remote-host-offer')?.value||''));body.querySelector('#remote-accept-answer')?.addEventListener('click',()=>acceptControllerAnswer(body.querySelector('#remote-answer-in')?.value||''));body.querySelector('#remote-disconnect')?.addEventListener('click',()=>closeRemoteConnection());body.querySelector('#remote-start-controller')?.addEventListener('click',()=>startControllerPairing(body.querySelector('#remote-offer-in')?.value||''));body.querySelector('#remote-copy-answer')?.addEventListener('click',()=>copyText(REMOTE.controllerAnswer||body.querySelector('#remote-controller-answer')?.value||''));body.querySelector('#remote-disconnect-c')?.addEventListener('click',()=>closeRemoteConnection());bindControllerSurface(body);}
+  function bindControllerSurface(body){body.querySelectorAll('[data-rcmd]').forEach(b=>b.onclick=()=>cmd(b.dataset.rcmd));const bpm=body.querySelector('#remote-bpm');if(bpm){bpm.oninput=e=>{e.target.nextElementSibling.textContent=e.target.value;cmd('bpm',{value:+e.target.value})}}const masterEl=body.querySelector('#remote-master');if(masterEl)masterEl.oninput=e=>{e.target.nextElementSibling.textContent=Math.round(+e.target.value*100)+'%';cmd('master',{value:+e.target.value})};
+    const wheel=body.querySelector('#remote-wheel'), wheelV=body.querySelector('#remote-wheel-v');if(wheel){const send=e=>{e.preventDefault?.();const val=+wheel.value;wheelV&&(wheelV.textContent=val.toFixed(2));cmd('wheel',{value:val})};['pointerdown','touchstart'].forEach(ev=>wheel.addEventListener(ev,e=>{REMOTE.activeWheel=true;e.preventDefault();},{passive:false}));['input','pointermove','touchmove'].forEach(ev=>wheel.addEventListener(ev,send,{passive:false}));['change','pointerup','pointercancel','touchend','touchcancel'].forEach(ev=>wheel.addEventListener(ev,e=>{REMOTE.activeWheel=false;e.preventDefault?.();cmd('wheelRelease')},{passive:false}));}
+    const wheelPad=body.querySelector('#remote-wheel-pad');if(wheelPad){let startX=0,startVal=0;const setFromEvent=e=>{e.preventDefault();const dx=(e.clientX??(e.touches?.[0]?.clientX||startX))-startX;const val=clampLocal(startVal+dx/9,-12,12);if(wheel){wheel.value=val;wheelV&&(wheelV.textContent=val.toFixed(2));}cmd('wheel',{value:val});};wheelPad.addEventListener('pointerdown',e=>{REMOTE.activeWheel=true;wheelPad.classList.add('active');startX=e.clientX;startVal=+(wheel?.value||0);try{wheelPad.setPointerCapture(e.pointerId)}catch{}e.preventDefault()},{passive:false});wheelPad.addEventListener('pointermove',e=>{if(!REMOTE.activeWheel)return;setFromEvent(e)},{passive:false});const end=e=>{REMOTE.activeWheel=false;wheelPad.classList.remove('active');cmd('wheelRelease');e.preventDefault?.()};wheelPad.addEventListener('pointerup',end,{passive:false});wheelPad.addEventListener('pointercancel',end,{passive:false});}
+    body.querySelector('#remote-wheel-zero')?.addEventListener('click',()=>{if(wheel)wheel.value=0;if(wheelV)wheelV.textContent='0.00';cmd('wheel',{value:0});cmd('wheelRelease')});
+    body.querySelectorAll('[data-rpad]').forEach(b=>{b.addEventListener('pointerdown',e=>{if(e.target.closest('input,button.remote-pad-pb'))return;e.preventDefault();cmd('pad',{idx:+b.dataset.rpad});cmd('padSelect',{idx:+b.dataset.rpad});b.classList.add('hit');},{passive:false});b.addEventListener('pointerup',()=>b.classList.remove('hit'));b.addEventListener('pointercancel',()=>b.classList.remove('hit'));});
+    body.querySelectorAll('[data-pad-cell]').forEach(c=>c.addEventListener('dblclick',()=>cmd('padSelect',{idx:+c.dataset.padCell})));body.querySelectorAll('[data-rpad-wheel]').forEach(b=>b.onclick=e=>{e.stopPropagation();cmd('padWheelToggle',{idx:+b.dataset.rpadWheel})});body.querySelectorAll('[data-rpad-vol]').forEach(r=>r.oninput=e=>{e.target.nextElementSibling.textContent=Math.round(+e.target.value*100);cmd('padParam',{idx:+r.dataset.rpadVol,key:'volume',value:+e.target.value})});body.querySelectorAll('[data-rpad-fx]').forEach(r=>r.oninput=e=>{e.target.nextElementSibling.textContent=Math.round(+e.target.value*100);cmd('padParam',{idx:+r.dataset.rpadFx,key:'fxSend',value:+e.target.value})});
+    body.querySelectorAll('[data-rslot]').forEach(b=>{b.onclick=e=>{e.preventDefault();cmd('slot',{idx:+b.dataset.rslot})};b.oncontextmenu=e=>{e.preventDefault();cmd('slotToggle',{idx:+b.dataset.rslot})}});
+    body.querySelectorAll('[data-rfx]').forEach(r=>r.oninput=e=>{const v=+e.target.value;e.target.nextElementSibling.textContent=(['eqLow','eqMid','eqHigh'].includes(r.dataset.rfx)?v.toFixed(1)+'dB':Math.round(v*100)+'%');cmd('fxSet',{key:r.dataset.rfx,value:v})});body.querySelectorAll('[data-rfx-toggle]').forEach(b=>b.onclick=()=>cmd('fxToggle',{key:b.dataset.rfxToggle}));
+    body.querySelectorAll('[data-rscope]').forEach(b=>b.onclick=()=>{REMOTE.soundScope=b.dataset.rscope;cmd('soundScope',{scope:REMOTE.soundScope,padIdx:+(body.querySelector('#remote-sound-pad')?.value||0)});buildRemoteWindow()});const sndPad=body.querySelector('#remote-sound-pad');if(sndPad)sndPad.onchange=e=>{REMOTE.selectedPad=+e.target.value;cmd('padSelect',{idx:REMOTE.selectedPad});};body.querySelector('#remote-copy-patch')?.addEventListener('click',()=>cmd('copyPatchToPad',{idx:+(sndPad?.value||0)}));body.querySelectorAll('[data-rsound]').forEach(r=>r.oninput=e=>{const path=r.dataset.rsound,val=+e.target.value;e.target.nextElementSibling.textContent=(path.includes('amp.')?val.toFixed(2)+'s':path==='filt.co'?Math.round(val):path==='mod.pan'?val.toFixed(2):Math.round(val*100)+'%');cmd('soundSet',{scope:REMOTE.soundScope||'global',padIdx:+(sndPad?.value||0),path,value:val})});
+    body.querySelectorAll('[data-rarp]').forEach(r=>r.oninput=e=>{const k=r.dataset.rarp,v=+e.target.value;e.target.nextElementSibling.textContent=k==='bpm'?v:k==='gate'||k==='swing'?Math.round(v*100)+'%':v;cmd('arpParam',{key:k,value:v})});body.querySelectorAll('[data-rviz]').forEach(r=>r.oninput=e=>{const v=+e.target.value;e.target.nextElementSibling.textContent=v.toFixed(2);cmd('vizParam',{key:r.dataset.rviz,value:v})});body.querySelectorAll('[data-rviz-cmd]').forEach(b=>b.onclick=()=>{const c=b.dataset.rvizCmd;if(c==='toggle')cmd('vizToggle');else if(c==='auto')cmd('vizAuto');else if(c==='random')cmd('vizRandom');else if(c==='clean')cmd('vizClean',{value:true})});body.querySelectorAll('[data-rwin]').forEach(b=>b.onclick=()=>cmd('openWindow',{id:b.dataset.rwin}));
+    body.querySelectorAll('[data-rnote]').forEach(b=>{const midi=+b.dataset.rnote;const on=e=>{e.preventDefault();if(REMOTE.pressed.has(midi))return;REMOTE.pressed.add(midi);b.classList.add('hit');cmd('noteOn',{midi});try{b.setPointerCapture(e.pointerId)}catch{}};const off=e=>{if(!REMOTE.pressed.has(midi))return;REMOTE.pressed.delete(midi);b.classList.remove('hit');cmd('noteOff',{midi});try{b.releasePointerCapture(e.pointerId)}catch{}};b.addEventListener('pointerdown',on,{passive:false});b.addEventListener('pointerup',off,{passive:false});b.addEventListener('pointercancel',off,{passive:false});b.addEventListener('lostpointercapture',off,{passive:false});});
   }
-  function closeRemoteConnection(silent=false){
-    try{REMOTE.dc&&REMOTE.dc.close()}catch{}
-    try{REMOTE.pc&&REMOTE.pc.close()}catch{}
-    REMOTE.pc=null; REMOTE.dc=null; REMOTE.connected=false; REMOTE.hostOffer=null; REMOTE.controllerAnswer=null;
-    clearInterval(REMOTE.stateTimer); REMOTE.stateTimer=null;
-    if(!silent) toast('Remote disconnected');
-    buildRemoteWindow();
-  }
-  function makePeer(){
-    const pc=new RTCPeerConnection(rtcCfg);
-    pc.onconnectionstatechange=()=>{
-      if(['failed','disconnected','closed'].includes(pc.connectionState)){
-        REMOTE.connected=false; buildRemoteWindow();
-      }
-    };
-    pc.oniceconnectionstatechange=()=>{
-      if(['failed','disconnected','closed'].includes(pc.iceConnectionState)){
-        REMOTE.connected=false; buildRemoteWindow();
-      }
-    };
-    return pc;
-  }
-  function setupChannel(dc){
-    REMOTE.dc=dc;
-    dc.onopen=()=>{
-      REMOTE.connected=true; toast('Remote connected'); buildRemoteWindow();
-      if(REMOTE.role==='host'){
-        remoteSendState();
-        clearInterval(REMOTE.stateTimer);
-        REMOTE.stateTimer=setInterval(remoteSendState,1500);
-      } else {
-        remoteSend({type:'requestState'});
-      }
-    };
-    dc.onclose=()=>{REMOTE.connected=false; buildRemoteWindow();};
-    dc.onerror=()=>{REMOTE.connected=false; buildRemoteWindow();};
-    dc.onmessage=e=>{
-      let msg=null; try{msg=JSON.parse(e.data)}catch{return;}
-      if(REMOTE.role==='host'){
-        if(msg.type==='cmd') applyRemoteCommand(msg);
-        if(msg.type==='requestState') remoteSendState();
-      } else if(msg.type==='state'){
-        REMOTE.lastState=msg.state; updateControllerState();
-      }
-    };
-  }
-  function remoteSend(obj){
-    if(!REMOTE.dc||REMOTE.dc.readyState!=='open') return false;
-    try{REMOTE.dc.send(JSON.stringify(obj)); return true;}catch{return false;}
-  }
-  function cmd(name,data={}){ return remoteSend({type:'cmd',cmd:name,...data,t:Date.now()}); }
-  function currentRemoteState(){
-    const pads=(STATE.pads||[]).map((p,i)=>p?{
-      i,name:p.name||('PAD '+(i+1)),kind:p.kind||'pad',disabled:!!p.disabled,wheel:p.wheelEnabled!==false,vol:p.volume??1
-    }:{i,name:'EMPTY',kind:'empty',disabled:false,wheel:false,vol:0});
-    return {bpm:STATE.bpm,arp:!!STATE.arp?.enabled,bank:STATE.bank,patch:currentPatchLabel?currentPatchLabel():'PATCH',pads};
-  }
-  function remoteSendState(){ if(REMOTE.role==='host'&&REMOTE.connected) remoteSend({type:'state',state:currentRemoteState()}); }
-  function applyRemoteWheel(semi){
-    if(!STATE?.modWheel) return;
-    const mw=STATE.modWheel;
-    const val=clamp(+semi||0,-(mw.rangeDown||2),(mw.rangeUp||2));
-    mw.active=val;
-    mw.target=val===0?0:(val>0?val/(mw.rangeUp||2):val/(mw.rangeDown||2));
-    const cents=val*100;
-    const apply=v=>{try{
-      if(v&&v.wheelEnabled===false) return;
-      for(const o of v.oscs||[]) o.osc.detune.setTargetAtTime(cents+(o.osc._origDetune||0),ctx.currentTime,0.025);
-    }catch{}};
-    if(STATE.activeNotes) for(const [,v] of STATE.activeNotes) apply(v);
-    for(const [,vs] of STATE.padPlayingVoices||[]) for(const v of (vs.voices||[])) apply(v);
-    for(const [,seq] of STATE.padPlayingSequences||[]) for(const v of (seq.allVoices||[])) apply(v);
-    try{applyPitchToActiveSamples&&applyPitchToActiveSamples();}catch{}
-    const meter=$('#mw-meter'); if(meter) meter.textContent=(val>=0?'+':'')+val.toFixed(2)+' st';
-  }
-  function setRemoteMaster(v){
-    const val=clamp(+v,0,1.2);
-    const el=$('#master-vol'); if(el) el.value=val;
-    const mv=$('#master-val'); if(mv) mv.textContent=Math.round(val*100);
-    if(master) master.gain.setTargetAtTime(val,ctx?.currentTime||0,0.02);
-  }
-  function applyRemoteCommand(m){
-    try{ensureAudioReady&&ensureAudioReady();}catch{}
-    try{
-      switch(m.cmd){
-        case 'noteOn': pressNoteByDisplay(+m.midi); break;
-        case 'noteOff': releaseNoteByDisplay(+m.midi); break;
-        case 'pad': padTrigger(+m.idx); break;
-        case 'padStop': padStop(+m.idx,true); break;
-        case 'stopAll': stopAll(); break;
-        case 'kill': $('#kill-btn')?.click(); break;
-        case 'bpm': setGlobalTempo(+m.value,true); break;
-        case 'tap': tapTempo(); break;
-        case 'arpToggle': arpSetEnabled(!STATE.arp.enabled); break;
-        case 'arpOn': arpSetEnabled(!!m.value); break;
-        case 'master': setRemoteMaster(m.value); break;
-        case 'wheel': applyRemoteWheel(m.value); break;
-        case 'wheelRelease': if(!STATE.modWheel.holdMode) applyRemoteWheel(0); break;
-        case 'sustainToggle': $('#btn-sustain')?.click(); break;
-        case 'openWindow': toggleWindow(m.id,true); break;
-      }
-      remoteSendState();
-    }catch(err){console.warn('remote command failed',err);}
-  }
-  async function startHostPairing(){
-    closeRemoteConnection(true); REMOTE.role='host';
-    const pc=REMOTE.pc=makePeer();
-    const dc=pc.createDataChannel('hold-it-down-remote',{ordered:true}); setupChannel(dc);
-    const offer=await pc.createOffer(); await pc.setLocalDescription(offer); await waitIce(pc);
-    REMOTE.hostOffer=enc(pc.localDescription);
-    buildRemoteWindow(); toast('Host code ready');
-  }
-  async function acceptControllerAnswer(code){
-    if(!REMOTE.pc||REMOTE.role!=='host'){toast('Start HOST first');return;}
-    try{ await REMOTE.pc.setRemoteDescription(new RTCSessionDescription(dec(code))); toast('Answer accepted'); buildRemoteWindow(); }
-    catch(e){toast('Could not read controller answer'); console.warn(e);}
-  }
-  async function startControllerPairing(offerCode){
-    closeRemoteConnection(true); REMOTE.role='controller';
-    const pc=REMOTE.pc=makePeer();
-    pc.ondatachannel=e=>setupChannel(e.channel);
-    try{
-      await pc.setRemoteDescription(new RTCSessionDescription(dec(offerCode)));
-      const answer=await pc.createAnswer(); await pc.setLocalDescription(answer); await waitIce(pc);
-      REMOTE.controllerAnswer=enc(pc.localDescription);
-      buildRemoteWindow(); toast('Controller answer ready');
-    }catch(e){toast('Could not read host code'); console.warn(e); buildRemoteWindow();}
-  }
-  function noteLabel(m){const names=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return names[((m%12)+12)%12]+(Math.floor(m/12)-1);}
-  function controllerPadGridHTML(){
-    const pads=(REMOTE.lastState?.pads||Array.from({length:16},(_,i)=>({i,name:'PAD '+(i+1),kind:'pad'}))).slice(0,32);
-    return pads.map(p=>`<button class="remote-pad ${p.kind==='empty'?'empty':''}" data-rpad="${p.i}"><b>${p.i+1}</b><span>${(p.name||'PAD').replace(/[<>&]/g,s=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[s]))}</span></button>`).join('');
-  }
-  function controllerPianoHTML(){
-    const base=48; let html='';
-    for(let i=0;i<24;i++){const m=base+i; html+=`<button class="remote-note ${[1,3,6,8,10].includes(m%12)?'black':''}" data-rnote="${m}">${noteLabel(m)}</button>`;}
-    return html;
-  }
-  function hostPanelHTML(){
-    return `<div class="remote-section">
-      <div class="remote-subtitle">1 · HOST CODE FROM IPAD</div>
-      <textarea id="remote-host-offer" readonly placeholder="Tap START HOST to create a code">${REMOTE.hostOffer||''}</textarea>
-      <div class="remote-row"><button class="btn gold" id="remote-start-host">${REMOTE.hostOffer?'RESTART HOST':'START HOST'}</button><button class="btn" id="remote-copy-offer" ${REMOTE.hostOffer?'':'disabled'}>COPY HOST CODE</button></div>
-    </div>
-    <div class="remote-section">
-      <div class="remote-subtitle">2 · PASTE IPHONE ANSWER HERE</div>
-      <textarea id="remote-answer-in" placeholder="Paste the controller answer code from your iPhone"></textarea>
-      <div class="remote-row"><button class="btn gold" id="remote-accept-answer">ACCEPT ANSWER</button><button class="btn warn" id="remote-disconnect">DISCONNECT</button></div>
-    </div>`;
-  }
-  function controllerPanelHTML(){
-    const st=REMOTE.lastState||{};
-    return `<div class="remote-section">
-      <div class="remote-subtitle">1 · PASTE IPAD HOST CODE</div>
-      <textarea id="remote-offer-in" placeholder="Paste the host code from your iPad">${REMOTE.hostOffer||''}</textarea>
-      <div class="remote-row"><button class="btn gold" id="remote-start-controller">CONNECT AS CONTROLLER</button><button class="btn warn" id="remote-disconnect-c">DISCONNECT</button></div>
-    </div>
-    <div class="remote-section">
-      <div class="remote-subtitle">2 · COPY THIS ANSWER BACK TO IPAD</div>
-      <textarea id="remote-controller-answer" readonly placeholder="Your answer code appears here after connecting">${REMOTE.controllerAnswer||''}</textarea>
-      <div class="remote-row"><button class="btn" id="remote-copy-answer" ${REMOTE.controllerAnswer?'':'disabled'}>COPY ANSWER CODE</button></div>
-    </div>
-    <div class="remote-controller ${REMOTE.connected?'live':'locked'}">
-      <div class="remote-strip"><span>REMOTE PERFORMANCE SURFACE</span><b>${REMOTE.connected?'LIVE':'PAIR FIRST'}</b></div>
-      <div class="remote-row remote-transport">
-        <button class="btn warn" data-rcmd="kill">KILL</button>
-        <button class="btn warn" data-rcmd="stopAll">STOP ALL</button>
-        <button class="btn gold" data-rcmd="tap">TAP</button>
-        <button class="btn gold" data-rcmd="arpToggle">ARP</button>
-        <button class="btn" data-rcmd="sustainToggle">SUSTAIN</button>
-      </div>
-      <div class="remote-row">
-        <label>BPM <b id="remote-bpm-read">${st.bpm||STATE.bpm}</b></label><input type="range" id="remote-bpm" min="40" max="220" value="${st.bpm||STATE.bpm}">
-      </div>
-      <div class="remote-row">
-        <label>MASTER</label><input type="range" id="remote-master" min="0" max="1.2" step="0.01" value="0.7">
-      </div>
-      <div class="remote-row">
-        <label>PITCH / MOD</label><input type="range" id="remote-wheel" min="-12" max="12" step="0.01" value="0">
-        <button class="btn tiny" id="remote-wheel-zero">CENTER</button>
-      </div>
-      <div class="remote-subtitle">PADS</div>
-      <div class="remote-pad-grid" id="remote-pad-grid">${controllerPadGridHTML()}</div>
-      <div class="remote-subtitle">TWO-OCTAVE NOTE SURFACE</div>
-      <div class="remote-note-grid" id="remote-note-grid">${controllerPianoHTML()}</div>
-      <div class="remote-hint">Tip: keep the iPad connected to your speakers/headphones. The iPhone only sends control commands; it does not need to make sound.</div>
-    </div>`;
-  }
-  function buildRemoteWindow(){
-    const w=WIN.remote; if(!w) return;
-    const body=w.el.querySelector('.win-body');
-    const role=REMOTE.role||'none';
-    body.innerHTML=`<div class="remote-root">
-      <div class="pad-target-strip"><span>REMOTE LINK: <b>${remoteStatusText()}</b></span><span class="scope">GitHub Pages · WebRTC direct</span></div>
-      <div class="remote-role-row">
-        <button class="btn gold ${role==='host'?'on':''}" id="remote-role-host">THIS DEVICE IS iPAD HOST</button>
-        <button class="btn ${role==='controller'?'on':''}" id="remote-role-controller">THIS DEVICE IS iPHONE CONTROLLER</button>
-      </div>
-      <div class="remote-hint">Pairing is manual but server-free: create a host code on the iPad, paste it into the iPhone, copy the iPhone answer back into the iPad, then control pads, notes, arp, tempo, master, kill, and pitch/mod remotely.</div>
-      <div id="remote-panel">${role==='host'?hostPanelHTML():role==='controller'?controllerPanelHTML():'<div class="remote-empty">Choose HOST on the iPad, or CONTROLLER on the iPhone.</div>'}</div>
-    </div>`;
-    body.querySelector('#remote-role-host')?.addEventListener('click',()=>{REMOTE.role='host'; buildRemoteWindow();});
-    body.querySelector('#remote-role-controller')?.addEventListener('click',()=>{REMOTE.role='controller'; buildRemoteWindow();});
-    body.querySelector('#remote-start-host')?.addEventListener('click',startHostPairing);
-    body.querySelector('#remote-copy-offer')?.addEventListener('click',()=>copyText(REMOTE.hostOffer||body.querySelector('#remote-host-offer')?.value||''));
-    body.querySelector('#remote-accept-answer')?.addEventListener('click',()=>acceptControllerAnswer(body.querySelector('#remote-answer-in')?.value||''));
-    body.querySelector('#remote-disconnect')?.addEventListener('click',()=>closeRemoteConnection());
-    body.querySelector('#remote-start-controller')?.addEventListener('click',()=>startControllerPairing(body.querySelector('#remote-offer-in')?.value||''));
-    body.querySelector('#remote-copy-answer')?.addEventListener('click',()=>copyText(REMOTE.controllerAnswer||body.querySelector('#remote-controller-answer')?.value||''));
-    body.querySelector('#remote-disconnect-c')?.addEventListener('click',()=>closeRemoteConnection());
-    bindControllerSurface(body);
-  }
-  function bindControllerSurface(body){
-    body.querySelectorAll('[data-rcmd]').forEach(b=>b.onclick=()=>cmd(b.dataset.rcmd));
-    const bpm=body.querySelector('#remote-bpm'); if(bpm){bpm.oninput=e=>{body.querySelector('#remote-bpm-read').textContent=e.target.value;}; bpm.onchange=e=>cmd('bpm',{value:+e.target.value});}
-    const masterEl=body.querySelector('#remote-master'); if(masterEl) masterEl.oninput=e=>cmd('master',{value:+e.target.value});
-    const wheel=body.querySelector('#remote-wheel'); if(wheel){
-      wheel.oninput=e=>cmd('wheel',{value:+e.target.value});
-      wheel.onchange=e=>cmd('wheelRelease');
-    }
-    body.querySelector('#remote-wheel-zero')?.addEventListener('click',()=>{const w=body.querySelector('#remote-wheel'); if(w)w.value=0; cmd('wheel',{value:0});});
-    body.querySelectorAll('[data-rpad]').forEach(b=>{
-      b.addEventListener('pointerdown',e=>{e.preventDefault(); cmd('pad',{idx:+b.dataset.rpad}); b.classList.add('hit');});
-      b.addEventListener('pointerup',()=>b.classList.remove('hit'));
-      b.addEventListener('pointercancel',()=>b.classList.remove('hit'));
-    });
-    body.querySelectorAll('[data-rnote]').forEach(b=>{
-      const midi=+b.dataset.rnote;
-      const on=e=>{e.preventDefault(); if(REMOTE.pressed.has(midi))return; REMOTE.pressed.add(midi); b.classList.add('hit'); cmd('noteOn',{midi}); try{b.setPointerCapture(e.pointerId)}catch{}};
-      const off=e=>{if(!REMOTE.pressed.has(midi))return; REMOTE.pressed.delete(midi); b.classList.remove('hit'); cmd('noteOff',{midi}); try{b.releasePointerCapture(e.pointerId)}catch{}};
-      b.addEventListener('pointerdown',on,{passive:false});
-      b.addEventListener('pointerup',off,{passive:false});
-      b.addEventListener('pointercancel',off,{passive:false});
-      b.addEventListener('lostpointercapture',off,{passive:false});
-    });
-  }
-  function updateControllerState(){
-    const w=WIN.remote; if(!w||REMOTE.role!=='controller') return;
-    const hidden=w.el.classList.contains('hidden');
-    if(!hidden) buildRemoteWindow();
-  }
-  function installRemoteControl(){
-    if(WIN.remote) return;
-    const dw=$('#desktop')?.clientWidth||900, dh=$('#desktop')?.clientHeight||600;
-    makeWindow('remote','REMOTE CONTROL','',{x:Math.max(20,dw-390),y:70,w:370,h:Math.min(560,dh-80)});
-    buildRemoteWindow();
-    const lb=$('#launcher-bar');
-    if(lb&&!lb.querySelector('[data-w="remote"]')){
-      const b=document.createElement('button'); b.className='launcher-btn'; b.dataset.w='remote'; b.textContent='REMOTE'; b.onclick=()=>toggleWindow('remote'); lb.appendChild(b);
-    }
-    const top=$('.topbar'); const help=$('#btn-help');
-    if(top&&!$('#btn-remote-top')){
-      const b=document.createElement('button'); b.className='btn gold'; b.id='btn-remote-top'; b.textContent='↔ REMOTE'; b.onclick=()=>toggleWindow('remote',true);
-      top.insertBefore(b,help||null);
-    }
-  }
-  const oldInit=window.initApp || initApp;
-  initApp=function(){ oldInit(); installRemoteControl(); };
-  window.HID_REMOTE={startHostPairing,startControllerPairing,close:closeRemoteConnection,send:cmd};
+  window.addEventListener('touchmove',e=>{if(REMOTE.activeWheel)e.preventDefault()},{passive:false});
+  function updateControllerState(){const w=WIN.remote;if(!w||REMOTE.role!=='controller')return;const hidden=w.el.classList.contains('hidden');if(!hidden)buildRemoteWindow();}
+  function installRemoteControl(){if(WIN.remote)return;const dw=$('#desktop')?.clientWidth||900,dh=$('#desktop')?.clientHeight||600;makeWindow('remote','REMOTE CONTROL','',{x:Math.max(10,dw-620),y:45,w:Math.min(760,Math.max(420,dw-30)),h:Math.min(720,dh-60)});buildRemoteWindow();const lb=$('#launcher-bar');if(lb&&!lb.querySelector('[data-w="remote"]')){const b=document.createElement('button');b.className='launcher-btn';b.dataset.w='remote';b.textContent='REMOTE';b.onclick=()=>toggleWindow('remote');lb.appendChild(b)}const top=$('.topbar');const help=$('#btn-help');if(top&&!$('#btn-remote-top')){const b=document.createElement('button');b.className='btn gold';b.id='btn-remote-top';b.textContent='↔ REMOTE';b.onclick=()=>toggleWindow('remote',true);top.insertBefore(b,help||null)}}
+  const oldInit=window.initApp||initApp;initApp=function(){oldInit();installRemoteControl();};window.HID_REMOTE={startHostPairing,startControllerPairing,close:closeRemoteConnection,send:cmd};
 })();
 
 </script>
