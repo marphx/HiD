@@ -22,7 +22,7 @@ document.addEventListener('touchend',e=>{const n=Date.now();if(n-__lastTouchEnd<
 <style>
 :root{
   --bg:#000;--neon:#00ffd5;--neon2:#ff00aa;--neon3:#ffe600;
-  --white-key:#0d0d18;--black-key:#000;
+  --white-key:#fafbf2;--black-key:#05050d;
   --panel:#06050f;--stroke:rgba(0,255,213,.28);--text:#cfeefb;--dim:#5a7a86;
   --brightness:1;
 }
@@ -733,6 +733,49 @@ body.piano-kbd-disabled #chroma{box-shadow:inset 0 0 0 1px rgba(255,0,170,.18)}
 .btn-perf{font-family:'Press Start 2P',monospace;font-size:9px;padding:6px 10px;background:#000;color:#fff;border:1px solid #fff;letter-spacing:.1em;box-shadow:inset 0 0 8px rgba(255,255,255,.2)}
 .btn-perf:hover{background:#fff;color:#000}
 
+
+/* ===== PATCH: real-time key color variables + pad wheel buttons + clean visualizer ===== */
+.wkey{background:linear-gradient(180deg,#fff 0%,var(--white-key) 55%,color-mix(in srgb,var(--white-key) 70%,#000 30%) 86%,#15151c 100%)!important}
+.wkey:hover{background:linear-gradient(180deg,#fff 0%,color-mix(in srgb,var(--white-key) 88%,#fff 12%) 60%,var(--white-key) 100%)!important}
+.bkey{background:linear-gradient(180deg,color-mix(in srgb,var(--black-key) 65%,#2a2a3a 35%) 0%,var(--black-key) 55%,#000 100%)!important}
+.bkey:hover{background:linear-gradient(180deg,color-mix(in srgb,var(--black-key) 55%,#56566a 45%) 0%,var(--black-key) 65%,#000 100%)!important}
+.chroma-key{background:linear-gradient(180deg,var(--white-key),#000)!important}.chroma-key.s{background:linear-gradient(180deg,var(--black-key),#000)!important}
+.spad-wheel{position:absolute;left:3px;bottom:3px;z-index:4;width:24px;height:18px;border:1px solid rgba(0,255,213,.35);background:rgba(0,0,0,.82);color:var(--dim);font-family:'VT323',monospace;font-size:9px;line-height:16px;border-radius:3px;box-shadow:inset 0 0 5px rgba(0,0,0,.6)}
+.spad-wheel.on{color:#000;background:var(--neon3);border-color:#fff;box-shadow:0 0 7px var(--neon3)}
+.spad-trans-target{outline:2px solid var(--neon3);box-shadow:0 0 12px rgba(255,230,0,.55)!important}
+#trans-primary.on{background:var(--neon3)!important;color:#000!important}
+.viz-clean-dot{position:fixed;top:calc(10px + env(safe-area-inset-top));right:10px;width:24px;height:24px;border-radius:50%;border:1px solid rgba(190,190,190,.55);background:rgba(128,128,128,.30);color:rgba(255,255,255,.55);z-index:8075;display:none;align-items:center;justify-content:center;font-size:9px;line-height:1;opacity:.3;box-shadow:0 0 8px rgba(255,255,255,.2)}
+#visualizer.clean .viz-hud,#visualizer.clean .viz-controls,#visualizer.clean .viz-info,#visualizer.clean .viz-spectrum,#visualizer.clean .viz-corner{display:none!important}
+#visualizer.clean .viz-clean-dot{display:flex!important}
+.viz-btn.on{background:linear-gradient(180deg,var(--neon),rgba(0,255,213,.55));color:#000;border-color:#fff;box-shadow:0 0 12px var(--neon)}
+.viz-btn.live{border-color:var(--neon2);color:var(--neon2)}.viz-btn.live.on{background:var(--neon2);color:#000}
+
+
+
+/* ============ REMOTE CONTROL UI ============ */
+.remote-root{display:flex;flex-direction:column;gap:8px;font-family:'VT323',monospace;font-size:13px;color:var(--text)}
+.remote-role-row,.remote-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.remote-section{border:1px solid var(--stroke);background:rgba(0,255,213,.035);padding:7px;margin:5px 0;display:flex;flex-direction:column;gap:6px}
+.remote-subtitle{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--neon);letter-spacing:.14em;text-shadow:0 0 4px var(--neon);margin:3px 0}
+.remote-hint{font-family:'VT323',monospace;font-size:12px;color:var(--dim);line-height:1.35;letter-spacing:.04em}
+.remote-empty{border:1px dashed var(--stroke);padding:18px;text-align:center;color:var(--dim);font-family:'VT323',monospace;font-size:14px}
+.remote-root textarea{width:100%;min-height:82px;resize:vertical;background:#000;border:1px solid var(--stroke);color:var(--neon3);font-family:'Share Tech Mono',monospace;font-size:10px;line-height:1.25;padding:6px;user-select:text;-webkit-user-select:text;word-break:break-all}
+.remote-controller{display:flex;flex-direction:column;gap:7px;border:1px solid rgba(255,230,0,.35);padding:7px;background:rgba(255,230,0,.035)}
+.remote-controller.locked{opacity:.72}.remote-controller.live{box-shadow:0 0 12px rgba(0,255,213,.18),inset 0 0 12px rgba(0,255,213,.05)}
+.remote-strip{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--stroke);background:#000;padding:5px 7px;font-family:'Press Start 2P',monospace;font-size:8px;color:var(--neon);letter-spacing:.1em}
+.remote-strip b{color:var(--neon3);font-weight:400;text-shadow:0 0 4px var(--neon3)}
+.remote-row label{min-width:70px;color:var(--dim);letter-spacing:.1em}.remote-row label b{color:var(--neon3);font-weight:400}
+.remote-row input[type=range]{flex:1;min-width:120px;height:6px}
+.remote-transport .btn{flex:1;min-width:68px}
+.remote-pad-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.remote-pad{min-height:54px;background:#000;border:1px solid var(--stroke);color:var(--text);font-family:'VT323',monospace;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;touch-action:none}
+.remote-pad b{color:var(--neon3);font-weight:400;text-shadow:0 0 4px var(--neon3)}.remote-pad span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.remote-pad.empty{opacity:.42}.remote-pad.hit{background:var(--neon);color:#000;transform:scale(.96);box-shadow:0 0 12px var(--neon)}
+.remote-note-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.remote-note{min-height:42px;background:linear-gradient(180deg,var(--white-key),#111);border:1px solid #000;color:#000;font-family:'VT323',monospace;font-size:11px;touch-action:none;border-radius:2px;box-shadow:inset 0 -6px 12px rgba(0,0,0,.28)}
+.remote-note.black{background:linear-gradient(180deg,#222,var(--black-key));color:var(--neon);border-color:var(--stroke)}
+.remote-note.hit{background:var(--neon3)!important;color:#000!important;box-shadow:0 0 12px var(--neon3),inset 0 0 10px rgba(255,255,255,.5);transform:translateY(1px)}
+@media(max-width:560px){.remote-note-grid{grid-template-columns:repeat(6,1fr)}.remote-pad-grid{grid-template-columns:repeat(4,1fr)}.remote-root textarea{min-height:70px}.remote-transport .btn{min-width:58px;font-size:11px}}
+
 /* ============ ARPEGGIATOR ============ */
 .btn-arp{font-family:'Press Start 2P',monospace;font-size:9px;padding:6px 10px;background:#000;color:var(--neon3);border:1px solid var(--neon3);letter-spacing:.1em;display:inline-flex;align-items:center;gap:6px;box-shadow:inset 0 0 6px rgba(255,230,0,.18),0 0 8px rgba(255,230,0,.25);transition:background .12s,color .12s,box-shadow .12s}
 .btn-arp:hover{background:rgba(255,230,0,.08);box-shadow:inset 0 0 8px rgba(255,230,0,.32),0 0 14px rgba(255,230,0,.4)}
@@ -1229,7 +1272,7 @@ input[type=range].range-active{filter:drop-shadow(0 0 6px var(--neon3));}
 
     <div class="div-v"></div>
     <div class="field"><label>OCT</label><button class="btn tiny" id="oct-down">−</button><span class="v" id="oct-val">0</span><button class="btn tiny" id="oct-up">+</button></div>
-    <div class="field"><label>TRP</label><button class="btn tiny" id="trans-down">−</button><span class="v" id="trans-val">0</span><button class="btn tiny" id="trans-up">+</button></div>
+    <div class="field"><label>TRP</label><button class="btn tiny" id="trans-down">−</button><span class="v" id="trans-val">0</span><button class="btn tiny" id="trans-up">+</button><button class="btn tiny gold" id="trans-primary" title="Snap transpose/octave controls back to primary keys">KEYS</button></div>
     <div class="field"><label>BPM</label><input type="range" id="bpm" min="40" max="220" value="92"><span class="v" id="bpm-val">92</span></div>
     <div class="field"><label>DLY</label><select id="delay-div">
       <option value="0.25">1/16</option><option value="0.333">1/8T</option><option value="0.5" selected>1/8</option>
@@ -1306,7 +1349,7 @@ input[type=range].range-active{filter:drop-shadow(0 0 6px var(--neon3));}
   <div class="cc-row"><label>NEON PRIMARY</label><input type="color" data-cv="--neon" value="#00ffd5"></div>
   <div class="cc-row"><label>NEON SECONDARY</label><input type="color" data-cv="--neon2" value="#ff00aa"></div>
   <div class="cc-row"><label>NEON ACCENT</label><input type="color" data-cv="--neon3" value="#ffe600"></div>
-  <div class="cc-row"><label>WHITE KEYS</label><input type="color" data-cv="--white-key" value="#0d0d18"></div>
+  <div class="cc-row"><label>WHITE KEYS</label><input type="color" data-cv="--white-key" value="#fafbf2"></div>
   <div class="cc-row"><label>BLACK KEYS</label><input type="color" data-cv="--black-key" value="#000000"></div>
   <div class="cc-row"><label>UI TEXT</label><input type="color" data-cv="--text" value="#cfeefb"></div>
   <div class="cc-row" style="border-top:1px solid var(--stroke);padding-top:8px;margin-top:6px"><label>BRIGHTNESS</label><input type="range" id="cc-brightness" min="0.4" max="1.6" step="0.05" value="1" style="flex:1"><span style="color:var(--neon);font-family:VT323;font-size:11px;min-width:36px;text-align:right" id="cc-brightness-v">100%</span></div>
@@ -1335,6 +1378,7 @@ input[type=range].range-active{filter:drop-shadow(0 0 6px var(--neon3));}
     <button class="viz-btn warn" id="viz-close">× EXIT</button>
     <button class="viz-btn gold" id="viz-rand">⟲ RANDOMIZE</button>
     <button class="viz-btn" id="viz-toggle-controls">⚙ CONTROLS</button>
+    <button class="viz-btn gold" id="viz-clean">● CLEAN</button>
     <div class="viz-hud-tel">
       <span class="pulse"></span>
       <span>SCENE <b id="viz-tel-scene">COSMOS</b></span>
@@ -1347,6 +1391,7 @@ input[type=range].range-active{filter:drop-shadow(0 0 6px var(--neon3));}
     [V1-V5] presets · drag=rotate · pinch=zoom · two-finger drag=pan · [Q/E] yaw · [W/S] pitch · [A/D] strafe · [Z/X] zoom · [R] randomize · [ESC] exit
   </div>
   <div class="viz-controls" id="viz-controls"></div>
+  <button class="viz-clean-dot" id="viz-clean-dot" title="Show visualizer controls">●</button>
 </div>
 
 <!-- Performance-mode return circle -->
@@ -1649,7 +1694,7 @@ const CHORD_CATALOG=(()=>{const o=[];
 const STATE={
   bank:'EP',patchIdx:0,octave:0,transpose:0,bpm:92,delayDiv:0.5,
   sustain:false,chromatic:false,build:false,keyboardPiano:true,
-  slotsOrderMode:false,padsOrderMode:false,padControlScope:'global',
+  slotsOrderMode:false,padsOrderMode:false,padControlScope:'global',transposeTarget:'keys',
   amp:{a:null,d:null,s:null,r:null},
   filt:{co:null,q:null},
   mod:{lfoR:null,lfoD:null,glide:0,vol:.7,drive:null,pan:0},
@@ -1699,7 +1744,7 @@ const STATE={
   // feed into a held-notes pool; the engine plays them in patterns at a
   // tempo-synced rate. Pad/sampler triggers BYPASS the arp entirely. Pitch
   // bend and mod wheel only affect arp notes when affectsSound is true.
-  arp:{enabled:false,bpm:120,rate:'1/8',direction:'up',octaves:1,gate:0.55,swing:0,
+  arp:{enabled:false,bpm:92,rate:'1/8',direction:'up',octaves:1,gate:0.55,swing:0,
     latch:false,affectsSound:false,
     /* runtime */
     held:[],            // sorted ascending list of held MIDI from keyboard
@@ -1714,6 +1759,7 @@ const STATE={
   },
   // === VISUALIZER ===
   viz:{active:false,scene:'cosmos',sensitivity:1.2,particleCount:1.0,motion:1.0,colorShift:0,bloom:1.0,fog:0.5,
+    autoPan:false,autoSpeed:1.0,autoTarget:null,autoLast:0,clean:false,liveMic:false,micSensitivity:2.4,micEnergy:0,micBass:0,micMid:0,micHigh:0,
     cam:{yaw:0,pitch:0,distance:25,truckX:0,truckY:0},keysDown:new Set(),
     flashes:[],preset:0,raf:null,touch:{enabled:false,pointers:new Map(),gesture:null,lastTap:0}},
   arrowBankFocus:null // 'pads' | 'slots' | null
@@ -1724,7 +1770,7 @@ const freqOf=m=>440*Math.pow(2,(m-69)/12);
 const isBlack=m=>{const n=((m%12)+12)%12;return [1,3,6,8,10].includes(n)};
 const octOf=m=>Math.floor(m/12)-1;
 
-function startVoice(midi,vel=0.78,snap=null){
+function startVoice(midi,vel=0.78,snap=null,opts={}){
   if(!ctx)initAudio();
   // snap allows a pad to lock in patch + sound design at capture time, immune to live changes
   const patch=snap?snap.patch:BANKS[STATE.bank].patches[STATE.patchIdx];
@@ -1776,6 +1822,7 @@ function startVoice(midi,vel=0.78,snap=null){
   }
   const pan=ctx.createStereoPanner();pan.pan.value=liveMod.pan||0;
   const padCfg=snap?snap._pad:null;
+  const wheelEnabled = opts.wheelEnabled !== false && !(padCfg && padCfg.wheelEnabled===false) && !(snap && snap._wheelEnabled===false);
   const routeNodes=[];
   if(padCfg){
     ensurePadDefaults(padCfg);
@@ -1808,12 +1855,12 @@ function startVoice(midi,vel=0.78,snap=null){
     else if(lfoT==='cutoff'){lfoG.gain.value=lfoD*1000;lfoG.connect(filt.frequency)}
     lfo.connect(lfoG);lfo.start(t0);
   }
-  // apply current mod wheel offset to all oscillator detunes
-  const mwCents=STATE.modWheel.active*100;
-  for(const v of oscs)v.osc.detune.setValueAtTime((v.osc.detune.value||0)+mwCents,t0);
+  // apply current pitch/mod wheel offset only to eligible voices
+  const mwCents=wheelEnabled ? (STATE.modWheel.active*100) : 0;
+  for(const v of oscs)v.osc.detune.setValueAtTime((v.osc._origDetune||0)+mwCents,t0);
   for(const v of oscs)v.osc.start(t0);
   if(fmOsc)fmOsc.start(t0);
-  return {midi,oscs,fmOsc,filt,ampN,outNode,pan,lfo,routeNodes,padCfg,started:t0,releasing:false,_amp:amp,
+  return {midi,oscs,fmOsc,filt,ampN,outNode,pan,lfo,routeNodes,padCfg,wheelEnabled,started:t0,releasing:false,_amp:amp,
     setDetuneOffset(cents){
       // applied to detune of each osc in addition to its own d offset
       for(const v of this.oscs){
@@ -1876,6 +1923,8 @@ function killAllVoices(){
   padCancelCountdown();
   padStopAll(true);
   cancelPendingChordStart();
+  if(typeof arpSetEnabled==='function') arpSetEnabled(false);
+  if(typeof spatialEmergencySilence==='function') spatialEmergencySilence();
   for(const [,v] of STATE.activeNotes){try{v.fadeOut(8)}catch{}}
   STATE.activeNotes.clear();
   $$('.wkey, .bkey, .chroma-key').forEach(k=>k.classList.remove('lit','shape'));
@@ -1918,6 +1967,7 @@ function stopAll(){
   padStopAll(true);
   cancelPendingChordStart();
   for(const node of Array.from(STATE.sampler.activeSources||[])){try{node.src.stop(0)}catch{}};
+  arpClearHeld?.();
   releaseAllSmooth();
   STATE.activeChord=null;updateTape();
 }
@@ -2048,11 +2098,13 @@ function ensureAudioReady(){
   }catch(err){ console.warn('audio ready failed',err); }
 }
 function attachPlayableKeyEvents(el,m){
-  const release=()=>{ if(!STATE.build) releaseNoteByDisplay(m); };
+  const currentMidi=()=>m+STATE.octave*12+STATE.transpose;
+  const release=()=>{ if(!STATE.build){ const active=el._activeMidi??currentMidi(); releaseNoteByDisplay(active); el._activeMidi=null; } };
   el.addEventListener('pointerdown',e=>{
     e.preventDefault();
     ensureAudioReady();
-    handlePianoClick(m,e);
+    const real=currentMidi(); el._activeMidi=real;
+    handlePianoClick(real,e);
     try{ el.setPointerCapture(e.pointerId); }catch{}
   },{passive:false});
   el.addEventListener('pointerup',e=>{
@@ -2159,15 +2211,15 @@ function arpTick(){
   let period=arpPeriodMs();
   if(a.swing>0 && (a.step%2===1)) period*=(1+a.swing);
   const gate=Math.max(0.04,Math.min(1,a.gate));
-  // Mod wheel offset only applied if affectsSound is true (otherwise arp is pitch-clean)
-  const modOff = a.affectsSound ? (STATE.modWheel?.value||0) : 0;
+  // Pitch/mod wheel is continuous detune on eligible arp voices, never rounded semitone stepping.
+  const arpOpts={wheelEnabled:!!a.affectsSound};
   if(a.direction==='chord'){
     const chord=a.pattern[0]||[];
     const voices=[];
     for(const baseM of chord){
-      const m=baseM+Math.round(modOff);
+      const m=baseM;
       try{
-        const v=startVoice(m,0.50);
+        const v=startVoice(m,0.50,null,arpOpts);
         highlightKey(m,'lit',true);
         voices.push({midi:m,voice:v});
       }catch{}
@@ -2176,18 +2228,18 @@ function arpTick(){
     a.step++;
   } else if(a.direction==='random'){
     const baseM=a.pattern[Math.floor(Math.random()*a.pattern.length)];
-    const m=baseM+Math.round(modOff);
+    const m=baseM;
     try{
-      const v=startVoice(m,0.50);
+      const v=startVoice(m,0.50,null,arpOpts);
       highlightKey(m,'lit',true);
       a.lastVoice={midi:m,voice:v};
     }catch{}
     a.step++;
   } else {
     const baseM=a.pattern[a.step%a.pattern.length];
-    const m=baseM+Math.round(modOff);
+    const m=baseM;
     try{
-      const v=startVoice(m,0.50);
+      const v=startVoice(m,0.50,null,arpOpts);
       highlightKey(m,'lit',true);
       a.lastVoice={midi:m,voice:v};
     }catch{}
@@ -3077,7 +3129,7 @@ function addArpLoopToNextPad(){
   const built=arpBuildLoopEvents(); if(!built)return;
   const idx=STATE.pads.findIndex(p=>!p);
   if(idx<0){toast('All 16 pads full — clear one first');return}
-  STATE.pads[idx]={kind:'sequence',name:'ARP '+(idx+1)+' '+STATE.arp.rate,events:built.events,duration:built.duration,patchSnapshot:snapshotPatch(),sourceLabel:'ARP SOUND · '+currentPatchLabel(),volume:1,fxSend:1,sustain:true,loop:true,arpLoop:true,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+  STATE.pads[idx]={kind:'sequence',name:'ARP '+(idx+1)+' '+STATE.arp.rate,events:built.events,duration:built.duration,patchSnapshot:snapshotPatch(),sourceLabel:'ARP SOUND · '+currentPatchLabel(),volume:1,fxSend:1,wheelEnabled:true,transpose:0,octaveShift:0,tempoSync:true,sourceBpm:(STATE.arp.bpm||STATE.bpm),sustain:true,loop:true,arpLoop:true,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   buildPadsWindow(); toggleWindow('sampler',true);
   toast(`Pad ${idx+1} ← perfect ARP loop (${built.steps} steps)`);
 }
@@ -3183,7 +3235,7 @@ function buildArpWindow(){
   body.querySelector('#arp-build-shape').onclick=()=>arpLoadBuildShape();
   body.querySelector('#arp-to-pad').onclick=()=>addArpLoopToNextPad();
   const bpmEl=body.querySelector('#arp-bpm');
-  const commitBPM=v=>{ const n=Math.max(20,Math.min(360,Math.round(+v||120))); a.bpm=n; bpmEl.value=n; };
+  const commitBPM=v=>{ const n=Math.max(20,Math.min(360,Math.round(+v||120))); setGlobalTempo(n,false); a.bpm=n; bpmEl.value=n; };
   bpmEl.onchange=e=>{ commitBPM(e.target.value); buildArpWindow(); };
   bpmEl.oninput=e=>{ const n=+e.target.value; if(n>=20 && n<=360) a.bpm=n; };
   body.querySelector('#arp-bpm-down').onclick=()=>{ commitBPM(a.bpm-1); buildArpWindow(); };
@@ -3202,7 +3254,7 @@ function buildArpWindow(){
       for(let i=1;i<arr.length;i++) intervals.push(arr[i]-arr[i-1]);
       const avg=intervals.reduce((s,v)=>s+v,0)/intervals.length;
       const bpm=Math.round(60000/avg);
-      if(bpm>=20 && bpm<=360){ a.bpm=bpm; buildArpWindow(); }
+      if(bpm>=20 && bpm<=360){ setGlobalTempo(bpm,true); }
     }
   };
   body.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ a.rate=b.dataset.r; buildArpWindow(); });
@@ -3803,19 +3855,21 @@ async function decodeAudioFile(file){
   const buf=await file.arrayBuffer();
   return new Promise((res,rej)=>ctx.decodeAudioData(buf.slice(0),res,rej));
 }
-function samplePlaybackRateForWheel(){
-  return Math.pow(2,(STATE.modWheel.active||0)/12);
+function samplePlaybackRateForWheel(padCfg=null){
+  if(padCfg && padCfg.wheelEnabled===false) return Math.pow(2,(((padCfg.transpose||0)+(padCfg.octaveShift||0)*12)/12));
+  return Math.pow(2,(((padCfg?.transpose||0)+(padCfg?.octaveShift||0)*12+(STATE.modWheel.active||0))/12));
 }
 function applyPitchToActiveSamples(){
   const rate=samplePlaybackRateForWheel();
   for(const node of STATE.sampler.activeSources){
+    if(node.wheelEnabled===false) continue;
     try{node.src.playbackRate.setTargetAtTime((node.baseRate||1)*rate,ctx.currentTime,0.04)}catch{}
   }
 }
 function playSampleBuffer(buffer,vel=1,padCfg=null){
   if(!buffer)return null;
   const src=ctx.createBufferSource();src.buffer=buffer;
-  src.playbackRate.value=samplePlaybackRateForWheel();
+  src.playbackRate.value=samplePlaybackRateForWheel(padCfg);
   const g=ctx.createGain();
   const now=ctx.currentTime;
   g.gain.setValueAtTime(0,now);
@@ -3834,7 +3888,7 @@ function playSampleBuffer(buffer,vel=1,padCfg=null){
   } else {
     src.connect(g).connect(fxIn);
   }
-  const node={src,g,padGain,fxSend,drySend,routeNodes,padCfg,baseRate:1};
+  const node={src,g,padGain,fxSend,drySend,routeNodes,padCfg,baseRate:1,wheelEnabled:!(padCfg&&padCfg.wheelEnabled===false)};
   STATE.sampler.activeSources.add(node);
   src.onended=()=>{STATE.sampler.activeSources.delete(node);try{src.disconnect()}catch{};try{g.disconnect()}catch{};for(const n of routeNodes){try{n.disconnect()}catch{}}};
   src.start(now);
@@ -3858,6 +3912,11 @@ function ensurePadDefaults(p,idx=0){
   if(!p)return null;
   if(p.volume==null)p.volume=1;
   if(p.fxSend==null)p.fxSend=1;
+  if(p.wheelEnabled==null)p.wheelEnabled=true;
+  if(p.transpose==null)p.transpose=0;
+  if(p.octaveShift==null)p.octaveShift=0;
+  if(p.tempoSync==null)p.tempoSync=!!p.arpLoop;
+  if(p.arpLoop && !p.sourceBpm)p.sourceBpm=STATE.arp?.bpm||STATE.bpm||120;
   if(!p.sourceLabel && p.patchSnapshot){
     const bank=BANKS[p.patchSnapshot.bank]||{};
     const patch=p.patchSnapshot.patch||bank.patches?.[p.patchSnapshot.patchIdx];
@@ -3880,6 +3939,7 @@ function padSnapshotForPlayback(p){
   if(!p?.patchSnapshot)return null;
   ensurePadDefaults(p);
   p.patchSnapshot._pad=p;
+  p.patchSnapshot._wheelEnabled=p.wheelEnabled!==false;
   return p.patchSnapshot;
 }
 function setPadEditScope(scope){
@@ -4028,13 +4088,13 @@ function padFinalizeCapture(){
   if(!wheelEvents.length && ons.length>=2&&onsSpread<0.2){
     // SHAPE: held simultaneously
     const notes=Array.from(new Set(ons.map(e=>e.midi))).sort((a,b)=>a-b);
-    pad={kind:'shape',name:'SHAPE',notes,patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+    pad={kind:'shape',name:'SHAPE',notes,patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,wheelEnabled:true,transpose:0,octaveShift:0,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   } else if(!wheelEvents.length && ons.length===1&&onsSpread===0){
     // single note still treat as shape with one note
-    pad={kind:'shape',name:'NOTE '+nName(ons[0].midi)+octOf(ons[0].midi),notes:[ons[0].midi],patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+    pad={kind:'shape',name:'NOTE '+nName(ons[0].midi)+octOf(ons[0].midi),notes:[ons[0].midi],patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,wheelEnabled:true,transpose:0,octaveShift:0,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   } else {
     // SEQUENCE: timed events, unquantized
-    pad={kind:'sequence',name:'SEQ '+(idx+1),events:evs,duration:Math.max(0.4,last+0.4),patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+    pad={kind:'sequence',name:'SEQ '+(idx+1),events:evs,duration:Math.max(0.4,last+0.4),patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,wheelEnabled:true,transpose:0,octaveShift:0,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   }
   STATE.pads[idx]=pad;
   STATE.padArmedRec=-1;
@@ -4148,13 +4208,14 @@ function padStartSequence(idx,p,sustain){
   const padEl=document.querySelectorAll('#pads-grid .spad')[idx];
   if(padEl&&sustain)padEl.classList.add('sustained');
   const seq={activeByMidi,allVoices,timers:[],sustain,loop:!!p.loop,stopped:false};
+  const tempoScale = (p.tempoSync||p.arpLoop) ? ((p.sourceBpm||STATE.arp?.bpm||STATE.bpm||120)/Math.max(20,(STATE.arp?.bpm||STATE.bpm||120))) : 1;
   const scheduleCycle=(offsetMs=0)=>{
     if(seq.stopped)return;
     for(const ev of p.events){
       const tm=setTimeout(()=>{
         if(seq.stopped)return;
         if(ev.type==='on'){
-          const real=ev.midi;
+          const real=ev.midi + (p.transpose||0) + (p.octaveShift||0)*12;
           const v=startVoice(real,0.70,padSnapshotForPlayback(p));
           allVoices.add(v);
           const list=activeByMidi.get(ev.midi)||[];
@@ -4169,13 +4230,15 @@ function padStartSequence(idx,p,sustain){
           }
           if(list.length)activeByMidi.set(ev.midi,list); else activeByMidi.delete(ev.midi);
         } else if(ev.type==='wheel'){
-          STATE.modWheel.target=0;
-          STATE.modWheel.active=ev.value||0;
+          if(p.wheelEnabled!==false){
+            STATE.modWheel.target=0;
+            STATE.modWheel.active=ev.value||0;
+          }
         }
-      },offsetMs+Math.max(0,ev.t)*1000);
+      },offsetMs+Math.max(0,ev.t)*1000*tempoScale);
       seq.timers.push(tm);
     }
-    const dur=Math.max(0.12,p.duration||0.9)*1000;
+    const dur=Math.max(0.12,p.duration||0.9)*1000*tempoScale;
     if(p.loop&&sustain){
       const nxt=setTimeout(()=>scheduleCycle(0),dur);
       seq.timers.push(nxt);
@@ -4204,7 +4267,7 @@ function padPlay(idx,sustain){
   if(p.kind==='shape'){
     const voices=[];
     for(const m of p.notes){
-      const real=m + ((p.baseOctave||0)-(p.baseOctave||0))*0 + ((p.baseTranspose||0)-(p.baseTranspose||0))*0;
+      const real=m + (p.transpose||0) + (p.octaveShift||0)*12;
       const v=startVoice(real,0.78,padSnapshotForPlayback(p));
       voices.push(v);
     }
@@ -4248,7 +4311,7 @@ async function loadPadSample(idx,file){
   try{
     const buf=await decodeAudioFile(file);
     const name=file.name.replace(/\.[^.]+$/,'').slice(0,16);
-    STATE.pads[idx]={kind:'sample',name,buffer:buf,sourceLabel:'AUDIO SAMPLE',volume:1,fxSend:1};
+    STATE.pads[idx]={kind:'sample',name,buffer:buf,sourceLabel:'AUDIO SAMPLE',volume:1,fxSend:1,wheelEnabled:true,transpose:0,octaveShift:0};
     buildPadsWindow();toast('Loaded to pad '+(idx+1));
   }catch{toast('Decode failed')}
 }
@@ -4263,7 +4326,7 @@ function saveLitToPad(){
   const idx=STATE.pads.findIndex(p=>!p);
   if(idx<0){toast('All 16 pads full — clear one first');return}
   const notes=Array.from(set).sort((a,b)=>a-b);
-  STATE.pads[idx]={kind:'shape',name:'SHAPE '+(idx+1),notes,patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+  STATE.pads[idx]={kind:'shape',name:'SHAPE '+(idx+1),notes,patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,wheelEnabled:true,transpose:0,octaveShift:0,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   buildPadsWindow();
   toast(`Pad ${idx+1} ← ${notes.length} notes`);
 }
@@ -4283,6 +4346,7 @@ function buildPadsWindow(){
       <button class="btn tiny ${STATE.padCycleMode==='pingpong'?'on':''}" id="pads-cycle-mode">CYCLE: ${STATE.padCycleMode==='pingpong'?'PING-PONG':'LOOP'}</button>
       <button class="btn tiny gold" id="pads-next">NEXT</button>
       <button class="btn tiny gold" id="pads-countdown">3s COUNT</button>
+      <button class="btn tiny gold" id="pads-tap-tempo">TAP BPM</button>
       <button class="btn tiny ${STATE.padsOrderMode?'on':''}" id="pads-order">${STATE.padsOrderMode?'DONE EDITOR':'PAD EDITOR'}</button>
       <button class="btn tiny" id="pads-duplicate">DUP</button>
       <div class="bank-mini-tools">
@@ -4318,6 +4382,7 @@ function buildPadsWindow(){
   };
   body.querySelector('#pads-next').onclick=()=>triggerNextLoadedPad();
   body.querySelector('#pads-countdown').onclick=()=>padCountdownNext();
+  body.querySelector('#pads-tap-tempo').onclick=()=>tapTempo();
   body.querySelector('#pads-order').onclick=()=>{STATE.padsOrderMode=!STATE.padsOrderMode;buildPadsWindow();};
   body.querySelector('#pads-duplicate').onclick=()=>duplicatePadAt(STATE.padEditingIdx>=0?STATE.padEditingIdx:STATE.padCycleIdx>=0?STATE.padCycleIdx:0);
   body.querySelector('#pads-plus').onclick=()=>{STATE.pads.push(null);buildPadsWindow();};
@@ -4354,6 +4419,7 @@ function buildPadsWindow(){
     if(STATE.padArmedRec===i)pad.classList.add('armed-rec');
     if(STATE.padPlayingVoices.has(i)||STATE.padPlayingSequences.has(i))pad.classList.add('sustained');
     if(STATE.padEditingIdx===i)pad.classList.add('editor-selected');
+    if(STATE.transposeTarget==='pad'&&STATE.padEditingIdx===i)pad.classList.add('spad-trans-target');
     const tag=p?(p.kind==='sample'?'WAV':p.kind==='shape'?'CHRD':(p.arpLoop?'ARP':'SEQ')):(STATE.padArmedRec===i?'REC':'•');
     pad.innerHTML=`<span class="spad-key">${getPadDisplayLabel(i)}</span><span class="spad-tag">${tag}</span><span class="${p?'spad-name':'spad-empty'}">${p?p.name:(STATE.padArmedRec===i?'ARMED':'EMPTY')}</span>`;
     if(STATE.padsOrderMode){pad.draggable=true; pad.dataset.dragIndex=i;}
@@ -4369,7 +4435,8 @@ function buildPadsWindow(){
           longPressed=true;
           STATE.padEditingIdx=(STATE.padEditingIdx===i?-1:i);
           STATE.padControlScope=STATE.padEditingIdx>=0?'pad':'global';
-          buildPadsWindow();buildSoundDesignWindow();buildFXWindow();
+          if(STATE.padEditingIdx>=0)STATE.transposeTarget='pad';
+          buildPadsWindow();buildSoundDesignWindow();buildFXWindow();updateTransposeUI();
         },550);
       }
     });
@@ -4393,6 +4460,12 @@ function buildPadsWindow(){
       const f=e.dataTransfer.files[0];if(f)loadPadSample(i,f);
     });
     if(p){
+      const wheel=document.createElement('button');
+      wheel.className='spad-wheel '+(p.wheelEnabled!==false?'on':'');
+      wheel.textContent='PB';
+      wheel.title=(p.wheelEnabled!==false?'Pitch/mod wheel affects this pad':'Pitch/mod wheel ignored by this pad');
+      wheel.onclick=(e)=>{e.stopPropagation();ensurePadDefaults(p,i);p.wheelEnabled=!(p.wheelEnabled!==false);applyPadLiveParams(i);buildPadsWindow();toast('Pad '+(i+1)+' pitch/mod wheel '+(p.wheelEnabled!==false?'ON':'OFF'));};
+      wrap.appendChild(wheel);
       const off=document.createElement('button');
       off.className='spad-off '+(p.disabled?'':'on');
       off.textContent='⏻';
@@ -4410,9 +4483,11 @@ function buildPadsWindow(){
     if(STATE.padsOrderMode && p){
       const mini=document.createElement('div');mini.className='spad-mini-editor';
       mini.innerHTML=`<div class="mini-row"><label>VOL</label><input type="range" min="0" max="2" step="0.01" value="${p.volume??1}" data-mini="vol"><span class="mini-val">${Math.round((p.volume??1)*100)}</span></div>
-        <div class="mini-row"><label>FX</label><input type="range" min="0" max="1" step="0.01" value="${p.fxSend??1}" data-mini="fx"><span class="mini-val">${Math.round((p.fxSend??1)*100)}</span></div>`;
+        <div class="mini-row"><label>FX</label><input type="range" min="0" max="1" step="0.01" value="${p.fxSend??1}" data-mini="fx"><span class="mini-val">${Math.round((p.fxSend??1)*100)}</span></div>
+        <div class="mini-row"><label>TRP</label><input type="range" min="-24" max="24" step="1" value="${p.transpose??0}" data-mini="trp"><span class="mini-val">${p.transpose??0}</span></div>`;
       mini.querySelector('[data-mini="vol"]').oninput=e=>{p.volume=+e.target.value;e.target.nextElementSibling.textContent=Math.round(p.volume*100);applyPadLiveParams(i);};
       mini.querySelector('[data-mini="fx"]').oninput=e=>{p.fxSend=+e.target.value;e.target.nextElementSibling.textContent=Math.round(p.fxSend*100);applyPadLiveParams(i);};
+      mini.querySelector('[data-mini="trp"]').oninput=e=>{p.transpose=+e.target.value;e.target.nextElementSibling.textContent=p.transpose;applyPadLiveParams(i);};
       wrap.appendChild(mini);
     }
     grid.appendChild(wrap);
@@ -4475,6 +4550,9 @@ function buildPadEditPanel(host,idx,p){
       <div class="pad-editor-grid">
         <div class="mw-row"><label>PAD VOL</label><input type="range" id="pe-vol" min="0" max="2" step="0.01" value="${p.volume??1}"><span class="v">${Math.round((p.volume??1)*100)}%</span></div>
         <div class="mw-row"><label>FX SEND</label><input type="range" id="pe-fxsend" min="0" max="1" step="0.01" value="${p.fxSend??1}"><span class="v">${Math.round((p.fxSend??1)*100)}%</span></div>
+        <div class="mw-row"><label>WHEEL</label><button class="btn tiny ${p.wheelEnabled!==false?'on':''}" id="pe-wheel" style="flex:1">PITCH/MOD ${p.wheelEnabled!==false?'ON':'OFF'}</button><span class="v">${p.wheelEnabled!==false?'ON':'OFF'}</span></div>
+        <div class="mw-row"><label>PAD TRP</label><input type="range" id="pe-trans" min="-24" max="24" step="1" value="${p.transpose??0}"><span class="v">${p.transpose??0}</span></div>
+        <div class="mw-row"><label>PAD OCT</label><input type="range" id="pe-oct" min="-3" max="3" step="1" value="${p.octaveShift??0}"><span class="v">${p.octaveShift??0}</span></div>
         ${ps?`
         <div class="mw-row"><label>ATK</label><input type="range" id="pe-a" min="0.001" max="2" step="0.005" value="${ps.amp.a}"><span class="v">${ps.amp.a.toFixed(2)}s</span></div>
         <div class="mw-row"><label>DEC</label><input type="range" id="pe-d" min="0.01" max="2" step="0.01" value="${ps.amp.d}"><span class="v">${ps.amp.d.toFixed(2)}s</span></div>
@@ -4490,6 +4568,9 @@ function buildPadEditPanel(host,idx,p){
   const bindPad=(id,key,disp)=>{const el=host.querySelector('#'+id);if(!el)return;el.oninput=e=>{const val=+e.target.value;p[key]=val;el.nextElementSibling.textContent=disp(val);applyPadLiveParams(idx);};};
   bindPad('pe-vol','volume',v=>Math.round(v*100)+'%');
   bindPad('pe-fxsend','fxSend',v=>Math.round(v*100)+'%');
+  bindPad('pe-trans','transpose',v=>String(v));
+  bindPad('pe-oct','octaveShift',v=>String(v));
+  const wh=host.querySelector('#pe-wheel'); if(wh)wh.onclick=()=>{p.wheelEnabled=!(p.wheelEnabled!==false);applyPadLiveParams(idx);buildPadsWindow();};
   const bindSnap=(id,key,disp)=>{const el=host.querySelector('#'+id);if(!el||!ps)return;el.oninput=e=>{const val=+e.target.value;const [a,b]=key.split('.');ps[a][b]=val;el.nextElementSibling.textContent=disp(val);applyPadLiveParams(idx);};};
   bindSnap('pe-a','amp.a',v=>v.toFixed(2)+'s');bindSnap('pe-d','amp.d',v=>v.toFixed(2)+'s');
   bindSnap('pe-s','amp.s',v=>v.toFixed(2));bindSnap('pe-r','amp.r',v=>v.toFixed(2)+'s');
@@ -4512,7 +4593,7 @@ $('#file-audio').addEventListener('change',async e=>{
       const name=f.name.replace(/\.[^.]+$/,'').slice(0,18);
       // first try to fill an empty pad as a sample
       const idx=STATE.pads.findIndex(p=>!p);
-      if(idx>=0)STATE.pads[idx]={kind:'sample',name,buffer:buf,sourceLabel:'AUDIO SAMPLE',volume:1,fxSend:1};
+      if(idx>=0)STATE.pads[idx]={kind:'sample',name,buffer:buf,sourceLabel:'AUDIO SAMPLE',volume:1,fxSend:1,wheelEnabled:true,transpose:0,octaveShift:0};
       else STATE.sampler.buffers.push({name,buffer:buf});
     } catch(err){toast('Failed: '+f.name)}
   }
@@ -4780,6 +4861,9 @@ $('#kill-btn').addEventListener('click',()=>{
   killAllVoices();
   loopStopReset();
   // brief duck of kill node to slam everything quiet then restore
+  if(typeof arpSetEnabled==='function') arpSetEnabled(false);
+  if(dlyFB){const old=dlyFB.gain.value; dlyFB.gain.cancelScheduledValues(ctx.currentTime); dlyFB.gain.setValueAtTime(0,ctx.currentTime); setTimeout(()=>{try{dlyFB.gain.value=STATE.fx.delayFB}catch{}},260);}
+  if(spatialFX?.nodes?.spFb){spatialFX.nodes.spFb.gain.cancelScheduledValues(ctx.currentTime);spatialFX.nodes.spFb.gain.setValueAtTime(0,ctx.currentTime);}
   const t=ctx.currentTime;
   kill.gain.cancelScheduledValues(t);
   kill.gain.setValueAtTime(0,t);
@@ -4843,15 +4927,48 @@ $('#btn-piano-toggle').addEventListener('click',()=>{
 });
 $('#btn-loop').addEventListener('click',loopArm);
 $('#btn-loopstop').addEventListener('click',loopStopReset);
-$('#oct-up').onclick=()=>{STATE.octave=clamp(STATE.octave+1,-3,3);$('#oct-val').textContent=STATE.octave;refreshShortcuts();updateTape()};
-$('#oct-down').onclick=()=>{STATE.octave=clamp(STATE.octave-1,-3,3);$('#oct-val').textContent=STATE.octave;refreshShortcuts();updateTape()};
-$('#trans-up').onclick=()=>{STATE.transpose=clamp(STATE.transpose+1,-12,12);$('#trans-val').textContent=STATE.transpose;refreshShortcuts();updateTape()};
-$('#trans-down').onclick=()=>{STATE.transpose=clamp(STATE.transpose-1,-12,12);$('#trans-val').textContent=STATE.transpose;refreshShortcuts();updateTape()};
-$('#bpm').addEventListener('input',e=>{STATE.bpm=parseInt(e.target.value,10);$('#bpm-val').textContent=STATE.bpm;applyFXState();updateTape()});
+function activeTransposePad(){return STATE.transposeTarget==='pad' && STATE.padEditingIdx>=0 ? ensurePadDefaults(STATE.pads[STATE.padEditingIdx],STATE.padEditingIdx) : null;}
+function updateTransposeUI(){
+  const p=activeTransposePad();
+  const ov=$('#oct-val'), tv=$('#trans-val'), keyBtn=$('#trans-primary');
+  if(p){ if(ov)ov.textContent='P'+(p.octaveShift>=0?'+':'')+(p.octaveShift||0); if(tv)tv.textContent='P'+((p.transpose||0)>=0?'+':'')+(p.transpose||0); }
+  else { if(ov)ov.textContent=STATE.octave; if(tv)tv.textContent=STATE.transpose; }
+  if(keyBtn)keyBtn.classList.toggle('on',!p);
+}
+function adjustOctave(delta){
+  const p=activeTransposePad();
+  if(p){p.octaveShift=clamp((p.octaveShift||0)+delta,-3,3);applyPadLiveParams(STATE.padEditingIdx);buildPadsWindow();}
+  else {STATE.octave=clamp(STATE.octave+delta,-3,3);refreshShortcuts();}
+  updateTransposeUI();updateTape();
+}
+function adjustTranspose(delta){
+  const p=activeTransposePad();
+  if(p){p.transpose=clamp((p.transpose||0)+delta,-24,24);applyPadLiveParams(STATE.padEditingIdx);buildPadsWindow();}
+  else {STATE.transpose=clamp(STATE.transpose+delta,-12,12);refreshShortcuts();}
+  updateTransposeUI();updateTape();
+}
+function resetTransposeTargetPrimary(){STATE.transposeTarget='keys';updateTransposeUI();buildPadsWindow();toast('Transpose controls: primary keys');}
+$('#oct-up').onclick=()=>adjustOctave(1);
+$('#oct-down').onclick=()=>adjustOctave(-1);
+$('#trans-up').onclick=()=>adjustTranspose(1);
+$('#trans-down').onclick=()=>adjustTranspose(-1);
+$('#trans-primary').onclick=resetTransposeTargetPrimary;
+$('#bpm').addEventListener('input',e=>setGlobalTempo(parseInt(e.target.value,10),false));
 $('#delay-div').addEventListener('change',e=>{STATE.delayDiv=parseFloat(e.target.value);applyFXState()});
 $('#tap-btn').addEventListener('click',tapTempo);
 $('#quant-btn').addEventListener('click',()=>{STATE.loop.quantize=!STATE.loop.quantize;$('#quant-btn').textContent='QNT:'+(STATE.loop.quantize?'ON':'OFF');updateLoopWindow()});
 
+function setGlobalTempo(bpm,announce=true){
+  bpm=Math.max(20,Math.min(360,Math.round(+bpm||STATE.bpm||120)));
+  STATE.bpm=bpm;
+  if(STATE.arp) STATE.arp.bpm=bpm;
+  const b=$('#bpm'); if(b) b.value=clamp(bpm,parseFloat(b.min||20),parseFloat(b.max||360));
+  const bv=$('#bpm-val'); if(bv) bv.textContent=bpm;
+  applyFXState(); updateTape();
+  if(typeof buildArpWindow==='function' && WIN.arp && !WIN.arp.el.classList.contains('hidden')) buildArpWindow();
+  if(typeof buildPadsWindow==='function' && WIN.sampler && !WIN.sampler.el.classList.contains('hidden')) buildPadsWindow();
+  if(announce)toast('GLOBAL BPM = '+bpm+' · ARP/PADS/DELAY SYNCED');
+}
 function tapTempo(){
   const now=performance.now();
   STATE.taps=STATE.taps.filter(t=>now-t<3000);
@@ -4860,7 +4977,7 @@ function tapTempo(){
     const intervals=[];for(let i=1;i<STATE.taps.length;i++)intervals.push(STATE.taps[i]-STATE.taps[i-1]);
     const avg=intervals.reduce((a,b)=>a+b,0)/intervals.length;
     const bpm=Math.round(60000/avg);
-    if(bpm>=40&&bpm<=240){STATE.bpm=bpm;$('#bpm').value=bpm;$('#bpm-val').textContent=bpm;applyFXState();updateTape();toast('BPM = '+bpm)}
+    if(bpm>=20&&bpm<=360){setGlobalTempo(bpm,true)}
   } else toast('Tap again...');
 }
 
@@ -5491,6 +5608,7 @@ function modWheelLoop(){
     // apply to all currently active synth voices (manual + pad voices)
     const cents=next*100;
     const apply=v=>{try{
+      if(v && v.wheelEnabled===false) return;
       for(const o of v.oscs){
         // we previously initialized osc.detune to (orig + initial mwCents). Just reset to current cents on top of original 'd'
         // simplify: target current cents (assumes osc.detune was 0 originally and any offset is mw)
@@ -5640,6 +5758,7 @@ function toggleVisualizer(on){
     vizResize();
     if(!STATE.viz.raf)vizLoop();
   } else {
+    toggleVizClean(false);
     if(STATE.viz.raf){cancelAnimationFrame(STATE.viz.raf);STATE.viz.raf=null}
     if(STATE.viz.touch){STATE.viz.touch.pointers.clear();STATE.viz.touch.gesture=null;}
   }
@@ -5681,6 +5800,8 @@ $('#viz-rand').addEventListener('click',vizRandomize);
 $('#viz-toggle-controls').addEventListener('click',()=>{
   $('#viz-controls').classList.toggle('collapsed');
 });
+$('#viz-clean').addEventListener('click',()=>toggleVizClean(true));
+$('#viz-clean-dot').addEventListener('click',()=>toggleVizClean(false));
 
 const VIZ_SCENES=[
   {id:'cosmos',name:'COSMOS',desc:'starfield + nebulae'},
@@ -5695,6 +5816,81 @@ const VIZ_SCENES=[
   {id:'vapor',name:'VAPOR FIELD',desc:'glittery mist'}
 ];
 
+
+let vizMicStream=null,vizMicAnalyser=null,vizMicData=null;
+function toggleVizClean(on){
+  STATE.viz.clean=!!on;
+  const v=document.getElementById('visualizer'); if(v)v.classList.toggle('clean',STATE.viz.clean);
+}
+async function toggleVizMic(){
+  if(STATE.viz.liveMic){
+    STATE.viz.liveMic=false;
+    try{vizMicStream?.getTracks?.().forEach(t=>t.stop())}catch{}
+    vizMicStream=null;vizMicAnalyser=null;vizMicData=null;buildVizControls();toast('Live mic OFF');return;
+  }
+  try{
+    ensureAudioReady();
+    const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    vizMicStream=stream;
+    const src=ctx.createMediaStreamSource(stream);
+    vizMicAnalyser=ctx.createAnalyser();vizMicAnalyser.fftSize=2048;vizMicAnalyser.smoothingTimeConstant=0.68;
+    vizMicData=new Uint8Array(vizMicAnalyser.frequencyBinCount);
+    src.connect(vizMicAnalyser);
+    STATE.viz.liveMic=true;buildVizControls();toast('Live mic visual input ON');
+  }catch(err){console.warn(err);toast('Mic permission unavailable');}
+}
+function updateVizMicBands(){
+  if(!STATE.viz.liveMic||!vizMicAnalyser||!vizMicData){STATE.viz.micEnergy=STATE.viz.micBass=STATE.viz.micMid=STATE.viz.micHigh=0;return;}
+  vizMicAnalyser.getByteFrequencyData(vizMicData);
+  const N=vizMicData.length;let bs=0,ms=0,hs=0;
+  for(let i=0;i<N*0.10;i++)bs+=vizMicData[i];
+  for(let i=Math.floor(N*0.10);i<N*0.45;i++)ms+=vizMicData[i];
+  for(let i=Math.floor(N*0.45);i<N;i++)hs+=vizMicData[i];
+  const sens=STATE.viz.micSensitivity||2.4;
+  STATE.viz.micBass=clamp((bs/(N*0.10*255))*sens,0,3);
+  STATE.viz.micMid=clamp((ms/(N*0.35*255))*sens,0,3);
+  STATE.viz.micHigh=clamp((hs/(N*0.55*255))*sens,0,3);
+  STATE.viz.micEnergy=(STATE.viz.micBass+STATE.viz.micMid+STATE.viz.micHigh)/3;
+}
+function vizAutoPanStep(t,bass,mid,high,energy){
+  if(!STATE.viz.autoPan)return;
+  const cam=STATE.viz.cam; const sp=STATE.viz.autoSpeed||1;
+  if(!STATE.viz.autoTarget || performance.now()-(STATE.viz.autoLast||0)>2200/sp){
+    STATE.viz.autoLast=performance.now();
+    STATE.viz.autoTarget={yaw:rand(-Math.PI,Math.PI),pitch:rand(-1.05,1.05),distance:rand(10,70),truckX:rand(-18,18),truckY:rand(-12,14),sens:rand(.55,2.8),pc:rand(.45,2.5),mot:rand(.25,3.2),hue:rand(0,360),bloom:rand(.25,2.5),fog:rand(.05,1.45)};
+  }
+  const tg=STATE.viz.autoTarget; const k=0.006*sp;
+  cam.yaw+=(tg.yaw-cam.yaw)*k + Math.sin(t*0.37*sp)*0.002*sp;
+  cam.pitch+=(tg.pitch-cam.pitch)*k + Math.cos(t*0.23*sp)*0.0015*sp;
+  cam.distance+=(tg.distance-cam.distance)*k + Math.sin(t*0.51*sp)*0.015*sp;
+  cam.truckX+=(tg.truckX-cam.truckX)*k;
+  cam.truckY+=(tg.truckY-cam.truckY)*k;
+  const micBoost=STATE.viz.liveMic?(energy*0.8):0;
+  STATE.viz.sensitivity+=(tg.sens+micBoost-STATE.viz.sensitivity)*(0.0028*sp);
+  STATE.viz.particleCount+=(tg.pc+high*0.35-STATE.viz.particleCount)*(0.003*sp);
+  STATE.viz.motion+=(tg.mot+mid*0.45-STATE.viz.motion)*(0.003*sp);
+  STATE.viz.colorShift=(STATE.viz.colorShift+(0.18*sp)+(high*1.4))%360;
+  STATE.viz.bloom+=(tg.bloom+high*0.45-STATE.viz.bloom)*(0.0035*sp);
+  STATE.viz.fog+=(tg.fog+bass*0.22-STATE.viz.fog)*(0.003*sp);
+  if(viz3d)viz3d.applySettings();
+}
+function spatialEmergencySilence(){
+  if(!spatialFX)return;
+  spatialFX.enabled=false;
+  try{for(const pt of spatialFX.points||[]){if(pt.nodes){pt.nodes.out.gain.cancelScheduledValues(ctx.currentTime);pt.nodes.out.gain.setTargetAtTime(0,ctx.currentTime,0.01);}}}catch{}
+  try{const n=spatialFX.nodes;n.spWet.gain.value=0;n.spFb.gain.value=0;n.spLfoGain.gain.value=0;}catch{}
+}
+
+
+function refreshVizControlReadouts(){
+  const pairs=[['vc-sens',STATE.viz.sensitivity,v=>v.toFixed(2)],['vc-p',STATE.viz.particleCount,v=>v.toFixed(2)],['vc-mot',STATE.viz.motion,v=>v.toFixed(2)],['vc-h',STATE.viz.colorShift,v=>(v|0)+'°'],['vc-bl',STATE.viz.bloom,v=>v.toFixed(2)],['vc-fog',STATE.viz.fog,v=>v.toFixed(2)],['vc-zoom',STATE.viz.cam.distance,v=>v.toFixed(0)],['vc-tx',STATE.viz.cam.truckX,v=>v.toFixed(0)],['vc-ty',STATE.viz.cam.truckY,v=>v.toFixed(0)],['vc-yaw',STATE.viz.cam.yaw,v=>v.toFixed(2)]];
+  for(const [id,val,fmt] of pairs){
+    const el=document.getElementById(id), out=document.getElementById(id+'-v');
+    if(el && document.activeElement!==el) el.value=val;
+    if(out) out.textContent=fmt(val);
+  }
+}
+
 function buildVizControls(){
   const c=$('#viz-controls');
   let html='<div class="viz-h2">▣ SCENE</div><div class="scene-grid">';
@@ -5707,6 +5903,9 @@ function buildVizControls(){
     <div class="viz-row"><label>HUE SHIFT</label><input type="range" id="vc-h" min="0" max="360" step="1" value="${STATE.viz.colorShift}"><span class="v" id="vc-h-v">${STATE.viz.colorShift|0}°</span></div>
     <div class="viz-row"><label>BLOOM</label><input type="range" id="vc-bl" min="0" max="2.5" step="0.05" value="${STATE.viz.bloom}"><span class="v" id="vc-bl-v">${STATE.viz.bloom.toFixed(2)}</span></div>
     <div class="viz-row"><label>FOG</label><input type="range" id="vc-fog" min="0" max="1.5" step="0.02" value="${STATE.viz.fog}"><span class="v" id="vc-fog-v">${STATE.viz.fog.toFixed(2)}</span></div>
+    <div class="viz-row"><label>AUTO SPEED</label><input type="range" id="vc-auto-speed" min="0.1" max="4" step="0.05" value="${STATE.viz.autoSpeed}"><span class="v" id="vc-auto-speed-v">${STATE.viz.autoSpeed.toFixed(2)}</span></div>
+    <div class="viz-row"><label>MIC SENS</label><input type="range" id="vc-mic-sens" min="0.2" max="8" step="0.05" value="${STATE.viz.micSensitivity}"><span class="v" id="vc-mic-sens-v">${STATE.viz.micSensitivity.toFixed(2)}</span></div>
+    <div style="display:flex;gap:5px;margin:5px 0;flex-wrap:wrap"><button class="viz-btn ${STATE.viz.autoPan?'on':''}" id="vc-autopan" style="flex:1">AUTO-PAN ${STATE.viz.autoPan?'ON':'OFF'}</button><button class="viz-btn live ${STATE.viz.liveMic?'on':''}" id="vc-mic" style="flex:1">LIVE MIC ${STATE.viz.liveMic?'ON':'OFF'}</button><button class="viz-btn gold" id="vc-clean" style="flex:1">CLEAN FULLSCREEN</button></div>
     <div class="viz-h2">▣ CAMERA</div>
     <div class="viz-row"><label>ZOOM</label><input type="range" id="vc-zoom" min="6" max="80" step="0.5" value="${STATE.viz.cam.distance}"><span class="v" id="vc-zoom-v">${STATE.viz.cam.distance.toFixed(0)}</span></div>
     <div class="viz-row"><label>PAN X</label><input type="range" id="vc-tx" min="-30" max="30" step="0.5" value="${STATE.viz.cam.truckX}"><span class="v" id="vc-tx-v">${STATE.viz.cam.truckX.toFixed(0)}</span></div>
@@ -5729,10 +5928,15 @@ function buildVizControls(){
   wire('vc-h','colorShift',v=>v|0+'°');
   wire('vc-bl','bloom',v=>v.toFixed(2));
   wire('vc-fog','fog',v=>v.toFixed(2));
+  wire('vc-auto-speed','autoSpeed',v=>v.toFixed(2));
+  wire('vc-mic-sens','micSensitivity',v=>v.toFixed(2));
   wire('vc-zoom','cam.distance',v=>v.toFixed(0));
   wire('vc-tx','cam.truckX',v=>v.toFixed(0));
   wire('vc-ty','cam.truckY',v=>v.toFixed(0));
   wire('vc-yaw','cam.yaw',v=>v.toFixed(2));
+  c.querySelector('#vc-autopan').onclick=()=>{STATE.viz.autoPan=!STATE.viz.autoPan;STATE.viz.autoTarget=null;buildVizControls();};
+  c.querySelector('#vc-mic').onclick=()=>toggleVizMic();
+  c.querySelector('#vc-clean').onclick=()=>toggleVizClean(true);
   c.querySelector('#vc-recenter').onclick=()=>{
     STATE.viz.cam.yaw=0;STATE.viz.cam.pitch=0;STATE.viz.cam.truckX=0;STATE.viz.cam.truckY=0;STATE.viz.cam.distance=25;
     buildVizControls();
@@ -6319,6 +6523,15 @@ function vizLoop(){
     for(let i=N*0.4;i<N;i++)hs+=analyserData[i];high=hs/(N*0.6*255);
     energy=(bass+mid+high)/3;
   }
+  updateVizMicBands();
+  if(STATE.viz.liveMic){
+    bass = Math.max(bass, STATE.viz.micBass||0);
+    mid = Math.max(mid, STATE.viz.micMid||0);
+    high = Math.max(high, STATE.viz.micHigh||0);
+    energy = Math.max(energy, STATE.viz.micEnergy||0);
+  }
+  vizAutoPanStep(t,bass,mid,high,energy);
+  if(STATE.viz.autoPan && ((viz3d.fpsFrames||0)%10===0)) refreshVizControlReadouts();
   /* === HUD UPDATES === */
   viz3d.fpsFrames=(viz3d.fpsFrames||0)+1;
   const nowMs=performance.now();
@@ -6412,7 +6625,7 @@ function vizLoop(){
     if(k==='stars'||k==='vapor'||k==='aurora'){
       o.rotation.y+=0.0012*motion+eb*0.012*motion;
       o.rotation.x+=0.0006*motion;
-      const sz=0.4+(k==='aurora'?0.7:0.2)+em*1.2;
+      const sz=0.35+(k==='aurora'?0.9:0.25)+em*2.6+eh*1.2;
       if(o.material)o.material.size=sz*(0.6+STATE.viz.bloom*0.5);
     } else if(k==='neb'){
       o.rotation.y+=0.0025;
@@ -6420,25 +6633,25 @@ function vizLoop(){
     } else if(k==='mirror'){
       o.rotation.x+=o.userData.spinX*motion+eb*0.05;
       o.rotation.y+=o.userData.spinY*motion+em*0.05;
-      const sc=1+eh*1.4*sens;
+      const sc=1+eh*2.8*sens+eb*0.7;
       o.scale.set(sc,sc,sc);
     } else if(k==='cloud'){
       o.position.x+=0.06*motion;
       if(o.position.x>60)o.position.x=-60;
-      o.position.y=Math.sin(t*o.userData.bob+o.userData.phase)*2;
+      o.position.y=Math.sin(t*o.userData.bob+o.userData.phase)*(2+em*8);
       o.material.opacity=Math.max(0.04,o.material.opacity*0.98+em*0.05);
     } else if(k==='sun'){
-      const sc=1+eb*1.5;
+      const sc=1+eb*3.2+eh*0.8;
       o.scale.set(sc,sc,sc);
     } else if(k==='bit'){
       o.rotation.x+=o.userData.spin*motion;
       o.rotation.y+=o.userData.spin*0.7*motion;
-      o.position.y=o.userData.baseY+Math.sin(t*1.5+o.userData.phase)*(1+em*4);
+      o.position.y=o.userData.baseY+Math.sin(t*1.5+o.userData.phase)*(1+em*9+eh*3);
       o.material.color.setHSL(((STATE.viz.colorShift+t*30+o.userData.phase*30)/360)%1,0.8,0.5+eh*0.4);
     } else if(k==='mesa'){
-      o.scale.y=1+eb*0.4+Math.sin(t+o.position.x*0.1)*0.05;
+      o.scale.y=1+eb*1.4+em*0.4+Math.sin(t+o.position.x*0.1)*0.12;
     } else if(k==='moon'){
-      const sc=1+eb*1.2;o.scale.set(sc,sc,sc);
+      const sc=1+eb*2.8+eh*0.7;o.scale.set(sc,sc,sc);
     } else if(k==='mandala'){
       const layer=o.userData.layer;
       o.userData.angle+=(0.005+(layer%2?-1:1)*0.012)*motion+em*0.04;
@@ -6705,6 +6918,299 @@ document.addEventListener('keydown',e=>{
     };
     tick();
   }catch(err){ console.warn('launch UI init failed', err); }
+})();
+
+
+/* ============ REMOTE CONTROL PATCH — iPad Host + iPhone Controller ============
+   Backend-free WebRTC DataChannel control layer for GitHub Pages.
+   Pairing is manual: HOST creates offer → CONTROLLER creates answer → HOST accepts answer.
+*/
+(function(){
+  const REMOTE={role:null,pc:null,dc:null,connected:false,lastState:null,hostOffer:null,controllerAnswer:null,stateTimer:null,pressed:new Set()};
+  const rtcCfg={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
+  const enc=obj=>{
+    try{return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));}
+    catch(e){return btoa(JSON.stringify(obj));}
+  };
+  const dec=str=>{
+    try{return JSON.parse(decodeURIComponent(escape(atob((str||'').trim()))));}
+    catch(e){return JSON.parse(atob((str||'').trim()));}
+  };
+  const waitIce=pc=>new Promise(res=>{
+    if(pc.iceGatheringState==='complete') return res();
+    const done=()=>{ if(pc.iceGatheringState==='complete'){ pc.removeEventListener('icegatheringstatechange',done); res(); } };
+    pc.addEventListener('icegatheringstatechange',done);
+    setTimeout(res,3200);
+  });
+  const copyText=async txt=>{
+    try{await navigator.clipboard.writeText(txt); toast('Copied');}
+    catch(e){toast('Select and copy the code manually');}
+  };
+  function remoteStatusText(){
+    if(REMOTE.connected) return 'CONNECTED · '+(REMOTE.role==='host'?'HOST/iPad':'CONTROLLER/iPhone');
+    if(REMOTE.role==='host') return 'HOST READY · WAITING FOR ANSWER';
+    if(REMOTE.role==='controller') return 'CONTROLLER READY · WAITING FOR HOST';
+    return 'NOT PAIRED';
+  }
+  function closeRemoteConnection(silent=false){
+    try{REMOTE.dc&&REMOTE.dc.close()}catch{}
+    try{REMOTE.pc&&REMOTE.pc.close()}catch{}
+    REMOTE.pc=null; REMOTE.dc=null; REMOTE.connected=false; REMOTE.hostOffer=null; REMOTE.controllerAnswer=null;
+    clearInterval(REMOTE.stateTimer); REMOTE.stateTimer=null;
+    if(!silent) toast('Remote disconnected');
+    buildRemoteWindow();
+  }
+  function makePeer(){
+    const pc=new RTCPeerConnection(rtcCfg);
+    pc.onconnectionstatechange=()=>{
+      if(['failed','disconnected','closed'].includes(pc.connectionState)){
+        REMOTE.connected=false; buildRemoteWindow();
+      }
+    };
+    pc.oniceconnectionstatechange=()=>{
+      if(['failed','disconnected','closed'].includes(pc.iceConnectionState)){
+        REMOTE.connected=false; buildRemoteWindow();
+      }
+    };
+    return pc;
+  }
+  function setupChannel(dc){
+    REMOTE.dc=dc;
+    dc.onopen=()=>{
+      REMOTE.connected=true; toast('Remote connected'); buildRemoteWindow();
+      if(REMOTE.role==='host'){
+        remoteSendState();
+        clearInterval(REMOTE.stateTimer);
+        REMOTE.stateTimer=setInterval(remoteSendState,1500);
+      } else {
+        remoteSend({type:'requestState'});
+      }
+    };
+    dc.onclose=()=>{REMOTE.connected=false; buildRemoteWindow();};
+    dc.onerror=()=>{REMOTE.connected=false; buildRemoteWindow();};
+    dc.onmessage=e=>{
+      let msg=null; try{msg=JSON.parse(e.data)}catch{return;}
+      if(REMOTE.role==='host'){
+        if(msg.type==='cmd') applyRemoteCommand(msg);
+        if(msg.type==='requestState') remoteSendState();
+      } else if(msg.type==='state'){
+        REMOTE.lastState=msg.state; updateControllerState();
+      }
+    };
+  }
+  function remoteSend(obj){
+    if(!REMOTE.dc||REMOTE.dc.readyState!=='open') return false;
+    try{REMOTE.dc.send(JSON.stringify(obj)); return true;}catch{return false;}
+  }
+  function cmd(name,data={}){ return remoteSend({type:'cmd',cmd:name,...data,t:Date.now()}); }
+  function currentRemoteState(){
+    const pads=(STATE.pads||[]).map((p,i)=>p?{
+      i,name:p.name||('PAD '+(i+1)),kind:p.kind||'pad',disabled:!!p.disabled,wheel:p.wheelEnabled!==false,vol:p.volume??1
+    }:{i,name:'EMPTY',kind:'empty',disabled:false,wheel:false,vol:0});
+    return {bpm:STATE.bpm,arp:!!STATE.arp?.enabled,bank:STATE.bank,patch:currentPatchLabel?currentPatchLabel():'PATCH',pads};
+  }
+  function remoteSendState(){ if(REMOTE.role==='host'&&REMOTE.connected) remoteSend({type:'state',state:currentRemoteState()}); }
+  function applyRemoteWheel(semi){
+    if(!STATE?.modWheel) return;
+    const mw=STATE.modWheel;
+    const val=clamp(+semi||0,-(mw.rangeDown||2),(mw.rangeUp||2));
+    mw.active=val;
+    mw.target=val===0?0:(val>0?val/(mw.rangeUp||2):val/(mw.rangeDown||2));
+    const cents=val*100;
+    const apply=v=>{try{
+      if(v&&v.wheelEnabled===false) return;
+      for(const o of v.oscs||[]) o.osc.detune.setTargetAtTime(cents+(o.osc._origDetune||0),ctx.currentTime,0.025);
+    }catch{}};
+    if(STATE.activeNotes) for(const [,v] of STATE.activeNotes) apply(v);
+    for(const [,vs] of STATE.padPlayingVoices||[]) for(const v of (vs.voices||[])) apply(v);
+    for(const [,seq] of STATE.padPlayingSequences||[]) for(const v of (seq.allVoices||[])) apply(v);
+    try{applyPitchToActiveSamples&&applyPitchToActiveSamples();}catch{}
+    const meter=$('#mw-meter'); if(meter) meter.textContent=(val>=0?'+':'')+val.toFixed(2)+' st';
+  }
+  function setRemoteMaster(v){
+    const val=clamp(+v,0,1.2);
+    const el=$('#master-vol'); if(el) el.value=val;
+    const mv=$('#master-val'); if(mv) mv.textContent=Math.round(val*100);
+    if(master) master.gain.setTargetAtTime(val,ctx?.currentTime||0,0.02);
+  }
+  function applyRemoteCommand(m){
+    try{ensureAudioReady&&ensureAudioReady();}catch{}
+    try{
+      switch(m.cmd){
+        case 'noteOn': pressNoteByDisplay(+m.midi); break;
+        case 'noteOff': releaseNoteByDisplay(+m.midi); break;
+        case 'pad': padTrigger(+m.idx); break;
+        case 'padStop': padStop(+m.idx,true); break;
+        case 'stopAll': stopAll(); break;
+        case 'kill': $('#kill-btn')?.click(); break;
+        case 'bpm': setGlobalTempo(+m.value,true); break;
+        case 'tap': tapTempo(); break;
+        case 'arpToggle': arpSetEnabled(!STATE.arp.enabled); break;
+        case 'arpOn': arpSetEnabled(!!m.value); break;
+        case 'master': setRemoteMaster(m.value); break;
+        case 'wheel': applyRemoteWheel(m.value); break;
+        case 'wheelRelease': if(!STATE.modWheel.holdMode) applyRemoteWheel(0); break;
+        case 'sustainToggle': $('#btn-sustain')?.click(); break;
+        case 'openWindow': toggleWindow(m.id,true); break;
+      }
+      remoteSendState();
+    }catch(err){console.warn('remote command failed',err);}
+  }
+  async function startHostPairing(){
+    closeRemoteConnection(true); REMOTE.role='host';
+    const pc=REMOTE.pc=makePeer();
+    const dc=pc.createDataChannel('hold-it-down-remote',{ordered:true}); setupChannel(dc);
+    const offer=await pc.createOffer(); await pc.setLocalDescription(offer); await waitIce(pc);
+    REMOTE.hostOffer=enc(pc.localDescription);
+    buildRemoteWindow(); toast('Host code ready');
+  }
+  async function acceptControllerAnswer(code){
+    if(!REMOTE.pc||REMOTE.role!=='host'){toast('Start HOST first');return;}
+    try{ await REMOTE.pc.setRemoteDescription(new RTCSessionDescription(dec(code))); toast('Answer accepted'); buildRemoteWindow(); }
+    catch(e){toast('Could not read controller answer'); console.warn(e);}
+  }
+  async function startControllerPairing(offerCode){
+    closeRemoteConnection(true); REMOTE.role='controller';
+    const pc=REMOTE.pc=makePeer();
+    pc.ondatachannel=e=>setupChannel(e.channel);
+    try{
+      await pc.setRemoteDescription(new RTCSessionDescription(dec(offerCode)));
+      const answer=await pc.createAnswer(); await pc.setLocalDescription(answer); await waitIce(pc);
+      REMOTE.controllerAnswer=enc(pc.localDescription);
+      buildRemoteWindow(); toast('Controller answer ready');
+    }catch(e){toast('Could not read host code'); console.warn(e); buildRemoteWindow();}
+  }
+  function noteLabel(m){const names=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return names[((m%12)+12)%12]+(Math.floor(m/12)-1);}
+  function controllerPadGridHTML(){
+    const pads=(REMOTE.lastState?.pads||Array.from({length:16},(_,i)=>({i,name:'PAD '+(i+1),kind:'pad'}))).slice(0,32);
+    return pads.map(p=>`<button class="remote-pad ${p.kind==='empty'?'empty':''}" data-rpad="${p.i}"><b>${p.i+1}</b><span>${(p.name||'PAD').replace(/[<>&]/g,s=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[s]))}</span></button>`).join('');
+  }
+  function controllerPianoHTML(){
+    const base=48; let html='';
+    for(let i=0;i<24;i++){const m=base+i; html+=`<button class="remote-note ${[1,3,6,8,10].includes(m%12)?'black':''}" data-rnote="${m}">${noteLabel(m)}</button>`;}
+    return html;
+  }
+  function hostPanelHTML(){
+    return `<div class="remote-section">
+      <div class="remote-subtitle">1 · HOST CODE FROM IPAD</div>
+      <textarea id="remote-host-offer" readonly placeholder="Tap START HOST to create a code">${REMOTE.hostOffer||''}</textarea>
+      <div class="remote-row"><button class="btn gold" id="remote-start-host">${REMOTE.hostOffer?'RESTART HOST':'START HOST'}</button><button class="btn" id="remote-copy-offer" ${REMOTE.hostOffer?'':'disabled'}>COPY HOST CODE</button></div>
+    </div>
+    <div class="remote-section">
+      <div class="remote-subtitle">2 · PASTE IPHONE ANSWER HERE</div>
+      <textarea id="remote-answer-in" placeholder="Paste the controller answer code from your iPhone"></textarea>
+      <div class="remote-row"><button class="btn gold" id="remote-accept-answer">ACCEPT ANSWER</button><button class="btn warn" id="remote-disconnect">DISCONNECT</button></div>
+    </div>`;
+  }
+  function controllerPanelHTML(){
+    const st=REMOTE.lastState||{};
+    return `<div class="remote-section">
+      <div class="remote-subtitle">1 · PASTE IPAD HOST CODE</div>
+      <textarea id="remote-offer-in" placeholder="Paste the host code from your iPad">${REMOTE.hostOffer||''}</textarea>
+      <div class="remote-row"><button class="btn gold" id="remote-start-controller">CONNECT AS CONTROLLER</button><button class="btn warn" id="remote-disconnect-c">DISCONNECT</button></div>
+    </div>
+    <div class="remote-section">
+      <div class="remote-subtitle">2 · COPY THIS ANSWER BACK TO IPAD</div>
+      <textarea id="remote-controller-answer" readonly placeholder="Your answer code appears here after connecting">${REMOTE.controllerAnswer||''}</textarea>
+      <div class="remote-row"><button class="btn" id="remote-copy-answer" ${REMOTE.controllerAnswer?'':'disabled'}>COPY ANSWER CODE</button></div>
+    </div>
+    <div class="remote-controller ${REMOTE.connected?'live':'locked'}">
+      <div class="remote-strip"><span>REMOTE PERFORMANCE SURFACE</span><b>${REMOTE.connected?'LIVE':'PAIR FIRST'}</b></div>
+      <div class="remote-row remote-transport">
+        <button class="btn warn" data-rcmd="kill">KILL</button>
+        <button class="btn warn" data-rcmd="stopAll">STOP ALL</button>
+        <button class="btn gold" data-rcmd="tap">TAP</button>
+        <button class="btn gold" data-rcmd="arpToggle">ARP</button>
+        <button class="btn" data-rcmd="sustainToggle">SUSTAIN</button>
+      </div>
+      <div class="remote-row">
+        <label>BPM <b id="remote-bpm-read">${st.bpm||STATE.bpm}</b></label><input type="range" id="remote-bpm" min="40" max="220" value="${st.bpm||STATE.bpm}">
+      </div>
+      <div class="remote-row">
+        <label>MASTER</label><input type="range" id="remote-master" min="0" max="1.2" step="0.01" value="0.7">
+      </div>
+      <div class="remote-row">
+        <label>PITCH / MOD</label><input type="range" id="remote-wheel" min="-12" max="12" step="0.01" value="0">
+        <button class="btn tiny" id="remote-wheel-zero">CENTER</button>
+      </div>
+      <div class="remote-subtitle">PADS</div>
+      <div class="remote-pad-grid" id="remote-pad-grid">${controllerPadGridHTML()}</div>
+      <div class="remote-subtitle">TWO-OCTAVE NOTE SURFACE</div>
+      <div class="remote-note-grid" id="remote-note-grid">${controllerPianoHTML()}</div>
+      <div class="remote-hint">Tip: keep the iPad connected to your speakers/headphones. The iPhone only sends control commands; it does not need to make sound.</div>
+    </div>`;
+  }
+  function buildRemoteWindow(){
+    const w=WIN.remote; if(!w) return;
+    const body=w.el.querySelector('.win-body');
+    const role=REMOTE.role||'none';
+    body.innerHTML=`<div class="remote-root">
+      <div class="pad-target-strip"><span>REMOTE LINK: <b>${remoteStatusText()}</b></span><span class="scope">GitHub Pages · WebRTC direct</span></div>
+      <div class="remote-role-row">
+        <button class="btn gold ${role==='host'?'on':''}" id="remote-role-host">THIS DEVICE IS iPAD HOST</button>
+        <button class="btn ${role==='controller'?'on':''}" id="remote-role-controller">THIS DEVICE IS iPHONE CONTROLLER</button>
+      </div>
+      <div class="remote-hint">Pairing is manual but server-free: create a host code on the iPad, paste it into the iPhone, copy the iPhone answer back into the iPad, then control pads, notes, arp, tempo, master, kill, and pitch/mod remotely.</div>
+      <div id="remote-panel">${role==='host'?hostPanelHTML():role==='controller'?controllerPanelHTML():'<div class="remote-empty">Choose HOST on the iPad, or CONTROLLER on the iPhone.</div>'}</div>
+    </div>`;
+    body.querySelector('#remote-role-host')?.addEventListener('click',()=>{REMOTE.role='host'; buildRemoteWindow();});
+    body.querySelector('#remote-role-controller')?.addEventListener('click',()=>{REMOTE.role='controller'; buildRemoteWindow();});
+    body.querySelector('#remote-start-host')?.addEventListener('click',startHostPairing);
+    body.querySelector('#remote-copy-offer')?.addEventListener('click',()=>copyText(REMOTE.hostOffer||body.querySelector('#remote-host-offer')?.value||''));
+    body.querySelector('#remote-accept-answer')?.addEventListener('click',()=>acceptControllerAnswer(body.querySelector('#remote-answer-in')?.value||''));
+    body.querySelector('#remote-disconnect')?.addEventListener('click',()=>closeRemoteConnection());
+    body.querySelector('#remote-start-controller')?.addEventListener('click',()=>startControllerPairing(body.querySelector('#remote-offer-in')?.value||''));
+    body.querySelector('#remote-copy-answer')?.addEventListener('click',()=>copyText(REMOTE.controllerAnswer||body.querySelector('#remote-controller-answer')?.value||''));
+    body.querySelector('#remote-disconnect-c')?.addEventListener('click',()=>closeRemoteConnection());
+    bindControllerSurface(body);
+  }
+  function bindControllerSurface(body){
+    body.querySelectorAll('[data-rcmd]').forEach(b=>b.onclick=()=>cmd(b.dataset.rcmd));
+    const bpm=body.querySelector('#remote-bpm'); if(bpm){bpm.oninput=e=>{body.querySelector('#remote-bpm-read').textContent=e.target.value;}; bpm.onchange=e=>cmd('bpm',{value:+e.target.value});}
+    const masterEl=body.querySelector('#remote-master'); if(masterEl) masterEl.oninput=e=>cmd('master',{value:+e.target.value});
+    const wheel=body.querySelector('#remote-wheel'); if(wheel){
+      wheel.oninput=e=>cmd('wheel',{value:+e.target.value});
+      wheel.onchange=e=>cmd('wheelRelease');
+    }
+    body.querySelector('#remote-wheel-zero')?.addEventListener('click',()=>{const w=body.querySelector('#remote-wheel'); if(w)w.value=0; cmd('wheel',{value:0});});
+    body.querySelectorAll('[data-rpad]').forEach(b=>{
+      b.addEventListener('pointerdown',e=>{e.preventDefault(); cmd('pad',{idx:+b.dataset.rpad}); b.classList.add('hit');});
+      b.addEventListener('pointerup',()=>b.classList.remove('hit'));
+      b.addEventListener('pointercancel',()=>b.classList.remove('hit'));
+    });
+    body.querySelectorAll('[data-rnote]').forEach(b=>{
+      const midi=+b.dataset.rnote;
+      const on=e=>{e.preventDefault(); if(REMOTE.pressed.has(midi))return; REMOTE.pressed.add(midi); b.classList.add('hit'); cmd('noteOn',{midi}); try{b.setPointerCapture(e.pointerId)}catch{}};
+      const off=e=>{if(!REMOTE.pressed.has(midi))return; REMOTE.pressed.delete(midi); b.classList.remove('hit'); cmd('noteOff',{midi}); try{b.releasePointerCapture(e.pointerId)}catch{}};
+      b.addEventListener('pointerdown',on,{passive:false});
+      b.addEventListener('pointerup',off,{passive:false});
+      b.addEventListener('pointercancel',off,{passive:false});
+      b.addEventListener('lostpointercapture',off,{passive:false});
+    });
+  }
+  function updateControllerState(){
+    const w=WIN.remote; if(!w||REMOTE.role!=='controller') return;
+    const hidden=w.el.classList.contains('hidden');
+    if(!hidden) buildRemoteWindow();
+  }
+  function installRemoteControl(){
+    if(WIN.remote) return;
+    const dw=$('#desktop')?.clientWidth||900, dh=$('#desktop')?.clientHeight||600;
+    makeWindow('remote','REMOTE CONTROL','',{x:Math.max(20,dw-390),y:70,w:370,h:Math.min(560,dh-80)});
+    buildRemoteWindow();
+    const lb=$('#launcher-bar');
+    if(lb&&!lb.querySelector('[data-w="remote"]')){
+      const b=document.createElement('button'); b.className='launcher-btn'; b.dataset.w='remote'; b.textContent='REMOTE'; b.onclick=()=>toggleWindow('remote'); lb.appendChild(b);
+    }
+    const top=$('.topbar'); const help=$('#btn-help');
+    if(top&&!$('#btn-remote-top')){
+      const b=document.createElement('button'); b.className='btn gold'; b.id='btn-remote-top'; b.textContent='↔ REMOTE'; b.onclick=()=>toggleWindow('remote',true);
+      top.insertBefore(b,help||null);
+    }
+  }
+  const oldInit=window.initApp || initApp;
+  initApp=function(){ oldInit(); installRemoteControl(); };
+  window.HID_REMOTE={startHostPairing,startControllerPairing,close:closeRemoteConnection,send:cmd};
 })();
 
 </script>
