@@ -844,6 +844,30 @@ body.arp-on .wkey.shape,body.arp-on .bkey.shape,body.arp-on .chroma-key.shape{
 .spad.has-seq .spad-tag{color:var(--neon2)}
 .spad.shape .spad-tag{color:var(--neon3)}
 
+/* === PAD EDITOR + TARGETING PATCH === */
+.sample-pads.pad-editor-active{gap:8px;align-items:start}
+.spad-wrap{transition:transform .12s ease, opacity .12s ease}
+.spad-wrap.pad-drag-hover .spad{border-color:var(--neon);box-shadow:0 0 14px rgba(0,255,213,.55),inset 0 0 14px rgba(0,255,213,.16)}
+.spad.editor-selected{outline:2px solid var(--neon3)!important;box-shadow:0 0 12px var(--neon3), inset 0 0 12px rgba(255,230,0,.18)}
+.spad.dragging{opacity:.56;transform:scale(.96);filter:brightness(1.25)}
+.spad-mini-editor{display:flex;flex-direction:column;gap:3px;margin-top:4px;padding:4px;border:1px solid rgba(0,255,213,.22);background:rgba(0,0,0,.72);font-family:'VT323',monospace;font-size:10px;color:var(--dim)}
+.spad-mini-editor .mini-row{display:flex;align-items:center;gap:4px;min-width:0}
+.spad-mini-editor label{width:24px;color:var(--neon3);letter-spacing:.08em}
+.spad-mini-editor input[type=range]{flex:1;min-width:42px;height:5px}
+.spad-mini-editor .mini-val{width:30px;text-align:right;color:var(--neon);font-variant-numeric:tabular-nums}
+.pad-target-strip{border:1px solid rgba(255,230,0,.34);background:linear-gradient(90deg,rgba(255,230,0,.09),rgba(0,255,213,.035));padding:6px 8px;margin:0 0 6px;font-family:'VT323',monospace;font-size:12px;letter-spacing:.07em;line-height:1.35;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.pad-target-strip b{color:var(--neon3);text-shadow:0 0 4px var(--neon3);font-weight:400}
+.pad-target-strip .scope{color:var(--neon);text-shadow:0 0 4px var(--neon)}
+.pad-editor-panel{border-top:2px solid var(--neon3);background:rgba(255,230,0,0.04);padding:6px 8px;margin-top:5px}
+.pad-editor-title{display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--neon3);letter-spacing:.1em;text-shadow:0 0 5px var(--neon3);margin-bottom:5px;flex-wrap:wrap}
+.pad-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;font-family:VT323;font-size:11px}
+.pad-editor-note{font-family:VT323;font-size:10px;color:var(--dim);margin-top:4px;line-height:1.35;letter-spacing:.04em}
+.target-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid var(--stroke);background:rgba(0,0,0,.65);font-family:'VT323',monospace;font-size:12px;letter-spacing:.08em;color:var(--dim);margin-bottom:6px;flex-wrap:wrap}
+.target-pill b{color:var(--neon3);font-weight:400;text-shadow:0 0 4px var(--neon3)}
+.target-pill .scope-global{color:var(--neon)}
+.target-pill .scope-pad{color:var(--neon3)}
+
+
 /* ============ FULLSCREEN VISUALIZER ============ */
 #visualizer{position:fixed;inset:0;z-index:8000;display:none;background:#000;overflow:hidden}
 #visualizer.active{display:block}
@@ -1625,7 +1649,7 @@ const CHORD_CATALOG=(()=>{const o=[];
 const STATE={
   bank:'EP',patchIdx:0,octave:0,transpose:0,bpm:92,delayDiv:0.5,
   sustain:false,chromatic:false,build:false,keyboardPiano:true,
-  slotsOrderMode:false,padsOrderMode:false,
+  slotsOrderMode:false,padsOrderMode:false,padControlScope:'global',
   amp:{a:null,d:null,s:null,r:null},
   filt:{co:null,q:null},
   mod:{lfoR:null,lfoD:null,glide:0,vol:.7,drive:null,pan:0},
@@ -1751,7 +1775,20 @@ function startVoice(midi,vel=0.78,snap=null){
     ampN.connect(sh);outNode=ctx.createGain();sh.connect(outNode);
   }
   const pan=ctx.createStereoPanner();pan.pan.value=liveMod.pan||0;
-  outNode.connect(pan).connect(fxIn);
+  const padCfg=snap?snap._pad:null;
+  const routeNodes=[];
+  if(padCfg){
+    ensurePadDefaults(padCfg);
+    const padGain=ctx.createGain();padGain.gain.value=clamp(padCfg.volume??1,0,2);
+    const fxSend=ctx.createGain();fxSend.gain.value=clamp(padCfg.fxSend??1,0,1);
+    const drySend=ctx.createGain();drySend.gain.value=clamp(1-(padCfg.fxSend??1),0,1);
+    outNode.connect(pan).connect(padGain);
+    padGain.connect(fxSend).connect(fxIn);
+    if(recordTap)padGain.connect(drySend).connect(recordTap); else padGain.connect(drySend).connect(fxIn);
+    routeNodes.push(padGain,fxSend,drySend);
+  } else {
+    outNode.connect(pan).connect(fxIn);
+  }
   const peak=vel;
   ampN.gain.cancelScheduledValues(t0);
   ampN.gain.setValueAtTime(0,t0);
@@ -1776,7 +1813,7 @@ function startVoice(midi,vel=0.78,snap=null){
   for(const v of oscs)v.osc.detune.setValueAtTime((v.osc.detune.value||0)+mwCents,t0);
   for(const v of oscs)v.osc.start(t0);
   if(fmOsc)fmOsc.start(t0);
-  return {midi,oscs,fmOsc,filt,ampN,outNode,pan,lfo,started:t0,releasing:false,_amp:amp,
+  return {midi,oscs,fmOsc,filt,ampN,outNode,pan,lfo,routeNodes,padCfg,started:t0,releasing:false,_amp:amp,
     setDetuneOffset(cents){
       // applied to detune of each osc in addition to its own d offset
       for(const v of this.oscs){
@@ -1794,7 +1831,7 @@ function startVoice(midi,vel=0.78,snap=null){
       for(const v of this.oscs)try{v.osc.stop(stopAt)}catch{}
       if(this.fmOsc)try{this.fmOsc.stop(stopAt)}catch{}
       if(this.lfo)try{this.lfo.stop(stopAt)}catch{}
-      setTimeout(()=>{try{this.pan.disconnect()}catch{}},(this._amp.r+0.1)*1000);
+      setTimeout(()=>{try{this.pan.disconnect()}catch{};for(const n of (this.routeNodes||[])){try{n.disconnect()}catch{}}},(this._amp.r+0.1)*1000);
     },
     fadeOut(ms=28){if(this.releasing)return;this.releasing=true;
       const t=ctx.currentTime;const g=this.ampN.gain;
@@ -1804,7 +1841,7 @@ function startVoice(midi,vel=0.78,snap=null){
       for(const v of this.oscs)try{v.osc.stop(stopAt)}catch{}
       if(this.fmOsc)try{this.fmOsc.stop(stopAt)}catch{}
       if(this.lfo)try{this.lfo.stop(stopAt)}catch{}
-      setTimeout(()=>{try{this.pan.disconnect()}catch{}},ms+50);
+      setTimeout(()=>{try{this.pan.disconnect()}catch{};for(const n of (this.routeNodes||[])){try{n.disconnect()}catch{}}},ms+50);
     }
   };
 }
@@ -3040,7 +3077,7 @@ function addArpLoopToNextPad(){
   const built=arpBuildLoopEvents(); if(!built)return;
   const idx=STATE.pads.findIndex(p=>!p);
   if(idx<0){toast('All 16 pads full — clear one first');return}
-  STATE.pads[idx]={kind:'sequence',name:'ARP '+(idx+1)+' '+STATE.arp.rate,events:built.events,duration:built.duration,patchSnapshot:snapshotPatch(),sustain:true,loop:true,arpLoop:true,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+  STATE.pads[idx]={kind:'sequence',name:'ARP '+(idx+1)+' '+STATE.arp.rate,events:built.events,duration:built.duration,patchSnapshot:snapshotPatch(),sourceLabel:'ARP SOUND · '+currentPatchLabel(),volume:1,fxSend:1,sustain:true,loop:true,arpLoop:true,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   buildPadsWindow(); toggleWindow('sampler',true);
   toast(`Pad ${idx+1} ← perfect ARP loop (${built.steps} steps)`);
 }
@@ -3071,6 +3108,8 @@ function buildArpWindow(){
       <button id="arp-panic" class="arp-mini" title="Clear held notes & stop">⏹ STOP</button>
       <button id="arp-help-toggle" class="arp-mini" title="How to use the arpeggiator">?</button>
     </div>
+
+    <div class="target-pill"><span>ARP SOUND:</span><b class="scope-global">LIVE PATCH · ${currentPatchLabel()}</b><span>ARP LOOP → PAD saves this sound as a locked pad snapshot.</span></div>
 
     <div class="arp-row arp-bpm">
       <label>TEMPO</label>
@@ -3133,7 +3172,7 @@ function buildArpWindow(){
       <b>Direction:</b> ↑, ↓, ↑↓, ↓↑, random, as-played, or CHD chord pulses.<br>
       <b>Oct:</b> repeats the pattern across 1–4 octaves. <b>Gate</b> controls note length; <b>Swing</b> delays every other step for groove.<br>
       <b>Latch:</b> keeps the current note pool playing after you lift your fingers. <b>MOD WHEEL</b> decides whether wheel bends affect the arp notes.<br>
-      <b>ARP LOOP → PAD:</b> writes the current arp as a seamless looping sequence on the next empty pad, ready for live triggering.
+      <b>ARP SOUND:</b> the arpeggiator uses the live global patch shown at the top of this window. Existing pads keep their own saved sound snapshots.<br><b>ARP LOOP → PAD:</b> writes the current arp as a seamless looping sequence on the next empty pad, including the current arp/live-patch sound snapshot.
     </div>
   </div>`;
 
@@ -3369,7 +3408,13 @@ function buildFXWindow(){
     {id:'reverb',name:'REVERB',tk:'fx.reverbOn',params:[{k:'fx.reverbMix',l:'MIX',min:0,max:1,def:.18,fmt:v=>(v*100).toFixed(0)+'%'},{k:'fx.reverbSize',l:'SIZE',min:.3,max:6,def:2.5,fmt:v=>v.toFixed(1)+'s'}]}
   ];
   const body=w.el.querySelector('.win-body');
-  body.innerHTML='<div class="fx-rack" id="fx-rack-inner"></div>';
+  body.innerHTML='<div class="target-pill"><span>FX RACK:</span><b class="scope-global">GLOBAL MIX BUS</b><span> · all pads + live synth feed these effects</span></div><div id="fx-pad-send"></div><div class="fx-rack" id="fx-rack-inner"></div>';
+  const selPad=selectedPad();
+  const fxPadHost=body.querySelector('#fx-pad-send');
+  if(selPad){
+    fxPadHost.innerHTML=`<div class="target-pill"><span>SELECTED PAD:</span><b class="scope-pad">${padTargetLabel()}</b><span>FX SEND</span><input type="range" id="fx-selected-pad-send" min="0" max="1" step="0.01" value="${selPad.fxSend??1}"><span class="v" id="fx-selected-pad-send-v">${Math.round((selPad.fxSend??1)*100)}%</span></div>`;
+    fxPadHost.querySelector('#fx-selected-pad-send').oninput=e=>{selPad.fxSend=+e.target.value;fxPadHost.querySelector('#fx-selected-pad-send-v').textContent=Math.round(selPad.fxSend*100)+'%';applyPadLiveParams(STATE.padEditingIdx);buildPadsWindow();};
+  }
   const rack=body.querySelector('#fx-rack-inner');
   for(const u of FX_UNITS){
     const el=document.createElement('div');el.className='fx-unit';
@@ -3439,34 +3484,45 @@ function buildSoundDesignWindow(){
     {k:'mod.vol',l:'PATCH VOL',min:0,max:1.5,def:.7,fmt:v=>(v*100).toFixed(0)+'%'}
   ];
   const body=w.el.querySelector('.win-body');
-  body.innerHTML='<div class="knob-grid" id="kn-amp"></div><div style="font-family:VT323;font-size:11px;color:var(--dim);padding:6px;letter-spacing:.1em">DRAG VERTICAL TO CHANGE • DOUBLE-CLICK TO RESET • OVERRIDES PATCH DEFAULTS</div>';
+  const pad=selectedPad();
+  if(STATE.padControlScope==='pad' && (!pad || !pad.patchSnapshot)) STATE.padControlScope='global';
+  const padMode=STATE.padControlScope==='pad' && pad && pad.patchSnapshot;
+  const targetSnap=padMode?pad.patchSnapshot:null;
+  const targetText=padMode?padTargetLabel():`GLOBAL LIVE PATCH · ${currentPatchLabel()}`;
+  body.innerHTML=`<div class="target-pill"><span>TARGET:</span><b class="${padMode?'scope-pad':'scope-global'}">${targetText}</b>
+    <button class="btn tiny ${!padMode?'on':''}" id="sd-global">GLOBAL</button>
+    <button class="btn tiny ${padMode?'on':''}" id="sd-pad" ${pad&&pad.patchSnapshot?'':'disabled'}>SELECTED PAD</button>
+    ${pad&&pad.patchSnapshot?'<button class="btn tiny gold" id="sd-copy">COPY LIVE PATCH TO PAD</button>':''}
+  </div><div class="knob-grid" id="kn-amp"></div><div style="font-family:VT323;font-size:11px;color:var(--dim);padding:6px;letter-spacing:.1em;line-height:1.35">GLOBAL changes the live keyboard/arp sound. SELECTED PAD changes only the highlighted pad snapshot. Existing pads keep their own saved sounds unless you copy a new patch into that pad.</div>`;
+  body.querySelector('#sd-global').onclick=()=>setPadEditScope('global');
+  body.querySelector('#sd-pad').onclick=()=>setPadEditScope('pad');
+  const cp=body.querySelector('#sd-copy'); if(cp)cp.onclick=()=>copyCurrentPatchToSelectedPad();
   const grid=body.querySelector('#kn-amp');
   for(const d of KN_AMP){
     const wrap=document.createElement('div');wrap.className='kn';
     const dial=document.createElement('div');dial.className='kn-d';
     const lab=document.createElement('div');lab.className='kn-l';lab.textContent=d.l;
     const val=document.createElement('div');val.className='kn-v';
-    const get=()=>{const [a,b]=d.k.split('.');return STATE[a][b]??d.def};
+    const get=()=>{const [a,b]=d.k.split('.'); if(padMode){targetSnap[a]=targetSnap[a]||{}; return targetSnap[a][b]??d.def;} return STATE[a][b]??d.def};
     const set=v=>{
       v=clamp(v,d.min,d.max);
-      const [a,b]=d.k.split('.');STATE[a][b]=v;
+      const [a,b]=d.k.split('.');
+      if(padMode){targetSnap[a]=targetSnap[a]||{};targetSnap[a][b]=v;applyPadLiveParams(STATE.padEditingIdx);} else {STATE[a][b]=v;if(d.k==='mod.vol'&&master)master.gain.value=v;}
       val.textContent=d.fmt(v);
       const rng=d.max-d.min;
       const rot=((v-d.min)/rng)*270-135;
       dial.style.transform=`rotate(${rot}deg)`;
-      if(d.k==='mod.vol'&&master)master.gain.value=v;
     };
     set(get());
     let drag=false,sy=0,sv=0;
-    dial.addEventListener('pointerdown',e=>{drag=true;sy=e.clientY;sv=get();dial.setPointerCapture(e.pointerId)});
-    dial.addEventListener('pointermove',e=>{if(!drag)return;const dy=(sy-e.clientY)/200;set(sv+dy*(d.max-d.min))});
+    dial.addEventListener('pointerdown',e=>{drag=true;sy=e.clientY;sv=get();dial.setPointerCapture(e.pointerId);e.preventDefault()},{passive:false});
+    dial.addEventListener('pointermove',e=>{if(!drag)return;const dy=(sy-e.clientY)/200;set(sv+dy*(d.max-d.min));e.preventDefault()},{passive:false});
     dial.addEventListener('pointerup',e=>{drag=false;try{dial.releasePointerCapture(e.pointerId)}catch{}});
-    dial.addEventListener('dblclick',()=>{const [a,b]=d.k.split('.');STATE[a][b]=null;set(d.def)});
+    dial.addEventListener('dblclick',()=>{const [a,b]=d.k.split('.');if(padMode){targetSnap[a]=targetSnap[a]||{};targetSnap[a][b]=null;}else STATE[a][b]=null;set(d.def)});
     wrap.appendChild(dial);wrap.appendChild(lab);wrap.appendChild(val);
     grid.appendChild(wrap);
   }
 }
-
 let chordFilter='all',alphaFilter='all';
 function buildChordBankWindow(){
   const w=WIN.chords;if(!w)return;
@@ -3756,7 +3812,7 @@ function applyPitchToActiveSamples(){
     try{node.src.playbackRate.setTargetAtTime((node.baseRate||1)*rate,ctx.currentTime,0.04)}catch{}
   }
 }
-function playSampleBuffer(buffer,vel=1){
+function playSampleBuffer(buffer,vel=1,padCfg=null){
   if(!buffer)return null;
   const src=ctx.createBufferSource();src.buffer=buffer;
   src.playbackRate.value=samplePlaybackRateForWheel();
@@ -3764,10 +3820,23 @@ function playSampleBuffer(buffer,vel=1){
   const now=ctx.currentTime;
   g.gain.setValueAtTime(0,now);
   g.gain.linearRampToValueAtTime(Math.max(0,vel),now+0.004);
-  src.connect(g).connect(fxIn);
-  const node={src,g,baseRate:1};
+  const routeNodes=[];
+  let padGain=null,fxSend=null,drySend=null;
+  if(padCfg){
+    ensurePadDefaults(padCfg);
+    padGain=ctx.createGain();padGain.gain.value=clamp(padCfg.volume??1,0,2);
+    fxSend=ctx.createGain();fxSend.gain.value=clamp(padCfg.fxSend??1,0,1);
+    drySend=ctx.createGain();drySend.gain.value=clamp(1-(padCfg.fxSend??1),0,1);
+    src.connect(g).connect(padGain);
+    padGain.connect(fxSend).connect(fxIn);
+    if(recordTap)padGain.connect(drySend).connect(recordTap); else padGain.connect(drySend).connect(fxIn);
+    routeNodes.push(padGain,fxSend,drySend);
+  } else {
+    src.connect(g).connect(fxIn);
+  }
+  const node={src,g,padGain,fxSend,drySend,routeNodes,padCfg,baseRate:1};
   STATE.sampler.activeSources.add(node);
-  src.onended=()=>{STATE.sampler.activeSources.delete(node);try{src.disconnect()}catch{};try{g.disconnect()}catch{}};
+  src.onended=()=>{STATE.sampler.activeSources.delete(node);try{src.disconnect()}catch{};try{g.disconnect()}catch{};for(const n of routeNodes){try{n.disconnect()}catch{}}};
   src.start(now);
   return src;
 }
@@ -3779,6 +3848,134 @@ function snapshotPatch(){
     patch:BANKS[STATE.bank].patches[STATE.patchIdx], // reference is fine; banks are immutable
     amp:{...STATE.amp},filt:{...STATE.filt},mod:{...STATE.mod}
   };
+}
+
+function currentPatchLabel(){
+  const bank=BANKS[STATE.bank]; const patch=bank?.patches?.[STATE.patchIdx];
+  return `${bank?.name||STATE.bank} · ${patch?.n||'PATCH'}`;
+}
+function ensurePadDefaults(p,idx=0){
+  if(!p)return null;
+  if(p.volume==null)p.volume=1;
+  if(p.fxSend==null)p.fxSend=1;
+  if(!p.sourceLabel && p.patchSnapshot){
+    const bank=BANKS[p.patchSnapshot.bank]||{};
+    const patch=p.patchSnapshot.patch||bank.patches?.[p.patchSnapshot.patchIdx];
+    p.sourceLabel=`${bank.name||p.patchSnapshot.bank||'BANK'} · ${patch?.n||'PATCH'}`;
+  }
+  if(!p.sourceLabel && p.kind==='sample')p.sourceLabel='AUDIO SAMPLE';
+  if(!p.sourceLabel)p.sourceLabel=(p.kind||'PAD').toUpperCase();
+  return p;
+}
+function selectedPad(){
+  const idx=STATE.padEditingIdx;
+  return idx>=0?ensurePadDefaults(STATE.pads[idx],idx):null;
+}
+function padTargetLabel(idx=STATE.padEditingIdx){
+  const p=idx>=0?ensurePadDefaults(STATE.pads[idx],idx):null;
+  if(!p)return 'NO PAD SELECTED';
+  return `PAD ${idx+1} · ${p.name||'UNTITLED'} · ${p.sourceLabel||p.kind?.toUpperCase()||'PAD'}`;
+}
+function padSnapshotForPlayback(p){
+  if(!p?.patchSnapshot)return null;
+  ensurePadDefaults(p);
+  p.patchSnapshot._pad=p;
+  return p.patchSnapshot;
+}
+function setPadEditScope(scope){
+  STATE.padControlScope=scope==='pad'?'pad':'global';
+  if(STATE.padControlScope==='pad' && !selectedPad()){STATE.padControlScope='global';toast('Select a loaded synth pad first');}
+  buildSoundDesignWindow();buildFXWindow();buildPadsWindow();
+}
+function copyCurrentPatchToSelectedPad(){
+  const p=selectedPad();
+  if(!p){toast('Select a pad first');return false;}
+  if(p.kind==='sample'){toast('Audio sample pads use VOL/FX SEND only');return false;}
+  p.patchSnapshot=snapshotPatch();
+  p.sourceLabel=currentPatchLabel();
+  if(!p.name || /^SHAPE|^SEQ|^ARP|^NOTE/.test(p.name))p.name=(BANKS[STATE.bank].patches[STATE.patchIdx]?.n||'PAD').slice(0,18);
+  applyPadLiveParams(STATE.padEditingIdx);
+  buildPadsWindow();buildSoundDesignWindow();buildFXWindow();
+  toast(`Current patch copied to Pad ${STATE.padEditingIdx+1}`);
+  return true;
+}
+function reorderPad(from,to){
+  if(from===to || from<0 || to<0 || from>=STATE.pads.length || to>=STATE.pads.length)return;
+  const mapIdx=old=>{
+    if(old==null||old<0)return old;
+    if(old===from)return to;
+    if(from<to && old>from && old<=to)return old-1;
+    if(from>to && old>=to && old<from)return old+1;
+    return old;
+  };
+  const item=STATE.pads.splice(from,1)[0];
+  STATE.pads.splice(to,0,item);
+  const remapMap=m=>{const nm=new Map();for(const [k,v] of m)nm.set(mapIdx(k),v);return nm;};
+  STATE.padPlayingVoices=remapMap(STATE.padPlayingVoices);
+  STATE.padPlayingSequences=remapMap(STATE.padPlayingSequences);
+  STATE.padEditingIdx=mapIdx(STATE.padEditingIdx);
+  STATE.padCycleIdx=mapIdx(STATE.padCycleIdx);
+  STATE.padArmedRec=mapIdx(STATE.padArmedRec);
+}
+let __padReorderDrag=null;
+function beginPadReorder(from,e){
+  if(!STATE.padsOrderMode)return;
+  if(e.target.closest('input,button,select'))return;
+  e.preventDefault();
+  __padReorderDrag={idx:from,pointerId:e.pointerId,lastTo:from};
+  STATE.padEditingIdx=from;
+  document.body.classList.add('pad-reordering');
+  const padEl=e.currentTarget;padEl.classList.add('dragging');
+  const move=ev=>{
+    if(!__padReorderDrag || ev.pointerId!==__padReorderDrag.pointerId)return;
+    ev.preventDefault();
+    const wrap=document.elementFromPoint(ev.clientX,ev.clientY)?.closest?.('.spad-wrap');
+    if(!wrap || !wrap.dataset.padIndex)return;
+    const to=+wrap.dataset.padIndex;
+    if(Number.isFinite(to) && to!==__padReorderDrag.idx){
+      reorderPad(__padReorderDrag.idx,to);
+      __padReorderDrag.idx=to;
+      buildPadsWindow();
+    }
+  };
+  const up=ev=>{
+    if(!__padReorderDrag || ev.pointerId!==__padReorderDrag.pointerId)return;
+    document.removeEventListener('pointermove',move,true);
+    document.removeEventListener('pointerup',up,true);
+    document.removeEventListener('pointercancel',up,true);
+    document.body.classList.remove('pad-reordering');
+    __padReorderDrag=null;
+    buildPadsWindow();buildSoundDesignWindow();buildFXWindow();
+  };
+  document.addEventListener('pointermove',move,{passive:false,capture:true});
+  document.addEventListener('pointerup',up,{passive:false,capture:true});
+  document.addEventListener('pointercancel',up,{passive:false,capture:true});
+}
+function applyPadLiveParams(idx=STATE.padEditingIdx){
+  if(!ctx)return;
+  const p=idx>=0?ensurePadDefaults(STATE.pads[idx],idx):null;
+  if(!p)return;
+  const ps=p.patchSnapshot;
+  const t=ctx.currentTime;
+  const setRoute=v=>{try{
+    if(v.padGain)v.padGain.gain.setTargetAtTime(clamp(p.volume??1,0,2),t,0.025);
+    if(v.fxSend)v.fxSend.gain.setTargetAtTime(clamp(p.fxSend??1,0,1),t,0.025);
+    if(v.drySend)v.drySend.gain.setTargetAtTime(clamp(1-(p.fxSend??1),0,1),t,0.025);
+  }catch{}};
+  const apply=v=>{try{
+    setRoute(v);
+    if(ps){
+      ps.amp=ps.amp||{};ps.filt=ps.filt||{};ps.mod=ps.mod||{};
+      if(ps.filt.co!=null)v.filt.frequency.setTargetAtTime(ps.filt.co,t,0.02);
+      if(ps.filt.q!=null)v.filt.Q.setTargetAtTime(ps.filt.q,t,0.02);
+      if(ps.mod.pan!=null)v.pan.pan.setTargetAtTime(ps.mod.pan,t,0.02);
+      if(ps.amp.r!=null)v._amp.r=ps.amp.r;
+      if(ps.amp.s!=null)v._amp.s=ps.amp.s;
+    }
+  }catch{}};
+  const vs=STATE.padPlayingVoices.get(idx);if(vs)for(const v of (vs.voices||[]))apply(v);
+  const seq=STATE.padPlayingSequences.get(idx);if(seq)for(const v of (seq.allVoices||[]))apply(v);
+  for(const node of STATE.sampler.activeSources||[])if(node.padCfg===p)setRoute(node);
 }
 
 function padArmCapture(idx){
@@ -3831,13 +4028,13 @@ function padFinalizeCapture(){
   if(!wheelEvents.length && ons.length>=2&&onsSpread<0.2){
     // SHAPE: held simultaneously
     const notes=Array.from(new Set(ons.map(e=>e.midi))).sort((a,b)=>a-b);
-    pad={kind:'shape',name:'SHAPE',notes,patchSnapshot:snapshotPatch(),sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+    pad={kind:'shape',name:'SHAPE',notes,patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   } else if(!wheelEvents.length && ons.length===1&&onsSpread===0){
     // single note still treat as shape with one note
-    pad={kind:'shape',name:'NOTE '+nName(ons[0].midi)+octOf(ons[0].midi),notes:[ons[0].midi],patchSnapshot:snapshotPatch(),sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+    pad={kind:'shape',name:'NOTE '+nName(ons[0].midi)+octOf(ons[0].midi),notes:[ons[0].midi],patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   } else {
     // SEQUENCE: timed events, unquantized
-    pad={kind:'sequence',name:'SEQ '+(idx+1),events:evs,duration:Math.max(0.4,last+0.4),patchSnapshot:snapshotPatch(),sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+    pad={kind:'sequence',name:'SEQ '+(idx+1),events:evs,duration:Math.max(0.4,last+0.4),patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   }
   STATE.pads[idx]=pad;
   STATE.padArmedRec=-1;
@@ -3927,7 +4124,7 @@ function padTrigger(idx){
   recordEvent({type:'pad',padIdx:idx});
 
   if(p.kind==='sample'){
-    playSampleBuffer(p.buffer,1);
+    playSampleBuffer(p.buffer,1,p);
     return;
   }
   // For shape/sequence: respect sustain mode
@@ -3958,7 +4155,7 @@ function padStartSequence(idx,p,sustain){
         if(seq.stopped)return;
         if(ev.type==='on'){
           const real=ev.midi;
-          const v=startVoice(real,0.70,p.patchSnapshot);
+          const v=startVoice(real,0.70,padSnapshotForPlayback(p));
           allVoices.add(v);
           const list=activeByMidi.get(ev.midi)||[];
           list.push(v);
@@ -4008,7 +4205,7 @@ function padPlay(idx,sustain){
     const voices=[];
     for(const m of p.notes){
       const real=m + ((p.baseOctave||0)-(p.baseOctave||0))*0 + ((p.baseTranspose||0)-(p.baseTranspose||0))*0;
-      const v=startVoice(real,0.78,p.patchSnapshot);
+      const v=startVoice(real,0.78,padSnapshotForPlayback(p));
       voices.push(v);
     }
     const padEl=document.querySelectorAll('#pads-grid .spad')[idx];
@@ -4051,7 +4248,7 @@ async function loadPadSample(idx,file){
   try{
     const buf=await decodeAudioFile(file);
     const name=file.name.replace(/\.[^.]+$/,'').slice(0,16);
-    STATE.pads[idx]={kind:'sample',name,buffer:buf};
+    STATE.pads[idx]={kind:'sample',name,buffer:buf,sourceLabel:'AUDIO SAMPLE',volume:1,fxSend:1};
     buildPadsWindow();toast('Loaded to pad '+(idx+1));
   }catch{toast('Decode failed')}
 }
@@ -4066,7 +4263,7 @@ function saveLitToPad(){
   const idx=STATE.pads.findIndex(p=>!p);
   if(idx<0){toast('All 16 pads full — clear one first');return}
   const notes=Array.from(set).sort((a,b)=>a-b);
-  STATE.pads[idx]={kind:'shape',name:'SHAPE '+(idx+1),notes,patchSnapshot:snapshotPatch(),sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
+  STATE.pads[idx]={kind:'shape',name:'SHAPE '+(idx+1),notes,patchSnapshot:snapshotPatch(),sourceLabel:currentPatchLabel(),volume:1,fxSend:1,sustain:STATE.padSustainMode,baseOctave:STATE.octave,baseTranspose:STATE.transpose};
   buildPadsWindow();
   toast(`Pad ${idx+1} ← ${notes.length} notes`);
 }
@@ -4075,7 +4272,7 @@ function buildPadsWindow(){
   ensureArrayMin(STATE.pads,16);
   const w=WIN.sampler;if(!w)return;
   const body=w.el.querySelector('.win-body');
-  const editP=STATE.padEditingIdx>=0?STATE.pads[STATE.padEditingIdx]:null;
+  const editP=STATE.padEditingIdx>=0?ensurePadDefaults(STATE.pads[STATE.padEditingIdx],STATE.padEditingIdx):null;
   body.innerHTML=`
     <div class="sampler-toolbar" style="border-bottom:1px solid var(--stroke);background:rgba(0,255,213,.04);flex-wrap:wrap;gap:3px">
       <button class="btn tiny gold" id="pads-import">+ AUDIO</button>
@@ -4086,7 +4283,7 @@ function buildPadsWindow(){
       <button class="btn tiny ${STATE.padCycleMode==='pingpong'?'on':''}" id="pads-cycle-mode">CYCLE: ${STATE.padCycleMode==='pingpong'?'PING-PONG':'LOOP'}</button>
       <button class="btn tiny gold" id="pads-next">NEXT</button>
       <button class="btn tiny gold" id="pads-countdown">3s COUNT</button>
-      <button class="btn tiny" id="pads-order">${STATE.padsOrderMode?'DONE ORDER':'ORDER'}</button>
+      <button class="btn tiny ${STATE.padsOrderMode?'on':''}" id="pads-order">${STATE.padsOrderMode?'DONE EDITOR':'PAD EDITOR'}</button>
       <button class="btn tiny" id="pads-duplicate">DUP</button>
       <div class="bank-mini-tools">
         <button class="btn tiny" id="pads-minus">−</button>
@@ -4100,13 +4297,13 @@ function buildPadsWindow(){
         <button class="btn tiny" id="pads-arrow-right" aria-label="Next pad">→</button>
       </div>
     </div>
-    <div style="padding:4px 7px;font-family:VT323;font-size:11px;color:var(--dim);letter-spacing:.05em;line-height:1.4">
+    <div class="pad-target-strip"><span>CONTROL TARGET: <b>${editP?('PAD '+(STATE.padEditingIdx+1)+' · '+editP.name):'GLOBAL / NO PAD SELECTED'}</b></span><span class="scope">${STATE.padsOrderMode?'PAD EDITOR ACTIVE':'PLAY MODE'}</span></div><div style="padding:4px 7px;font-family:VT323;font-size:11px;color:var(--dim);letter-spacing:.05em;line-height:1.4">
       EMPTY pad = arm capture · play piano · held=SHAPE, sequential=SEQ<br>
-      LOADED: TAP=trigger · DRAG audio=load · SHIFT-TAP=clear · LONG-PRESS=edit<br>
+      LOADED: TAP=trigger · DRAG audio=load · SHIFT-TAP=clear · LONG-PRESS=edit<br>PAD EDITOR: drag pads to reorder live · tap pad to target · adjust VOL/FX per pad<br>
       NEXT follows loaded pads only · COUNT shows 3, 2, 1 silently then advances<br>
       TAP the ← ARROWS box, then use your keyboard ← / → to move through pads
     </div>
-    <div class="sample-pads" id="pads-grid"></div>
+    <div class="sample-pads ${STATE.padsOrderMode?'pad-editor-active':''}" id="pads-grid"></div>
     <div id="pad-edit-panel"></div>
     <div style="border-top:1px solid var(--stroke);padding:4px 7px;font-family:VT323;font-size:11px;color:var(--neon);letter-spacing:.06em">SAMPLE→KEY ASSIGNMENT</div>
     <div class="sample-list" id="pads-keymap-list" style="padding:0 5px 6px"></div>`;
@@ -4147,8 +4344,8 @@ function buildPadsWindow(){
 
   const grid=body.querySelector('#pads-grid');
   for(let i=0;i<STATE.pads.length;i++){
-    const p=STATE.pads[i];
-    const wrap=document.createElement('div'); wrap.className='spad-wrap';
+    const p=ensurePadDefaults(STATE.pads[i],i);
+    const wrap=document.createElement('div'); wrap.className='spad-wrap'; wrap.dataset.padIndex=i;
     const pad=document.createElement('div');
     pad.className='spad'+((p&&p.disabled)?' off':'');
     if(p&&p.kind==='sample')pad.classList.add('has-sample');
@@ -4156,18 +4353,23 @@ function buildPadsWindow(){
     else if(p&&p.kind==='sequence')pad.classList.add('has-seq');
     if(STATE.padArmedRec===i)pad.classList.add('armed-rec');
     if(STATE.padPlayingVoices.has(i)||STATE.padPlayingSequences.has(i))pad.classList.add('sustained');
-    if(STATE.padEditingIdx===i)pad.style.outline='2px solid var(--neon3)';
+    if(STATE.padEditingIdx===i)pad.classList.add('editor-selected');
     const tag=p?(p.kind==='sample'?'WAV':p.kind==='shape'?'CHRD':(p.arpLoop?'ARP':'SEQ')):(STATE.padArmedRec===i?'REC':'•');
     pad.innerHTML=`<span class="spad-key">${getPadDisplayLabel(i)}</span><span class="spad-tag">${tag}</span><span class="${p?'spad-name':'spad-empty'}">${p?p.name:(STATE.padArmedRec===i?'ARMED':'EMPTY')}</span>`;
     if(STATE.padsOrderMode){pad.draggable=true; pad.dataset.dragIndex=i;}
     let pressTimer=null;let longPressed=false;
     pad.addEventListener('pointerdown',e=>{
       longPressed=false;
+      if(STATE.padsOrderMode){
+        if(STATE.pads[i]){beginPadReorder(i,e);}
+        return;
+      }
       if(STATE.pads[i]){
         pressTimer=setTimeout(()=>{
           longPressed=true;
           STATE.padEditingIdx=(STATE.padEditingIdx===i?-1:i);
-          buildPadsWindow();
+          STATE.padControlScope=STATE.padEditingIdx>=0?'pad':'global';
+          buildPadsWindow();buildSoundDesignWindow();buildFXWindow();
         },550);
       }
     });
@@ -4176,6 +4378,7 @@ function buildPadsWindow(){
     pad.addEventListener('click',e=>{
       if(e.target.closest('.spad-off')) return;
       if(longPressed){longPressed=false;return}
+      if(STATE.padsOrderMode){if(STATE.pads[i]){STATE.padEditingIdx=i;STATE.padControlScope='pad';buildPadsWindow();buildSoundDesignWindow();buildFXWindow();}return}
       if(e.shiftKey){padStop(i,false);STATE.pads[i]=null;if(STATE.padEditingIdx===i)STATE.padEditingIdx=-1;if(STATE.padCycleIdx===i)STATE.padCycleIdx=-1;buildPadsWindow();toast('Pad '+(i+1)+' cleared');return}
       padTrigger(i);
     });
@@ -4201,14 +4404,22 @@ function buildPadsWindow(){
       pad.addEventListener('dragstart',()=>pad.classList.add('dragging'));
       pad.addEventListener('dragend',()=>pad.classList.remove('dragging'));
       wrap.addEventListener('dragover',e=>e.preventDefault());
-      wrap.addEventListener('dragenter',e=>{e.preventDefault(); const from=+(document.querySelector('.spad.dragging')?.dataset.dragIndex??-1); if(from>=0&&from!==i){ moveItem(STATE.pads,from,i); if(STATE.padEditingIdx===from)STATE.padEditingIdx=i; buildPadsWindow(); }});
+      wrap.addEventListener('dragenter',e=>{e.preventDefault(); const from=+(document.querySelector('.spad.dragging')?.dataset.dragIndex??-1); if(from>=0&&from!==i){ reorderPad(from,i); buildPadsWindow(); }});
     }
     wrap.appendChild(pad);
+    if(STATE.padsOrderMode && p){
+      const mini=document.createElement('div');mini.className='spad-mini-editor';
+      mini.innerHTML=`<div class="mini-row"><label>VOL</label><input type="range" min="0" max="2" step="0.01" value="${p.volume??1}" data-mini="vol"><span class="mini-val">${Math.round((p.volume??1)*100)}</span></div>
+        <div class="mini-row"><label>FX</label><input type="range" min="0" max="1" step="0.01" value="${p.fxSend??1}" data-mini="fx"><span class="mini-val">${Math.round((p.fxSend??1)*100)}</span></div>`;
+      mini.querySelector('[data-mini="vol"]').oninput=e=>{p.volume=+e.target.value;e.target.nextElementSibling.textContent=Math.round(p.volume*100);applyPadLiveParams(i);};
+      mini.querySelector('[data-mini="fx"]').oninput=e=>{p.fxSend=+e.target.value;e.target.nextElementSibling.textContent=Math.round(p.fxSend*100);applyPadLiveParams(i);};
+      wrap.appendChild(mini);
+    }
     grid.appendChild(wrap);
   }
 
   // Pad edit panel — shows sliders for selected pad
-  if(editP&&editP.kind!=='sample'){buildPadEditPanel(body.querySelector('#pad-edit-panel'),STATE.padEditingIdx,editP)}
+  if(editP){buildPadEditPanel(body.querySelector('#pad-edit-panel'),STATE.padEditingIdx,editP)}
 
   // Sample→Key assignment list
   const list=body.querySelector('#pads-keymap-list');
@@ -4234,26 +4445,37 @@ function buildPadsWindow(){
 }
 
 function buildPadEditPanel(host,idx,p){
-  if(!p.patchSnapshot)return;
+  if(!host||!p)return;
+  ensurePadDefaults(p,idx);
   const ps=p.patchSnapshot;
-  // Default any missing fields from the locked patch
-  const patch=ps.patch;
-  ps.amp=ps.amp||{};ps.filt=ps.filt||{};ps.mod=ps.mod||{};
-  if(ps.amp.a==null)ps.amp.a=patch.env.a;if(ps.amp.d==null)ps.amp.d=patch.env.d;
-  if(ps.amp.s==null)ps.amp.s=patch.env.s;if(ps.amp.r==null)ps.amp.r=patch.env.r;
-  if(ps.filt.co==null)ps.filt.co=patch.filt.co;if(ps.filt.q==null)ps.filt.q=patch.filt.Q;
-  if(ps.mod.pan==null)ps.mod.pan=0;if(ps.mod.drive==null)ps.mod.drive=patch.drive||0;
+  if(ps){
+    const patch=ps.patch||BANKS[ps.bank]?.patches?.[ps.patchIdx]||BANKS[STATE.bank].patches[STATE.patchIdx];
+    ps.patch=patch;
+    ps.amp=ps.amp||{};ps.filt=ps.filt||{};ps.mod=ps.mod||{};
+    if(ps.amp.a==null)ps.amp.a=patch.env.a;if(ps.amp.d==null)ps.amp.d=patch.env.d;
+    if(ps.amp.s==null)ps.amp.s=patch.env.s;if(ps.amp.r==null)ps.amp.r=patch.env.r;
+    if(ps.filt.co==null)ps.filt.co=patch.filt.co;if(ps.filt.q==null)ps.filt.q=patch.filt.Q;
+    if(ps.mod.pan==null)ps.mod.pan=0;if(ps.mod.drive==null)ps.mod.drive=patch.drive||0;
+  }
   host.innerHTML=`
-    <div style="border-top:2px solid var(--neon3);background:rgba(255,230,0,0.04);padding:6px 8px">
-      <div style="display:flex;justify-content:space-between;align-items:center;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--neon3);letter-spacing:.1em;text-shadow:0 0 5px var(--neon3);margin-bottom:5px">
+    <div class="pad-editor-panel">
+      <div class="pad-editor-title">
         <span>▣ PAD ${idx+1} · ${p.name}</span>
-        <div style="display:flex;gap:4px;align-items:center">
+        <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
           <button class="btn tiny gold" id="pe-stop" style="font-size:9px">STOP</button>
+          ${ps?'<button class="btn tiny gold" id="pe-copy-patch" style="font-size:9px">USE CURRENT PATCH</button>':''}
+          <button class="btn tiny" id="pe-scope" style="font-size:9px">EDIT IN SOUND</button>
           <button class="btn tiny" id="pe-rename" style="font-size:9px">RENAME</button>
           <button class="btn tiny warn" id="pe-close" style="font-size:9px">×</button>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-family:VT323;font-size:11px">
+      <div style="font-family:VT323;font-size:11px;color:var(--dim);margin-bottom:5px;line-height:1.35">
+        SOURCE: <b style="color:var(--neon3);font-weight:400">${p.sourceLabel}</b> · TYPE: <b style="color:var(--neon);font-weight:400">${p.kind.toUpperCase()}</b>
+      </div>
+      <div class="pad-editor-grid">
+        <div class="mw-row"><label>PAD VOL</label><input type="range" id="pe-vol" min="0" max="2" step="0.01" value="${p.volume??1}"><span class="v">${Math.round((p.volume??1)*100)}%</span></div>
+        <div class="mw-row"><label>FX SEND</label><input type="range" id="pe-fxsend" min="0" max="1" step="0.01" value="${p.fxSend??1}"><span class="v">${Math.round((p.fxSend??1)*100)}%</span></div>
+        ${ps?`
         <div class="mw-row"><label>ATK</label><input type="range" id="pe-a" min="0.001" max="2" step="0.005" value="${ps.amp.a}"><span class="v">${ps.amp.a.toFixed(2)}s</span></div>
         <div class="mw-row"><label>DEC</label><input type="range" id="pe-d" min="0.01" max="2" step="0.01" value="${ps.amp.d}"><span class="v">${ps.amp.d.toFixed(2)}s</span></div>
         <div class="mw-row"><label>SUS</label><input type="range" id="pe-s" min="0" max="1" step="0.01" value="${ps.amp.s}"><span class="v">${ps.amp.s.toFixed(2)}</span></div>
@@ -4261,37 +4483,23 @@ function buildPadEditPanel(host,idx,p){
         <div class="mw-row"><label>CUTOFF</label><input type="range" id="pe-co" min="80" max="18000" step="20" value="${ps.filt.co}"><span class="v">${ps.filt.co|0}</span></div>
         <div class="mw-row"><label>RES</label><input type="range" id="pe-q" min="0.1" max="20" step="0.1" value="${ps.filt.q}"><span class="v">${ps.filt.q.toFixed(1)}</span></div>
         <div class="mw-row"><label>DRIVE</label><input type="range" id="pe-dr" min="0" max="1" step="0.01" value="${ps.mod.drive}"><span class="v">${ps.mod.drive.toFixed(2)}</span></div>
-        <div class="mw-row"><label>PAN</label><input type="range" id="pe-pan" min="-1" max="1" step="0.02" value="${ps.mod.pan}"><span class="v">${ps.mod.pan.toFixed(2)}</span></div>
+        <div class="mw-row"><label>PAN</label><input type="range" id="pe-pan" min="-1" max="1" step="0.02" value="${ps.mod.pan}"><span class="v">${ps.mod.pan.toFixed(2)}</span></div>`:'<div style="grid-column:1/-1;color:var(--dim);font-family:VT323;font-size:11px;line-height:1.35">Audio sample pad: individual VOL and FX SEND are available here. Synth/filter/envelope controls apply to chord, note, sequence, and ARP-loop pads.</div>'}
       </div>
-      <div style="font-family:VT323;font-size:10px;color:var(--dim);margin-top:4px;line-height:1.3">Tweaks apply LIVE to playing voices · saved per-pad</div>
+      <div class="pad-editor-note">This panel edits only Pad ${idx+1}. Global Sound Design and Global FX stay separate unless you switch the Sound window back to GLOBAL.</div>
     </div>`;
-  const live=()=>{
-    // apply current settings to all live voices for this pad
-    const tnow=ctx.currentTime;
-    const apply=v=>{try{
-      v.filt.frequency.setTargetAtTime(ps.filt.co,tnow,0.02);
-      v.filt.Q.setTargetAtTime(ps.filt.q,tnow,0.02);
-      v.pan.pan.setTargetAtTime(ps.mod.pan,tnow,0.02);
-      v._amp.r=ps.amp.r;v._amp.s=ps.amp.s;
-    }catch{}};
-    const vs=STATE.padPlayingVoices.get(idx);if(vs)vs.forEach(apply);
-    const seq=STATE.padPlayingSequences.get(idx);if(seq)seq.voices.forEach(apply);
-  };
-  const w2=(id,key,disp,refresh=true)=>{
-    const el=host.querySelector('#'+id);if(!el)return;
-    el.oninput=e=>{const val=+e.target.value;
-      const [a,b]=key.split('.');ps[a][b]=val;
-      el.nextElementSibling.textContent=disp(val);
-      live();
-    };
-  };
-  w2('pe-a','amp.a',v=>v.toFixed(2)+'s');w2('pe-d','amp.d',v=>v.toFixed(2)+'s');
-  w2('pe-s','amp.s',v=>v.toFixed(2));w2('pe-r','amp.r',v=>v.toFixed(2)+'s');
-  w2('pe-co','filt.co',v=>(v|0)+'');w2('pe-q','filt.q',v=>v.toFixed(1));
-  w2('pe-dr','mod.drive',v=>v.toFixed(2));w2('pe-pan','mod.pan',v=>v.toFixed(2));
+  const bindPad=(id,key,disp)=>{const el=host.querySelector('#'+id);if(!el)return;el.oninput=e=>{const val=+e.target.value;p[key]=val;el.nextElementSibling.textContent=disp(val);applyPadLiveParams(idx);};};
+  bindPad('pe-vol','volume',v=>Math.round(v*100)+'%');
+  bindPad('pe-fxsend','fxSend',v=>Math.round(v*100)+'%');
+  const bindSnap=(id,key,disp)=>{const el=host.querySelector('#'+id);if(!el||!ps)return;el.oninput=e=>{const val=+e.target.value;const [a,b]=key.split('.');ps[a][b]=val;el.nextElementSibling.textContent=disp(val);applyPadLiveParams(idx);};};
+  bindSnap('pe-a','amp.a',v=>v.toFixed(2)+'s');bindSnap('pe-d','amp.d',v=>v.toFixed(2)+'s');
+  bindSnap('pe-s','amp.s',v=>v.toFixed(2));bindSnap('pe-r','amp.r',v=>v.toFixed(2)+'s');
+  bindSnap('pe-co','filt.co',v=>(v|0)+'');bindSnap('pe-q','filt.q',v=>v.toFixed(1));
+  bindSnap('pe-dr','mod.drive',v=>v.toFixed(2));bindSnap('pe-pan','mod.pan',v=>v.toFixed(2));
   host.querySelector('#pe-stop').onclick=()=>padStop(idx,true);
-  host.querySelector('#pe-close').onclick=()=>{STATE.padEditingIdx=-1;buildPadsWindow()};
-  host.querySelector('#pe-rename').onclick=()=>{const n=prompt('Pad name?',p.name);if(n){p.name=n.slice(0,18);buildPadsWindow()}};
+  host.querySelector('#pe-close').onclick=()=>{STATE.padEditingIdx=-1;STATE.padControlScope='global';buildPadsWindow();buildSoundDesignWindow();buildFXWindow()};
+  host.querySelector('#pe-rename').onclick=()=>{const n=prompt('Pad name?',p.name);if(n){p.name=n.slice(0,18);buildPadsWindow();buildSoundDesignWindow();buildFXWindow()}};
+  const cp=host.querySelector('#pe-copy-patch'); if(cp)cp.onclick=()=>copyCurrentPatchToSelectedPad();
+  host.querySelector('#pe-scope').onclick=()=>{STATE.padEditingIdx=idx;setPadEditScope('pad');toggleWindow('sound',true);};
 }
 // Backwards alias so init still works
 function buildSamplerWindow(){return buildPadsWindow()}
@@ -4304,7 +4512,7 @@ $('#file-audio').addEventListener('change',async e=>{
       const name=f.name.replace(/\.[^.]+$/,'').slice(0,18);
       // first try to fill an empty pad as a sample
       const idx=STATE.pads.findIndex(p=>!p);
-      if(idx>=0)STATE.pads[idx]={kind:'sample',name,buffer:buf};
+      if(idx>=0)STATE.pads[idx]={kind:'sample',name,buffer:buf,sourceLabel:'AUDIO SAMPLE',volume:1,fxSend:1};
       else STATE.sampler.buffers.push({name,buffer:buf});
     } catch(err){toast('Failed: '+f.name)}
   }
@@ -4378,7 +4586,7 @@ function playLoopEvent(ev){
     const notes=c.customNotes?c.customNotes:c.ints.map(i=>60+(c.rootIdx??0)+i);
     setTimeout(()=>{for(const m of notes){const real=m+STATE.octave*12+STATE.transpose;const v=startVoice(real,.78);STATE.activeNotes.set(real,v);highlightKey(real,'lit',true)}},10);
   } else if(ev.type==='sample'){
-    const p=STATE.sampler.pads[ev.padIdx];if(p)playSampleBuffer(p.buffer,1);
+    const p=STATE.sampler.pads[ev.padIdx];if(p)playSampleBuffer(p.buffer,1,p);
   }
 }
 function buildLoopWindow(){
