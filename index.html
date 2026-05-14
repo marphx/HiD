@@ -5584,7 +5584,7 @@ function initApp(){
   // Splitters
   setupSplitters();
   // Visualizer init
-  setupVisualizer();
+  try{ setupVisualizer(); }catch(vizErr){ console.warn('Visualizer init skipped during launch',vizErr); }
   const desktopEl=$('#desktop');
   if(desktopEl && !desktopEl.__audioWakeBound){
     desktopEl.__audioWakeBound=true;
@@ -6244,13 +6244,14 @@ async function startAppFromLaunch(ev){
     }
     __launchReady=true;
   }catch(err){
-    console.error('App startup failed. Launch lock released so you can try again.',err);
-    __launchReady=false;
-    window.__appInitialized=false;
-    // Give a visible recovery path instead of leaving the user stuck.
-    if(launchEl) launchEl.style.display='grid';
-    if(appEl) appEl.classList.remove('active');
-    try{ toast('Startup hit an error — tap Launch again'); }catch{}
+    window.__lastStartupError=err;
+    console.error('App startup recovered without returning to the launch screen.',err);
+    __launchReady=true;
+    // Do NOT return the user to the home screen. Keep the app visible even if
+    // one optional module fails, then let the user continue using whatever loaded.
+    if(launchEl) launchEl.style.display='none';
+    if(appEl) appEl.classList.add('active');
+    try{ toast('Main screen opened — one module recovered'); }catch{}
   }finally{
     __launchStarting=false;
   }
@@ -6494,7 +6495,82 @@ document.addEventListener('keydown',e=>{
   window.addEventListener('touchmove',e=>{if(REMOTE.activeWheel)e.preventDefault()},{passive:false});
   function updateControllerState(){const w=WIN.remote;if(!w||REMOTE.role!=='controller')return;const hidden=w.el.classList.contains('hidden');if(hidden)return;const now=performance.now();if(REMOTE.uiBusy||now-(REMOTE.lastTouch||0)<1100){clearTimeout(REMOTE.renderTimer);REMOTE.renderTimer=setTimeout(()=>{REMOTE.uiBusy=false;updateControllerState();},1200);return;}buildRemoteWindow();}
   function installRemoteControl(){if(WIN.remote)return;const dw=$('#desktop')?.clientWidth||900,dh=$('#desktop')?.clientHeight||600;makeWindow('remote','REMOTE CONTROL','',{x:Math.max(10,dw-620),y:45,w:Math.min(760,Math.max(420,dw-30)),h:Math.min(720,dh-60)});buildRemoteWindow();const lb=$('#launcher-bar');if(lb&&!lb.querySelector('[data-w="remote"]')){const b=document.createElement('button');b.className='launcher-btn';b.dataset.w='remote';b.textContent='REMOTE';b.onclick=()=>toggleWindow('remote');lb.appendChild(b)}const top=$('.topbar');const help=$('#btn-help');if(top&&!$('#btn-remote-top')){const b=document.createElement('button');b.className='btn gold';b.id='btn-remote-top';b.textContent='↔ REMOTE';b.onclick=()=>toggleWindow('remote',true);top.insertBefore(b,help||null)}}
-  const oldInit=window.initApp||initApp;initApp=function(){oldInit();installRemoteControl();};window.HID_REMOTE={startHostPairing,startControllerPairing,close:closeRemoteConnection,send:cmd};
+  const oldInit=window.initApp||initApp;
+  initApp=function(){
+    try{ oldInit(); }
+    catch(coreErr){
+      window.__lastStartupError=coreErr;
+      console.error('Core startup recovered instead of returning to launch screen',coreErr);
+      try{ document.getElementById('launch') && (document.getElementById('launch').style.display='none'); }catch{}
+      try{ document.getElementById('app') && document.getElementById('app').classList.add('active'); }catch{}
+    }
+    try{ installRemoteControl(); }
+    catch(remoteErr){
+      window.__lastRemoteStartupError=remoteErr;
+      console.warn('Remote panel startup skipped instead of blocking app launch',remoteErr);
+    }
+  };
+  window.HID_REMOTE={startHostPairing,startControllerPairing,close:closeRemoteConnection,send:cmd};
+})();
+
+
+/* ===== HARD LAUNCH REPAIR PATCH =====
+   Keeps the user from getting trapped on the home screen if audio, remote,
+   or visualizer startup throws on iPad/Safari.  The interface opens first;
+   optional modules initialize afterward and fail softly. */
+(function(){
+  function showMainInterface(){
+    const launch=document.getElementById('launch');
+    const app=document.getElementById('app');
+    const modal=document.getElementById('prelaunch-modal');
+    if(modal){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');modal.style.pointerEvents='none';}
+    if(launch){launch.style.display='none';launch.style.pointerEvents='none';}
+    if(app){app.style.display='flex';app.classList.add('active');app.style.visibility='visible';app.style.opacity='1';}
+    document.body.classList.remove('performance','remote-fullscreen','remote-wheel-lock');
+  }
+  function safeBootModules(){
+    if(window.__hidHardBooted) return;
+    window.__hidHardBooted=true;
+    try{
+      if(typeof initApp==='function' && !window.__appInitialized){
+        window.__appInitialized=true;
+        initApp();
+      }
+    }catch(err){
+      window.__lastStartupError=err;
+      console.error('Hard launch boot recovered',err);
+      // Try to at least build the core interface pieces that are safe.
+      try{ if(typeof initAudio==='function') initAudio(); }catch{}
+      try{ if(typeof updateKeyboardPianoUI==='function') updateKeyboardPianoUI(); }catch{}
+      try{ if(typeof buildPiano==='function') buildPiano(); }catch{}
+      try{ if(typeof buildChroma==='function') buildChroma(); }catch{}
+      try{ if(typeof buildBankSelect==='function') buildBankSelect(); }catch{}
+      try{ if(typeof setupSplitters==='function') setupSplitters(); }catch{}
+    }
+    showMainInterface();
+    try{ if(ctx && ctx.state!=='running') ctx.resume().catch(()=>{}); }catch{}
+  }
+  function hardLaunch(ev){
+    if(ev){ev.preventDefault?.();ev.stopPropagation?.();}
+    showMainInterface();
+    setTimeout(safeBootModules,0);
+  }
+  window.HID_FORCE_LAUNCH=hardLaunch;
+  function bind(){
+    const lb=document.getElementById('launch-btn');
+    const cb=document.getElementById('prelaunch-continue');
+    [lb,cb].forEach(btn=>{if(!btn)return;btn.style.pointerEvents='auto';btn.onclick=hardLaunch;btn.addEventListener('pointerdown',hardLaunch,{capture:true,passive:false});btn.addEventListener('touchstart',hardLaunch,{capture:true,passive:false});btn.addEventListener('click',hardLaunch,{capture:true,passive:false});});
+    const launch=document.getElementById('launch');
+    if(launch && !launch.__hidHardLaunchBound){
+      launch.__hidHardLaunchBound=true;
+      launch.style.pointerEvents='auto';
+      launch.addEventListener('pointerdown',function(e){ if(e.target.closest('#launch-btn,.lb,.launch-actions')) hardLaunch(e); },{capture:true,passive:false});
+      launch.addEventListener('touchstart',function(e){ if(e.target.closest('#launch-btn,.lb,.launch-actions')) hardLaunch(e); },{capture:true,passive:false});
+    }
+  }
+  bind();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true});
+  window.addEventListener('load',bind,{once:true});
 })();
 
 </script>
