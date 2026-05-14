@@ -1120,6 +1120,30 @@ input[type=range].range-active{filter:drop-shadow(0 0 6px var(--neon3));}
 @media(max-width:980px){.remote-board{grid-template-columns:1fr}.window:has(.remote-root){width:min(96vw,580px)!important}.remote-pad-grid.big{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:560px){.remote-board{grid-template-columns:1fr}.remote-pad-grid.big{grid-template-columns:repeat(2,1fr)}.remote-slot-grid{grid-template-columns:repeat(2,1fr)}.remote-param{grid-template-columns:62px 1fr 36px}.remote-window-grid{grid-template-columns:1fr}}
 
+
+
+/* ===== REMOTE CONTROL STABILITY + PHONE FULLSCREEN PATCH ===== */
+body.remote-wheel-lock{touch-action:none!important;overflow:hidden!important;overscroll-behavior:none!important}
+body.remote-fullscreen .topbar,body.remote-fullscreen .piano-bar{display:none!important}
+body.remote-fullscreen .desktop{position:fixed!important;inset:0!important;z-index:10020!important;min-height:100dvh!important}
+.window.remote-fs{position:fixed!important;inset:0!important;left:0!important;top:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;min-width:0!important;min-height:0!important;z-index:10050!important;border:0!important;border-radius:0!important;transform:none!important;background:radial-gradient(ellipse at 20% 0%,rgba(0,255,213,.12),transparent 46%),radial-gradient(ellipse at 100% 20%,rgba(255,0,170,.10),transparent 44%),linear-gradient(180deg,#05040d,#000)!important}
+.window.remote-fs .win-title,.window.remote-fs .win-resize,.window.remote-fs::before,.window.remote-fs::after,.window.remote-fs .win-corners-bot{display:none!important}
+.window.remote-fs .win-body{padding:0!important;overflow:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;height:100dvh!important}
+.window.remote-fs .win-body::after{display:none!important}
+.window.remote-fs .remote-root{min-height:100dvh;padding:8px 8px calc(18px + env(safe-area-inset-bottom));gap:10px;background:radial-gradient(circle at 50% -10%,rgba(0,255,213,.08),transparent 42%),#000}
+.remote-fs-header{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 9px;border:1px solid var(--stroke);background:linear-gradient(180deg,rgba(0,0,0,.98),rgba(5,4,13,.92));box-shadow:0 0 16px rgba(0,255,213,.16);backdrop-filter:blur(8px)}
+.remote-fs-header .rtitle{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--neon);letter-spacing:.13em;text-shadow:0 0 5px var(--neon);line-height:1.5}.remote-fs-header .rtitle b{color:var(--neon3);font-weight:400;text-shadow:0 0 5px var(--neon3)}
+.window.remote-fs .remote-board{display:grid;grid-template-columns:1fr;gap:10px;align-items:start}.window.remote-fs .remote-board-col{gap:10px}.window.remote-fs .remote-panel-card{padding:10px;border-color:rgba(0,255,213,.36);box-shadow:0 0 14px rgba(0,255,213,.10),inset 0 0 20px rgba(0,0,0,.5)}
+.window.remote-fs .remote-mini-title{font-size:8px;margin-bottom:8px}.window.remote-fs .remote-row{gap:8px}.window.remote-fs .remote-transport .btn{min-height:42px;font-size:14px}.window.remote-fs .btn.tiny{min-height:34px;font-size:13px;padding:6px 8px}
+.window.remote-fs .remote-param{grid-template-columns:84px minmax(142px,1fr) 52px;min-height:42px;gap:8px;font-size:15px}.window.remote-fs .remote-param label{font-size:14px;color:var(--neon3);letter-spacing:.09em}.window.remote-fs .remote-param .v{font-size:13px;color:var(--neon);text-align:right}.window.remote-fs .remote-param input[type=range]{height:12px!important;min-width:140px;border-radius:10px;background:linear-gradient(90deg,rgba(0,255,213,.28),rgba(255,230,0,.18),rgba(255,0,170,.20))!important}.window.remote-fs .remote-param input[type=range]::-webkit-slider-thumb{width:28px!important;height:28px!important;border-radius:8px!important;background:linear-gradient(180deg,#fff,var(--neon3))!important;box-shadow:0 0 12px var(--neon3),0 0 24px rgba(255,230,0,.35)!important}.window.remote-fs .remote-param input[type=range]::-moz-range-thumb{width:28px!important;height:28px!important;border-radius:8px!important;background:linear-gradient(180deg,#fff,var(--neon3))!important;box-shadow:0 0 12px var(--neon3)!important}
+.window.remote-fs .remote-pad-grid.big{grid-template-columns:repeat(4,minmax(70px,1fr));gap:8px}.window.remote-fs .remote-pad-cell{padding:6px;gap:5px}.window.remote-fs .remote-pad-trigger{min-height:64px;font-size:14px}.window.remote-fs .remote-pad-trigger span{font-size:11px}.window.remote-fs .remote-pad-mini{grid-template-columns:31px 1fr 28px;font-size:11px}.window.remote-fs .remote-pad-mini input[type=range]{height:10px}.window.remote-fs .remote-pad-pb{font-size:12px;padding:2px 5px;min-height:22px}
+.window.remote-fs .remote-slot-grid{grid-template-columns:repeat(5,minmax(58px,1fr));gap:7px}.window.remote-fs .remote-slot{min-height:52px;font-size:13px}.window.remote-fs .remote-window-grid{grid-template-columns:repeat(2,1fr);gap:7px}.window.remote-fs .remote-toggle-row{gap:7px}.window.remote-fs .remote-toggle-row.three{grid-template-columns:repeat(3,1fr)}
+.window.remote-fs .remote-note-grid{grid-template-columns:repeat(12,minmax(42px,1fr));gap:5px}.window.remote-fs .remote-note{min-height:58px;font-size:13px}.window.remote-fs .remote-subtitle{font-size:9px;margin-top:6px}.window.remote-fs .remote-hint{font-size:13px}
+.remote-wheel-zone,.remote-wheel-zone *{touch-action:none!important;overscroll-behavior:none!important;-webkit-user-select:none!important;user-select:none!important}.remote-wheel-pad{height:78px!important;touch-action:none!important;cursor:ew-resize;position:relative;overflow:hidden;border-radius:5px}.window.remote-fs .remote-wheel-pad{height:112px!important;font-size:10px;border-width:2px;background:radial-gradient(circle at 50% 50%,rgba(255,230,0,.25),rgba(0,0,0,.92))}.remote-wheel-pad::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,230,0,.18);box-shadow:0 0 8px rgba(255,230,0,.24)}.remote-wheel-thumb{position:absolute;left:50%;top:50%;width:24px;height:54px;border:2px solid #fff;background:linear-gradient(180deg,var(--neon3),#000);box-shadow:0 0 14px var(--neon3);border-radius:7px;transform:translate(-50%,-50%);pointer-events:none}.window.remote-fs .remote-wheel-thumb{width:34px;height:78px}.remote-wheel-readout{position:absolute;right:8px;bottom:6px;font-family:'Press Start 2P',monospace;font-size:8px;color:var(--neon3);text-shadow:0 0 5px var(--neon3);pointer-events:none}.remote-wheel-pad.active .remote-wheel-thumb{background:linear-gradient(180deg,#fff,var(--neon));box-shadow:0 0 18px var(--neon),0 0 30px rgba(0,255,213,.34)}
+@media(min-width:760px){.window.remote-fs .remote-board{grid-template-columns:1fr 1fr}.window.remote-fs .remote-board-col:nth-child(3){grid-column:1 / -1}}
+@media(min-width:1140px){.window.remote-fs .remote-board{grid-template-columns:1.05fr 1.1fr 1fr}.window.remote-fs .remote-board-col:nth-child(3){grid-column:auto}}
+@media(max-width:560px){.window.remote-fs .remote-root{padding:7px 6px calc(16px + env(safe-area-inset-bottom))}.window.remote-fs .remote-pad-grid.big{grid-template-columns:repeat(2,1fr)}.window.remote-fs .remote-slot-grid{grid-template-columns:repeat(2,1fr)}.window.remote-fs .remote-note-grid{grid-template-columns:repeat(6,1fr)}.window.remote-fs .remote-param{grid-template-columns:68px 1fr 44px;gap:6px}.window.remote-fs .remote-param label{font-size:12px}.window.remote-fs .remote-param input[type=range]{min-width:0}.remote-fs-header .rtitle{font-size:7px}.remote-fs-header .btn{font-size:11px!important}}
+
 </style>
 </head>
 <body>
@@ -5883,7 +5907,7 @@ function vizAutoPanStep(t,bass,mid,high,energy){
   const sp=clamp(STATE.viz.autoSpeed||1,0.1,6);
   const now=performance.now();
   // Faster target changes and more dramatic parameter travel, but clamp every value so long sessions do not drift into unstable camera/scene states.
-  if(!STATE.viz.autoTarget || now-(STATE.viz.autoLast||0)>Math.max(260,1050/sp)){
+  if(!STATE.viz.autoTarget || now-(STATE.viz.autoLast||0)>Math.max(120,560/sp)){
     STATE.viz.autoLast=now;
     STATE.viz.autoTarget={
       yaw:cam.yaw+rand(-Math.PI*1.65,Math.PI*1.65),
@@ -5892,18 +5916,18 @@ function vizAutoPanStep(t,bass,mid,high,energy){
       sens:rand(.45,3.35),pc:rand(.35,2.8),mot:rand(.25,3.8),hue:rand(0,360),bloom:rand(.25,2.7),fog:rand(.03,1.5)
     };
   }
-  const tg=STATE.viz.autoTarget; const k=clamp(0.024*sp,0.006,0.16);
+  const tg=STATE.viz.autoTarget; const k=clamp(0.052*sp,0.018,0.34);
   cam.yaw+=(tg.yaw-cam.yaw)*k + Math.sin(t*(0.75+sp*.22))*0.010*sp;
   cam.pitch+=(tg.pitch-cam.pitch)*k + Math.cos(t*(0.53+sp*.18))*0.007*sp;
   cam.distance+=(tg.distance-cam.distance)*k + Math.sin(t*(0.85+sp*.25))*0.055*sp;
   cam.truckX+=(tg.truckX-cam.truckX)*k + Math.sin(t*.61*sp)*0.018*sp;
   cam.truckY+=(tg.truckY-cam.truckY)*k + Math.cos(t*.49*sp)*0.014*sp;
   const micBoost=STATE.viz.liveMic?(energy*1.35):0;
-  const pk=clamp(0.018*sp,0.006,0.12);
+  const pk=clamp(0.058*sp,0.018,0.32);
   STATE.viz.sensitivity=clamp(STATE.viz.sensitivity+(tg.sens+micBoost-STATE.viz.sensitivity)*pk,0.2,3.4);
   STATE.viz.particleCount=clamp(STATE.viz.particleCount+(tg.pc+high*0.55-STATE.viz.particleCount)*pk,0.3,2.8);
   STATE.viz.motion=clamp(STATE.viz.motion+(tg.mot+mid*0.75-STATE.viz.motion)*pk,0.08,3.9);
-  STATE.viz.colorShift=(STATE.viz.colorShift+(0.72*sp)+(high*3.2))%360;
+  STATE.viz.colorShift=(STATE.viz.colorShift+(2.4*sp)+(high*7.8))%360;
   STATE.viz.bloom=clamp(STATE.viz.bloom+(tg.bloom+high*0.7-STATE.viz.bloom)*pk,0.2,2.9);
   STATE.viz.fog=clamp(STATE.viz.fog+(tg.fog+bass*0.38-STATE.viz.fog)*pk,0.02,1.55);
   cam.pitch=clamp(cam.pitch,-1.35,1.35);
@@ -5912,7 +5936,7 @@ function vizAutoPanStep(t,bass,mid,high,energy){
   cam.truckY=clamp(cam.truckY,-24,24);
   // Keep yaw numerically bounded during long auto-pan sessions.
   if(Math.abs(cam.yaw)>Math.PI*24) cam.yaw=((cam.yaw+Math.PI)%(Math.PI*2))-Math.PI;
-  if(viz3d && (!viz3d._lastApply || now-viz3d._lastApply>90)){viz3d._lastApply=now;viz3d.applySettings();}
+  if(viz3d && (!viz3d._lastApply || now-viz3d._lastApply>120)){viz3d._lastApply=now;viz3d.applySettings();}
 }
 function spatialEmergencySilence(){
   if(!spatialFX)return;
@@ -5923,625 +5947,22 @@ function spatialEmergencySilence(){
 
 
 function refreshVizControlReadouts(){
-  const pairs=[['vc-sens',STATE.viz.sensitivity,v=>v.toFixed(2)],['vc-p',STATE.viz.particleCount,v=>v.toFixed(2)],['vc-mot',STATE.viz.motion,v=>v.toFixed(2)],['vc-h',STATE.viz.colorShift,v=>(v|0)+'°'],['vc-bl',STATE.viz.bloom,v=>v.toFixed(2)],['vc-fog',STATE.viz.fog,v=>v.toFixed(2)],['vc-zoom',STATE.viz.cam.distance,v=>v.toFixed(0)],['vc-tx',STATE.viz.cam.truckX,v=>v.toFixed(0)],['vc-ty',STATE.viz.cam.truckY,v=>v.toFixed(0)],['vc-yaw',STATE.viz.cam.yaw,v=>v.toFixed(2)]];
-  for(const [id,val,fmt] of pairs){
-    const el=document.getElementById(id), out=document.getElementById(id+'-v');
-    if(el && document.activeElement!==el) el.value=val;
-    if(out) out.textContent=fmt(val);
-  }
-}
-
-function buildVizControls(){
-  const c=$('#viz-controls');
-  let html='<div class="viz-h2">▣ SCENE</div><div class="scene-grid">';
-  for(const s of VIZ_SCENES)html+=`<button class="scene-btn ${s.id===STATE.viz.scene?'active':''}" data-s="${s.id}" title="${s.desc}">${s.name}</button>`;
-  html+=`</div>
-    <div class="viz-h2">▣ FIELD</div>
-    <div class="viz-row"><label>SENSITIVITY</label><input type="range" id="vc-sens" min="0.2" max="3" step="0.05" value="${STATE.viz.sensitivity}"><span class="v" id="vc-sens-v">${STATE.viz.sensitivity.toFixed(2)}</span></div>
-    <div class="viz-row"><label>PARTICLES</label><input type="range" id="vc-p" min="0.3" max="2.5" step="0.05" value="${STATE.viz.particleCount}"><span class="v" id="vc-p-v">${STATE.viz.particleCount.toFixed(2)}</span></div>
-    <div class="viz-row"><label>MOTION</label><input type="range" id="vc-mot" min="0.08" max="3" step="0.05" value="${STATE.viz.motion}"><span class="v" id="vc-mot-v">${STATE.viz.motion.toFixed(2)}</span></div>
-    <div class="viz-row"><label>HUE SHIFT</label><input type="range" id="vc-h" min="0" max="360" step="1" value="${STATE.viz.colorShift}"><span class="v" id="vc-h-v">${STATE.viz.colorShift|0}°</span></div>
-    <div class="viz-row"><label>BLOOM</label><input type="range" id="vc-bl" min="0" max="2.5" step="0.05" value="${STATE.viz.bloom}"><span class="v" id="vc-bl-v">${STATE.viz.bloom.toFixed(2)}</span></div>
-    <div class="viz-row"><label>FOG</label><input type="range" id="vc-fog" min="0" max="1.5" step="0.02" value="${STATE.viz.fog}"><span class="v" id="vc-fog-v">${STATE.viz.fog.toFixed(2)}</span></div>
-    <div class="viz-row"><label>AUTO SPEED</label><input type="range" id="vc-auto-speed" min="0.1" max="6" step="0.05" value="${STATE.viz.autoSpeed}"><span class="v" id="vc-auto-speed-v">${STATE.viz.autoSpeed.toFixed(2)}</span></div>
-    <div class="viz-row"><label>MIC SENS</label><input type="range" id="vc-mic-sens" min="0.2" max="8" step="0.05" value="${STATE.viz.micSensitivity}"><span class="v" id="vc-mic-sens-v">${STATE.viz.micSensitivity.toFixed(2)}</span></div>
-    <div style="display:flex;gap:5px;margin:5px 0;flex-wrap:wrap"><button class="viz-btn ${STATE.viz.autoPan?'on':''}" id="vc-autopan" style="flex:1">AUTO-PAN ${STATE.viz.autoPan?'ON':'OFF'}</button><button class="viz-btn live ${STATE.viz.liveMic?'on':''}" id="vc-mic" style="flex:1">LIVE MIC ${STATE.viz.liveMic?'ON':'OFF'}</button><button class="viz-btn gold" id="vc-clean" style="flex:1">CLEAN FULLSCREEN</button></div>
-    <div class="viz-h2">▣ CAMERA</div>
-    <div class="viz-row"><label>ZOOM</label><input type="range" id="vc-zoom" min="6" max="80" step="0.5" value="${STATE.viz.cam.distance}"><span class="v" id="vc-zoom-v">${STATE.viz.cam.distance.toFixed(0)}</span></div>
-    <div class="viz-row"><label>PAN X</label><input type="range" id="vc-tx" min="-30" max="30" step="0.5" value="${STATE.viz.cam.truckX}"><span class="v" id="vc-tx-v">${STATE.viz.cam.truckX.toFixed(0)}</span></div>
-    <div class="viz-row"><label>PAN Y</label><input type="range" id="vc-ty" min="-30" max="30" step="0.5" value="${STATE.viz.cam.truckY}"><span class="v" id="vc-ty-v">${STATE.viz.cam.truckY.toFixed(0)}</span></div>
-    <div class="viz-row"><label>YAW</label><input type="range" id="vc-yaw" min="-3.14" max="3.14" step="0.05" value="${STATE.viz.cam.yaw}"><span class="v" id="vc-yaw-v">${STATE.viz.cam.yaw.toFixed(2)}</span></div>
-    <button class="viz-btn" style="width:100%;margin-top:4px" id="vc-recenter">⌖ RECENTER CAMERA</button>
-    <div style="font-family:VT323;font-size:11px;color:var(--dim);line-height:1.5;padding:5px 0">Q/E yaw · W/S pitch · A/D strafe · Z/X zoom · ←→↑↓ pan · 1-5 presets · R randomize<br>Touch: 1 finger rotate · 2 fingers pan · pinch zoom</div>
-    <button class="viz-btn gold" style="width:100%;margin-top:5px" id="vc-rand">⟲ RANDOMIZE</button>`;
-  c.innerHTML=html;
-  c.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{vizSetScene(b.dataset.s);buildVizControls()});
-  const wire=(id,key,disp,scale=1)=>{const el=c.querySelector('#'+id);const v=c.querySelector('#'+id+'-v');if(!el)return;
-    el.oninput=e=>{const val=+e.target.value;
-      if(key.includes('.')){const [a,b]=key.split('.');STATE.viz[a][b]=val}else STATE.viz[key]=val;
-      v.textContent=disp(val);
-      if(viz3d)viz3d.applySettings();
-    }};
-  wire('vc-sens','sensitivity',v=>v.toFixed(2));
-  wire('vc-p','particleCount',v=>v.toFixed(2));
-  wire('vc-mot','motion',v=>v.toFixed(2));
-  wire('vc-h','colorShift',v=>v|0+'°');
-  wire('vc-bl','bloom',v=>v.toFixed(2));
-  wire('vc-fog','fog',v=>v.toFixed(2));
-  wire('vc-auto-speed','autoSpeed',v=>v.toFixed(2));
-  wire('vc-mic-sens','micSensitivity',v=>v.toFixed(2));
-  wire('vc-zoom','cam.distance',v=>v.toFixed(0));
-  wire('vc-tx','cam.truckX',v=>v.toFixed(0));
-  wire('vc-ty','cam.truckY',v=>v.toFixed(0));
-  wire('vc-yaw','cam.yaw',v=>v.toFixed(2));
-  c.querySelector('#vc-autopan').onclick=()=>{STATE.viz.autoPan=!STATE.viz.autoPan;STATE.viz.autoTarget=null;buildVizControls();};
-  c.querySelector('#vc-mic').onclick=()=>toggleVizMic();
-  c.querySelector('#vc-clean').onclick=()=>toggleVizClean(true);
-  c.querySelector('#vc-recenter').onclick=()=>{
-    STATE.viz.cam.yaw=0;STATE.viz.cam.pitch=0;STATE.viz.cam.truckX=0;STATE.viz.cam.truckY=0;STATE.viz.cam.distance=25;
-    buildVizControls();
+  const set=(id,val,fmt=v=>v.toFixed(2))=>{
+    const el=document.getElementById(id), vr=document.getElementById(id+'-v');
+    if(el && document.activeElement!==el) el.value=String(val);
+    if(vr) vr.textContent=fmt(val);
   };
-  c.querySelector('#vc-rand').onclick=vizRandomize;
-}
-
-function setupVisualizer(){
-  buildVizControls();
-  const canvas=$('#viz-canvas');
-  const w=window.innerWidth,h=window.innerHeight;
-  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
-  renderer.setSize(w,h,false);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  const camera=new THREE.PerspectiveCamera(60,w/h,0.1,2000);
-  camera.position.set(0,0,STATE.viz.cam.distance);
-  const scene=new THREE.Scene();
-  scene.fog=new THREE.FogExp2(0x000000,0.012);
-  viz3d={renderer,camera,scene,objs:[],centerObj:null,
-    applySettings(){
-      const densityBase=((viz3d&&viz3d.scene&&viz3d.scene.fog&&viz3d.scene.fog.density)||0.008);
-      scene.fog.density=Math.max(0.003,densityBase*0.7+STATE.viz.fog*0.02);
-    },
-    fpsTime:performance.now(), fpsFrames:0, fpsValue:60
-  };
-  // Build spectrum bar elements once
-  const spec=$('#viz-spectrum');
-  if(spec && !spec.children.length){
-    const frag=document.createDocumentFragment();
-    for(let i=0;i<32;i++){
-      const b=document.createElement('div');
-      b.className='bar';
-      b.style.height='6px';
-      frag.appendChild(b);
-    }
-    spec.appendChild(frag);
-  }
-  setupVizGestures();
-  vizSetScene(STATE.viz.scene);
-}
-window.addEventListener('resize',()=>{if(viz3d)vizResize()});
-
-/* ----- scene management ----- */
-function clearViz(){
-  for(const o of viz3d.objs){
-    viz3d.scene.remove(o);
-    if(o.geometry)o.geometry.dispose();
-    if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose()}
-  }
-  viz3d.objs=[];
-}
-
-function vizSetScene(id){
-  STATE.viz.scene=id;
-  if(!viz3d)return;
-  clearViz();
-  const builder={
-    cosmos:vizSceneCosmos,mirror:vizSceneMirror,clouds:vizSceneClouds,bits:vizSceneBits,
-    desert:vizSceneDesert,mandala:vizSceneMandala,aurora:vizSceneAurora,
-    crystal:vizSceneCrystal,beams:vizSceneBeams,vapor:vizSceneVapor
-  }[id]||vizSceneCosmos;
-  vizApplySceneEnvironment(id);
-  try{
-    builder();
-  }catch(err){
-    console.warn('Visualizer scene failed, falling back',id,err);
-    clearViz();
-    vizFallbackScene();
-  }
-  vizAddBackbone(id);
-  if(!viz3d.objs.length)vizFallbackScene();
-  // Add center-focus mesh that pulses with audio (lives at world origin)
-  const cg=new THREE.IcosahedronGeometry(2,1);
-  const cm=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.7,wireframe:true});
-  const center=new THREE.Mesh(cg,cm);
-  center.userData.kind='center';
-  viz3d.scene.add(center);viz3d.objs.push(center);viz3d.centerObj=center;
-  // refresh button highlight
-  $$('.scene-btn').forEach(b=>b.classList.toggle('active',b.dataset.s===id));
-}
-
-const VIZ_PALETTES=[
-  [0x00ffd5,0xff00aa,0xffe600],
-  [0xff66cc,0x66ffcc,0xffaa44],
-  [0x88aaff,0xffaaff,0xffffaa],
-  [0xff5566,0x55ffaa,0x99aaff],
-  [0xffe066,0xff8855,0xaa66ff],
-  [0x66ddff,0xff66dd,0x66ff99]
-];
-function paletteColor(){
-  const palIdx=Math.floor(STATE.viz.colorShift/60)%VIZ_PALETTES.length;
-  return VIZ_PALETTES[palIdx];
-}
-
-function rand(a,b){return a+Math.random()*(b-a)}
-function vizAddBackbone(id){
-  if(!viz3d)return;
-  const pal=paletteColor().map(c=>new THREE.Color(c));
-  const ring=new THREE.Mesh(
-    new THREE.TorusGeometry(10+(id.length%5)*2,0.18,10,72),
-    new THREE.MeshBasicMaterial({color:pal[0],transparent:true,opacity:0.16,blending:THREE.AdditiveBlending,depthWrite:false})
-  );
-  ring.rotation.x=Math.PI/2.2;
-  ring.position.y=-6+(id.length%4);
-  ring.userData.kind='backboneRing';
-  viz3d.scene.add(ring); viz3d.objs.push(ring);
-
-  const dustN=Math.max(220,Math.floor(520*STATE.viz.particleCount));
-  const g=new THREE.BufferGeometry();
-  const pos=new Float32Array(dustN*3), col=new Float32Array(dustN*3);
-  for(let i=0;i<dustN;i++){
-    pos[i*3]=rand(-70,70); pos[i*3+1]=rand(-34,34); pos[i*3+2]=rand(-70,70);
-    const c=pal[i%pal.length]; col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
-  }
-  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  g.setAttribute('color',new THREE.BufferAttribute(col,3));
-  const pts=new THREE.Points(g,new THREE.PointsMaterial({size:0.28,vertexColors:true,transparent:true,opacity:0.42,blending:THREE.AdditiveBlending,depthWrite:false}));
-  pts.userData.kind='backboneDust';
-  viz3d.scene.add(pts); viz3d.objs.push(pts);
-
-  const floor=new THREE.GridHelper(120,16,pal[1].getHex(),pal[2].getHex());
-  floor.position.y=-18;
-  floor.userData.kind='backboneGrid';
-  viz3d.scene.add(floor); viz3d.objs.push(floor);
-}
-function vizFallbackScene(){
-  const pal=paletteColor().map(c=>new THREE.Color(c));
-  const g=new THREE.BufferGeometry();
-  const n=1800;
-  const pos=new Float32Array(n*3), col=new Float32Array(n*3);
-  for(let i=0;i<n;i++){
-    pos[i*3]=rand(-80,80); pos[i*3+1]=rand(-50,50); pos[i*3+2]=rand(-80,80);
-    const c=pal[i%pal.length]; col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
-  }
-  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  g.setAttribute('color',new THREE.BufferAttribute(col,3));
-  const points=new THREE.Points(g,new THREE.PointsMaterial({size:0.5,vertexColors:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false}));
-  points.userData.kind='stars';
-  viz3d.scene.add(points); viz3d.objs.push(points);
-  vizAddBackbone('fallback');
-}
-
-function vizApplySceneEnvironment(id){
-  if(!viz3d)return;
-  const themes={
-    cosmos:{bg:0x02040a,fog:0x02040a,f:0.006},
-    mirror:{bg:0x020208,fog:0x060612,f:0.007},
-    clouds:{bg:0x070b16,fog:0x0b1220,f:0.011},
-    bits:{bg:0x05050a,fog:0x0b0b14,f:0.012},
-    desert:{bg:0x140a08,fog:0x1e0f0a,f:0.010},
-    mandala:{bg:0x07050d,fog:0x120719,f:0.010},
-    aurora:{bg:0x02070a,fog:0x031115,f:0.008},
-    crystal:{bg:0x04060d,fog:0x08111d,f:0.011},
-    beams:{bg:0x030306,fog:0x090914,f:0.009},
-    vapor:{bg:0x03070b,fog:0x071118,f:0.010}
-  };
-  const theme=themes[id]||themes.cosmos;
-  viz3d.scene.background=new THREE.Color(theme.bg);
-  viz3d.scene.fog=new THREE.FogExp2(theme.fog,theme.f+STATE.viz.fog*0.018);
-}
-function setupVizGestures(){
-  const canvas=$('#viz-canvas');
-  if(!canvas||STATE.viz.touch.enabled)return;
-  STATE.viz.touch.enabled=true;
-  const touch=STATE.viz.touch;
-  const pointFromEvent=e=>({x:e.clientX,y:e.clientY});
-  const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-  const midpoint=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
-  const beginGesture=()=>{
-    const pts=[...touch.pointers.values()];
-    if(pts.length===1){
-      touch.gesture={type:'rotate',start:pts[0],yaw:STATE.viz.cam.yaw,pitch:STATE.viz.cam.pitch};
-    }else if(pts.length>=2){
-      const a=pts[0],b=pts[1];
-      touch.gesture={type:'multi',distance:distance(a,b),mid:midpoint(a,b),truckX:STATE.viz.cam.truckX,truckY:STATE.viz.cam.truckY,zoom:STATE.viz.cam.distance};
-    }
-  };
-  canvas.addEventListener('pointerdown',e=>{
-    if(!STATE.viz.active)return;
-    canvas.setPointerCapture?.(e.pointerId);
-    touch.pointers.set(e.pointerId,pointFromEvent(e));
-    beginGesture();
-    e.preventDefault();
-  },{passive:false});
-  canvas.addEventListener('pointermove',e=>{
-    if(!STATE.viz.active || !touch.pointers.has(e.pointerId))return;
-    touch.pointers.set(e.pointerId,pointFromEvent(e));
-    const pts=[...touch.pointers.values()];
-    if(pts.length===1){
-      const g=touch.gesture;
-      if(!g||g.type!=='rotate')beginGesture();
-      const p=pts[0],gg=touch.gesture;
-      const dx=p.x-gg.start.x, dy=p.y-gg.start.y;
-      STATE.viz.cam.yaw=gg.yaw-dx*0.008;
-      STATE.viz.cam.pitch=clamp(gg.pitch-dy*0.006,-1.4,1.4);
-      const yawEl=$('#vc-yaw'), yawVal=$('#vc-yaw-v');
-      if(yawEl)yawEl.value=STATE.viz.cam.yaw;
-      if(yawVal)yawVal.textContent=STATE.viz.cam.yaw.toFixed(2);
-    }else if(pts.length>=2){
-      const a=pts[0], b=pts[1];
-      const gg=touch.gesture;
-      if(!gg||gg.type!=='multi')beginGesture();
-      const cur=touch.gesture;
-      const mid=midpoint(a,b);
-      const dist=distance(a,b);
-      const zoomDelta=(cur.distance-dist)*0.035;
-      STATE.viz.cam.distance=clamp(cur.zoom+zoomDelta,6,110);
-      STATE.viz.cam.truckX=clamp(cur.truckX-(mid.x-cur.mid.x)*0.05,-60,60);
-      STATE.viz.cam.truckY=clamp(cur.truckY+(mid.y-cur.mid.y)*0.05,-60,60);
-      const zEl=$('#vc-zoom'),zVal=$('#vc-zoom-v'),xEl=$('#vc-tx'),xVal=$('#vc-tx-v'),yEl=$('#vc-ty'),yVal=$('#vc-ty-v');
-      if(zEl)zEl.value=STATE.viz.cam.distance;
-      if(zVal)zVal.textContent=STATE.viz.cam.distance.toFixed(0);
-      if(xEl)xEl.value=STATE.viz.cam.truckX;
-      if(xVal)xVal.textContent=STATE.viz.cam.truckX.toFixed(0);
-      if(yEl)yEl.value=STATE.viz.cam.truckY;
-      if(yVal)yVal.textContent=STATE.viz.cam.truckY.toFixed(0);
-    }
-    e.preventDefault();
-  },{passive:false});
-  const endPointer=e=>{
-    touch.pointers.delete(e.pointerId);
-    if(touch.pointers.size===0)touch.gesture=null;
-    else beginGesture();
-  };
-  canvas.addEventListener('pointerup',endPointer);
-  canvas.addEventListener('pointercancel',endPointer);
-  canvas.addEventListener('pointerleave',e=>{ if(touch.pointers.has(e.pointerId)) endPointer(e); });
-  canvas.addEventListener('wheel',e=>{
-    if(!STATE.viz.active)return;
-    STATE.viz.cam.distance=clamp(STATE.viz.cam.distance+e.deltaY*0.01,6,110);
-    const zEl=$('#vc-zoom'), zVal=$('#vc-zoom-v');
-    if(zEl)zEl.value=STATE.viz.cam.distance;
-    if(zVal)zVal.textContent=STATE.viz.cam.distance.toFixed(0);
-    e.preventDefault();
-  },{passive:false});
-}
-
-
-/* ----- 1. COSMOS ----- */
-function vizSceneCosmos(){
-  const N=Math.floor(2400*STATE.viz.particleCount);
-  const g=new THREE.BufferGeometry();
-  const pos=new Float32Array(N*3),col=new Float32Array(N*3);
-  const pal=paletteColor().map(c=>new THREE.Color(c));
-  for(let i=0;i<N;i++){
-    const r=rand(20,200);const th=rand(0,Math.PI*2);const ph=Math.acos(rand(-1,1));
-    pos[i*3]=r*Math.sin(ph)*Math.cos(th);
-    pos[i*3+1]=r*Math.sin(ph)*Math.sin(th);
-    pos[i*3+2]=r*Math.cos(ph);
-    const c=pal[i%pal.length];col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
-  }
-  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  g.setAttribute('color',new THREE.BufferAttribute(col,3));
-  const m=new THREE.PointsMaterial({size:0.6,vertexColors:true,sizeAttenuation:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false});
-  const stars=new THREE.Points(g,m);viz3d.scene.add(stars);viz3d.objs.push(stars);stars.userData.kind='stars';
-  // Nebula clouds — large transparent spheres
-  for(let i=0;i<5;i++){
-    const sg=new THREE.SphereGeometry(rand(15,40),16,12);
-    const sm=new THREE.MeshBasicMaterial({color:pal[i%pal.length],transparent:true,opacity:0.06,blending:THREE.AdditiveBlending,depthWrite:false});
-    const sph=new THREE.Mesh(sg,sm);
-    sph.position.set(rand(-80,80),rand(-50,50),rand(-80,80));
-    sph.userData.kind='neb';sph.userData.r=sm.opacity;
-    viz3d.scene.add(sph);viz3d.objs.push(sph);
-  }
-}
-
-/* ----- 2. MIRROR DIMENSION ----- */
-function vizSceneMirror(){
-  const pal=paletteColor();
-  const root=new THREE.Group(); root.userData.kind='mirrorRoot';
-  for(let ring=0; ring<4; ring++){
-    const ringGroup=new THREE.Group();
-    const count=6+ring*2;
-    for(let i=0;i<count;i++){
-      const geo=i%2?new THREE.TorusKnotGeometry(0.8+ring*0.18,0.22,64,8):new THREE.OctahedronGeometry(1.1+ring*0.15,0);
-      const mat=new THREE.MeshBasicMaterial({color:pal[(i+ring)%pal.length],wireframe:i%3===0,transparent:true,opacity:0.72});
-      const mesh=new THREE.Mesh(geo,mat);
-      const a=(i/count)*Math.PI*2;
-      const r=8+ring*5;
-      mesh.position.set(Math.cos(a)*r,Math.sin(a*2.0)*5,Math.sin(a)*r);
-      mesh.userData.kind='mirror';
-      mesh.userData.spinX=rand(0.004,0.02); mesh.userData.spinY=rand(0.006,0.024);
-      ringGroup.add(mesh); viz3d.objs.push(mesh);
-    }
-    ringGroup.userData.kind='mirrorRing';
-    ringGroup.userData.spin=(ring%2?-1:1)*rand(0.002,0.009);
-    root.add(ringGroup); viz3d.objs.push(ringGroup);
-  }
-  viz3d.scene.add(root); viz3d.objs.push(root);
-  const planes=[
-    {y:-16,rx:0},{y:16,rx:Math.PI},{z:-45,ry:0}
-  ];
-  planes.forEach((cfg,idx)=>{
-    const g=new THREE.PlaneGeometry(120,120,24,24);
-    const m=new THREE.MeshBasicMaterial({color:pal[idx%pal.length],transparent:true,opacity:0.08,wireframe:true});
-    const plane=new THREE.Mesh(g,m);
-    plane.position.y=cfg.y||0; plane.position.z=cfg.z||0;
-    plane.rotation.x=cfg.rx||0; plane.rotation.y=cfg.ry||0;
-    plane.userData.kind='mirrorPlane';
-    viz3d.scene.add(plane); viz3d.objs.push(plane);
-  });
-}
-
-/* ----- 3. CLOUDSCAPE ----- */
-function vizSceneClouds(){
-  const pal=paletteColor().map(c=>new THREE.Color(c));
-  const cloudCount=Math.floor(110*STATE.viz.particleCount);
-  for(let i=0;i<cloudCount;i++){
-    const sg=new THREE.SphereGeometry(rand(2.5,7.5),10,8);
-    const c=pal[i%pal.length].clone().offsetHSL(rand(-0.05,0.05),0.15,0.18);
-    const sm=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:rand(0.05,0.16),blending:THREE.AdditiveBlending,depthWrite:false});
-    const sph=new THREE.Mesh(sg,sm);
-    sph.position.set(rand(-70,70),rand(-20,24),rand(-80,50));
-    sph.userData.kind='cloud'; sph.userData.bob=rand(0.005,0.02); sph.userData.phase=rand(0,Math.PI*2);
-    viz3d.scene.add(sph); viz3d.objs.push(sph);
-  }
-  const horizon=new THREE.Group();
-  for(let i=0;i<8;i++){
-    const ring=new THREE.Mesh(
-      new THREE.TorusGeometry(10+i*4,0.2,8,64),
-      new THREE.MeshBasicMaterial({color:pal[i%pal.length],transparent:true,opacity:0.16,blending:THREE.AdditiveBlending})
-    );
-    ring.position.set(rand(-18,18),-8+i*1.8,-45-i*6);
-    ring.rotation.x=Math.PI/2.4;
-    ring.userData.kind='cloudRing';
-    ring.userData.spin=(i%2?-1:1)*rand(0.002,0.008);
-    horizon.add(ring); viz3d.objs.push(ring);
-  }
-  viz3d.scene.add(horizon); viz3d.objs.push(horizon);
-  const sun=new THREE.Mesh(new THREE.SphereGeometry(5.5,24,16),new THREE.MeshBasicMaterial({color:pal[1]}));
-  sun.position.set(32,18,-56); sun.userData.kind='sun';
-  viz3d.scene.add(sun); viz3d.objs.push(sun);
-  const floor=new THREE.Mesh(new THREE.CircleGeometry(48,48), new THREE.MeshBasicMaterial({color:0x0a1320, transparent:true, opacity:0.65}));
-  floor.rotation.x=-Math.PI/2; floor.position.y=-17;
-  floor.userData.kind='cloudFloor';
-  viz3d.scene.add(floor); viz3d.objs.push(floor);
-}
-
-/* ----- 4. 16-BIT REALM ----- */
-function vizSceneBits(){
-  const N=Math.floor(120*STATE.viz.particleCount);
-  const pal=paletteColor();
-  for(let i=0;i<N;i++){
-    const s=rand(0.6,2.5);
-    const g=new THREE.BoxGeometry(s,s,s);
-    const c=pal[Math.floor(rand(0,pal.length))];
-    const m=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.85});
-    const cube=new THREE.Mesh(g,m);
-    cube.position.set(Math.round(rand(-30,30)),Math.round(rand(-15,15)),Math.round(rand(-30,30)));
-    cube.userData.kind='bit';cube.userData.baseY=cube.position.y;cube.userData.phase=rand(0,Math.PI*2);
-    cube.userData.spin=rand(0.003,0.02);
-    viz3d.scene.add(cube);viz3d.objs.push(cube);
-  }
-}
-
-/* ----- 5. ARIZONA DESERT ----- */
-function vizSceneDesert(){
-  // mesas: stacked boxes
-  for(let i=0;i<10;i++){
-    const w=rand(8,18),d=rand(8,18),h=rand(6,14);
-    const g=new THREE.BoxGeometry(w,h,d);
-    const c=new THREE.Color().setHSL(0.05+rand(-0.02,0.04),0.7,0.35+rand(-0.1,0.1));
-    const m=new THREE.MeshBasicMaterial({color:c});
-    const mesa=new THREE.Mesh(g,m);
-    mesa.position.set(rand(-50,50),h/2-12,rand(-50,50));
-    mesa.userData.kind='mesa';
-    viz3d.scene.add(mesa);viz3d.objs.push(mesa);
-  }
-  // ground
-  const gg=new THREE.PlaneGeometry(300,300);
-  const gm=new THREE.MeshBasicMaterial({color:0xaa6633});
-  const ground=new THREE.Mesh(gg,gm);ground.rotation.x=-Math.PI/2;ground.position.y=-12;
-  viz3d.scene.add(ground);viz3d.objs.push(ground);
-  // sky stars
-  const N=Math.floor(900*STATE.viz.particleCount);
-  const g=new THREE.BufferGeometry();
-  const pos=new Float32Array(N*3);
-  for(let i=0;i<N;i++){
-    pos[i*3]=rand(-150,150);pos[i*3+1]=rand(15,80);pos[i*3+2]=rand(-150,150);
-  }
-  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  const m=new THREE.PointsMaterial({color:0xffeecc,size:0.4,sizeAttenuation:true,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending});
-  const stars=new THREE.Points(g,m);stars.userData.kind='stars';
-  viz3d.scene.add(stars);viz3d.objs.push(stars);
-  // moon
-  const moon=new THREE.Mesh(new THREE.SphereGeometry(3,16,12),new THREE.MeshBasicMaterial({color:0xfff8dc}));
-  moon.position.set(40,40,-60);moon.userData.kind='moon';
-  viz3d.scene.add(moon);viz3d.objs.push(moon);
-}
-
-/* ----- 6. MANDALA ----- */
-function vizSceneMandala(){
-  const pal=paletteColor();
-  for(let layer=0;layer<6;layer++){
-    const N=8+layer*2;
-    for(let i=0;i<N;i++){
-      const a=(i/N)*Math.PI*2;
-      const r=4+layer*3;
-      const sg=new THREE.OctahedronGeometry(0.6,0);
-      const sm=new THREE.MeshBasicMaterial({color:pal[(i+layer)%pal.length],transparent:true,opacity:0.85});
-      const m=new THREE.Mesh(sg,sm);
-      m.position.set(Math.cos(a)*r,0,Math.sin(a)*r);
-      m.userData.kind='mandala';
-      m.userData.layer=layer;m.userData.angle=a;m.userData.radius=r;
-      viz3d.scene.add(m);viz3d.objs.push(m);
-    }
-  }
-  // central portal
-  const pg=new THREE.RingGeometry(0.4,1.2,32);
-  const pm=new THREE.MeshBasicMaterial({color:pal[0],side:THREE.DoubleSide,transparent:true,opacity:0.7,blending:THREE.AdditiveBlending});
-  const portal=new THREE.Mesh(pg,pm);portal.userData.kind='portal';
-  viz3d.scene.add(portal);viz3d.objs.push(portal);
-}
-
-/* ----- 7. AURORA ----- */
-function vizSceneAurora(){
-  const pal=paletteColor().map(c=>new THREE.Color(c));
-  const N=Math.floor(1500*STATE.viz.particleCount);
-  const g=new THREE.BufferGeometry();
-  const pos=new Float32Array(N*3), col=new Float32Array(N*3);
-  for(let i=0;i<N;i++){
-    const x=rand(-48,48), z=rand(-55,20);
-    const y=Math.sin(x*0.11)*8+rand(-10,10);
-    pos[i*3]=x; pos[i*3+1]=y; pos[i*3+2]=z;
-    const c=pal[i%pal.length]; col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
-  }
-  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  g.setAttribute('color',new THREE.BufferAttribute(col,3));
-  const m=new THREE.PointsMaterial({size:0.62,vertexColors:true,sizeAttenuation:true,transparent:true,opacity:0.82,blending:THREE.AdditiveBlending,depthWrite:false});
-  const aur=new THREE.Points(g,m); aur.userData.kind='aurora';
-  viz3d.scene.add(aur); viz3d.objs.push(aur);
-  for(let i=0;i<5;i++){
-    const curvePts=[];
-    for(let s=0;s<40;s++){
-      const x=-42+s*2.2;
-      curvePts.push(new THREE.Vector3(x, Math.sin((x*0.08)+(i*0.6))*8 + i*3 - 4, -25-i*5 + Math.cos(s*0.15+i)*6));
-    }
-    const curve=new THREE.CatmullRomCurve3(curvePts);
-    const tube=new THREE.Mesh(
-      new THREE.TubeGeometry(curve,180,0.28+i*0.03,8,false),
-      new THREE.MeshBasicMaterial({color:pal[i%pal.length],transparent:true,opacity:0.22,blending:THREE.AdditiveBlending,depthWrite:false})
-    );
-    tube.userData.kind='auroraRibbon';
-    tube.userData.spin=(i%2?-1:1)*0.0025;
-    viz3d.scene.add(tube); viz3d.objs.push(tube);
-  }
-}
-
-/* ----- 8. CRYSTAL CAVE ----- */
-function vizSceneCrystal(){
-  const pal=paletteColor();
-  for(let i=0;i<28;i++){
-    const g=new THREE.ConeGeometry(rand(0.6,2),rand(3,9),5);
-    const c=new THREE.Color(pal[i%pal.length]);
-    const m=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.85,wireframe:false});
-    const cone=new THREE.Mesh(g,m);
-    cone.position.set(rand(-20,20),rand(-8,8),rand(-20,20));
-    cone.rotation.set(rand(0,Math.PI),rand(0,Math.PI),rand(0,Math.PI));
-    cone.userData.kind='crystal';cone.userData.basescale=1;
-    viz3d.scene.add(cone);viz3d.objs.push(cone);
-  }
-}
-
-/* ----- 9. LIGHT BEAMS ----- */
-function vizSceneBeams(){
-  const pal=paletteColor().map(c=>new THREE.Color(c));
-  for(let i=0;i<28;i++){
-    const g=new THREE.CylinderGeometry(0.12,0.45,rand(24,72),8,1,true);
-    const c=pal[i%pal.length].clone().offsetHSL(rand(-0.02,0.02),0,0.08);
-    const m=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.28,blending:THREE.AdditiveBlending,depthWrite:false});
-    const beam=new THREE.Mesh(g,m);
-    beam.position.set(rand(-34,34),rand(-10,12),rand(-30,30));
-    beam.rotation.set(rand(-0.7,0.7),rand(-1.2,1.2),rand(-0.7,0.7));
-    beam.userData.kind='beam';
-    viz3d.scene.add(beam); viz3d.objs.push(beam);
-  }
-  const halo=new THREE.Group();
-  for(let i=0;i<10;i++){
-    const ring=new THREE.Mesh(
-      new THREE.TorusGeometry(8+i*2.2,0.16,8,50),
-      new THREE.MeshBasicMaterial({color:pal[i%pal.length],transparent:true,opacity:0.24,blending:THREE.AdditiveBlending})
-    );
-    ring.rotation.x=Math.PI/2;
-    ring.position.y=-7+i*1.4;
-    ring.userData.kind='beamRing';
-    halo.add(ring); viz3d.objs.push(ring);
-  }
-  viz3d.scene.add(halo); viz3d.objs.push(halo);
-  const dustN=Math.floor(1800*STATE.viz.particleCount);
-  const gg=new THREE.BufferGeometry();
-  const pos=new Float32Array(dustN*3);
-  for(let i=0;i<dustN;i++){
-    pos[i*3]=rand(-55,55); pos[i*3+1]=rand(-30,30); pos[i*3+2]=rand(-55,55);
-  }
-  gg.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  const dust=new THREE.Points(gg,new THREE.PointsMaterial({color:pal[0],size:0.25,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending,depthWrite:false}));
-  dust.userData.kind='dust';
-  viz3d.scene.add(dust); viz3d.objs.push(dust);
-}
-
-/* ----- 10. VAPOR FIELD ----- */
-function vizSceneVapor(){
-  const N=Math.floor(2600*STATE.viz.particleCount);
-  const g=new THREE.BufferGeometry();
-  const pos=new Float32Array(N*3), col=new Float32Array(N*3);
-  const pal=paletteColor().map(c=>new THREE.Color(c));
-  for(let i=0;i<N;i++){
-    const x=rand(-55,55), z=rand(-55,55);
-    const y=Math.sin(x*0.08)*2+Math.cos(z*0.07)*2+rand(-12,12);
-    pos[i*3]=x; pos[i*3+1]=y; pos[i*3+2]=z;
-    const c=pal[i%pal.length]; col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
-  }
-  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  g.setAttribute('color',new THREE.BufferAttribute(col,3));
-  const m=new THREE.PointsMaterial({size:0.38,vertexColors:true,sizeAttenuation:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false});
-  const v=new THREE.Points(g,m); v.userData.kind='vapor';
-  viz3d.scene.add(v); viz3d.objs.push(v);
-  for(let i=0;i<14;i++){
-    const ring=new THREE.Mesh(
-      new THREE.TorusGeometry(6+i*2.8,0.11,8,60),
-      new THREE.MeshBasicMaterial({color:pal[i%pal.length],transparent:true,opacity:0.18,blending:THREE.AdditiveBlending})
-    );
-    ring.position.y=-12+i*1.4;
-    ring.rotation.x=Math.PI/2;
-    ring.userData.kind='vaporRing';
-    viz3d.scene.add(ring); viz3d.objs.push(ring);
-  }
-  const floor=new THREE.GridHelper(150,24,pal[0].getHex(),pal[2].getHex());
-  floor.position.y=-18;
-  floor.userData.kind='vaporGrid';
-  viz3d.scene.add(floor); viz3d.objs.push(floor);
-}
-
-/* ----- pulse hook (called from press) ----- */
-function vizPulse(midi,strength=1){
-  STATE.viz.flashes.push({t:performance.now(),midi,s:strength});
-  if(STATE.viz.flashes.length>40)STATE.viz.flashes.shift();
-}
-
-/* ----- camera presets ----- */
-const VIZ_PRESETS=[
-  {yaw:0,pitch:0,distance:25},
-  {yaw:Math.PI*0.5,pitch:0.2,distance:30},
-  {yaw:Math.PI,pitch:-0.3,distance:35},
-  {yaw:Math.PI*1.5,pitch:0.4,distance:18},
-  {yaw:Math.PI*0.25,pitch:0.7,distance:45}
-];
-let presetTransition=null;
-function vizApplyPreset(idx){
-  const p=VIZ_PRESETS[idx];if(!p)return;
-  presetTransition={from:{...STATE.viz.cam},to:p,start:performance.now(),dur:1100};
-}
-
-function vizRandomize(){
-  STATE.viz.scene=VIZ_SCENES[Math.floor(Math.random()*VIZ_SCENES.length)].id;
-  STATE.viz.sensitivity=rand(0.6,2.2);
-  STATE.viz.particleCount=rand(0.6,2);
-  STATE.viz.motion=rand(0.18,2.4);
-  STATE.viz.colorShift=Math.random()*360;
-  STATE.viz.bloom=rand(0.5,2);
-  STATE.viz.fog=rand(0.1,1.0);
-  STATE.viz.cam.distance=rand(15,55);
-  vizSetScene(STATE.viz.scene);
-  buildVizControls();
-  toast('VIZ randomized');
+  set('vc-sens',STATE.viz.sensitivity,v=>v.toFixed(2));
+  set('vc-p',STATE.viz.particleCount,v=>v.toFixed(2));
+  set('vc-mot',STATE.viz.motion,v=>v.toFixed(2));
+  set('vc-h',STATE.viz.colorShift,v=>(v|0)+'°');
+  set('vc-bl',STATE.viz.bloom,v=>v.toFixed(2));
+  set('vc-fog',STATE.viz.fog,v=>v.toFixed(2));
+  set('vc-auto-speed',STATE.viz.autoSpeed,v=>v.toFixed(2));
+  set('vc-zoom',STATE.viz.cam.distance,v=>v.toFixed(0));
+  set('vc-tx',STATE.viz.cam.truckX,v=>v.toFixed(0));
+  set('vc-ty',STATE.viz.cam.truckY,v=>v.toFixed(0));
+  set('vc-yaw',STATE.viz.cam.yaw,v=>v.toFixed(2));
 }
 
 /* ----- main render loop ----- */
@@ -6972,7 +6393,7 @@ document.addEventListener('keydown',e=>{
    Expanded controller board: pads, slots, EQ/FX, sound design, arp, visualizer, windows.
 */
 (function(){
-  const REMOTE={role:null,pc:null,dc:null,connected:false,lastState:null,hostOffer:null,controllerAnswer:null,stateTimer:null,pressed:new Set(),activeWheel:false,selectedPad:0,soundScope:'global'};
+  const REMOTE={role:null,pc:null,dc:null,connected:false,lastState:null,hostOffer:null,controllerAnswer:null,stateTimer:null,pressed:new Set(),activeWheel:false,selectedPad:0,soundScope:'global',fullScreen:false,manualNormal:false,uiBusy:false,lastTouch:0,renderTimer:null,fastRAF:0,fastPending:new Map(),seq:0,lastFastCmd:Object.create(null),lastWheelCmdT:0};
   const rtcCfg={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
   const clampLocal=(v,a,b)=>Math.max(a,Math.min(b,+v||0));
   const esc=s=>String(s??'').replace(/[<>&"']/g,ch=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -6988,9 +6409,13 @@ document.addEventListener('keydown',e=>{
   function remoteStatusText(){if(REMOTE.connected)return 'CONNECTED · '+(REMOTE.role==='host'?'HOST/iPad':'CONTROLLER/iPhone');if(REMOTE.role==='host')return 'HOST READY · WAITING FOR ANSWER';if(REMOTE.role==='controller')return 'CONTROLLER READY · WAITING FOR HOST';return 'NOT PAIRED';}
   function closeRemoteConnection(silent=false){try{REMOTE.dc&&REMOTE.dc.close()}catch{}try{REMOTE.pc&&REMOTE.pc.close()}catch{}REMOTE.pc=null;REMOTE.dc=null;REMOTE.connected=false;REMOTE.hostOffer=null;REMOTE.controllerAnswer=null;clearInterval(REMOTE.stateTimer);REMOTE.stateTimer=null;if(!silent)toast('Remote disconnected');buildRemoteWindow();}
   function makePeer(){const pc=new RTCPeerConnection(rtcCfg);pc.onconnectionstatechange=()=>{if(['failed','disconnected','closed'].includes(pc.connectionState)){REMOTE.connected=false;buildRemoteWindow();}};pc.oniceconnectionstatechange=()=>{if(['failed','disconnected','closed'].includes(pc.iceConnectionState)){REMOTE.connected=false;buildRemoteWindow();}};return pc;}
-  function setupChannel(dc){REMOTE.dc=dc;dc.onopen=()=>{REMOTE.connected=true;toast('Remote connected');buildRemoteWindow();if(REMOTE.role==='host'){remoteSendState();clearInterval(REMOTE.stateTimer);REMOTE.stateTimer=setInterval(remoteSendState,900);}else{remoteSend({type:'requestState'});}};dc.onclose=()=>{REMOTE.connected=false;buildRemoteWindow();};dc.onerror=()=>{REMOTE.connected=false;buildRemoteWindow();};dc.onmessage=e=>{let msg=null;try{msg=JSON.parse(e.data)}catch{return}if(REMOTE.role==='host'){if(msg.type==='cmd')applyRemoteCommand(msg);if(msg.type==='requestState')remoteSendState();}else if(msg.type==='state'){REMOTE.lastState=msg.state;updateControllerState();}};}
+  function setupChannel(dc){REMOTE.dc=dc;dc.onopen=()=>{REMOTE.connected=true;toast('Remote connected');buildRemoteWindow();if(REMOTE.role==='host'){remoteSendState();clearInterval(REMOTE.stateTimer);REMOTE.stateTimer=setInterval(remoteSendState,1400);}else{remoteSend({type:'requestState'});}};dc.onclose=()=>{REMOTE.connected=false;buildRemoteWindow();};dc.onerror=()=>{REMOTE.connected=false;buildRemoteWindow();};dc.onmessage=e=>{let msg=null;try{msg=JSON.parse(e.data)}catch{return}if(REMOTE.role==='host'){if(msg.type==='cmd')applyRemoteCommand(msg);if(msg.type==='requestState')remoteSendState();}else if(msg.type==='state'){REMOTE.lastState=msg.state;updateControllerState();}};}
   function remoteSend(obj){if(!REMOTE.dc||REMOTE.dc.readyState!=='open')return false;try{REMOTE.dc.send(JSON.stringify(obj));return true}catch{return false}}
-  function cmd(name,data={}){return remoteSend({type:'cmd',cmd:name,...data,t:Date.now()});}
+  function markRemoteBusy(ms=950){REMOTE.uiBusy=true;REMOTE.lastTouch=performance.now();clearTimeout(REMOTE.busyTimer);REMOTE.busyTimer=setTimeout(()=>{REMOTE.uiBusy=false;},ms);}
+  function cmd(name,data={}){markRemoteBusy(420);return remoteSend({type:'cmd',cmd:name,...data,t:Date.now(),seq:++REMOTE.seq});}
+  function cmdFast(name,data={}){markRemoteBusy(650);const payload={type:'cmd',cmd:name,...data,t:Date.now(),seq:++REMOTE.seq,fast:1};REMOTE.fastPending.set(name,payload);if(!REMOTE.fastRAF){REMOTE.fastRAF=requestAnimationFrame(()=>{REMOTE.fastRAF=0;const items=[...REMOTE.fastPending.values()];REMOTE.fastPending.clear();for(const p of items)remoteSend(p);});}return true;}
+  function setRemoteFullScreen(on){REMOTE.fullScreen=!!on;const w=WIN.remote;if(!w)return;document.body.classList.toggle('remote-fullscreen',!!on);w.el.classList.toggle('remote-fs',!!on);try{if(on){w.el.style.left='0px';w.el.style.top='0px';}}catch{}}
+
   function padState(){return (STATE.pads||[]).map((p,i)=>{p=p?ensurePadDefaults(p,i):null;return p?{i,name:p.name||('PAD '+(i+1)),kind:p.kind||'pad',disabled:!!p.disabled,wheel:p.wheelEnabled!==false,vol:p.volume??1,fxSend:p.fxSend??1,selected:STATE.padEditingIdx===i,source:p.sourceLabel||p.kind||'PAD'}:{i,name:'EMPTY',kind:'empty',disabled:false,wheel:false,vol:0,fxSend:0,selected:false,source:'EMPTY'};});}
   function slotState(){return (STATE.slots||[]).map((s,i)=>s?{i,name:s.name||('SLOT '+(i+1)),disabled:!!s.disabled,active:STATE.slotIdx===i}:{i,name:'EMPTY',disabled:false,active:false,empty:true});}
   function currentRemoteState(){return {bpm:STATE.bpm,arp:{...STATE.arp},bank:STATE.bank,patchIdx:STATE.patchIdx,patch:currentPatchLabel?currentPatchLabel():'PATCH',pads:padState(),slots:slotState(),padEditingIdx:STATE.padEditingIdx,scope:STATE.padControlScope,fx:{...STATE.fx},sound:{amp:{...STATE.amp},filt:{...STATE.filt},mod:{...STATE.mod}},viz:{...STATE.viz,cam:{...STATE.viz.cam}}};}
@@ -7001,7 +6426,7 @@ document.addEventListener('keydown',e=>{
   function selectRemotePad(idx){idx=+idx; if(idx<0||idx>=STATE.pads.length)return; STATE.padEditingIdx=idx; STATE.padControlScope='pad'; STATE.transposeTarget='pad'; REMOTE.selectedPad=idx; rebuildTouchedWindows();}
   function applyPadParam(idx,key,value){const p=ensurePadDefaults(STATE.pads[idx],idx);if(!p)return; if(key==='volume')p.volume=clampLocal(value,0,2); if(key==='fxSend')p.fxSend=clampLocal(value,0,1); if(key==='wheelEnabled')p.wheelEnabled=!!value; if(key==='transpose')p.transpose=clampLocal(value,-24,24); if(key==='octaveShift')p.octaveShift=clampLocal(value,-3,3); applyPadLiveParams(idx);}
   function applySoundParam(scope,path,value,padIdx){if(!SOUND_ALLOWED.has(path))return;const val=+value; if(scope==='pad'){const idx=Number.isFinite(+padIdx)?+padIdx:STATE.padEditingIdx;const p=ensurePadDefaults(STATE.pads[idx],idx);if(!p||p.kind==='sample')return;p.patchSnapshot=p.patchSnapshot||snapshotPatch();const [a,b]=path.split('.');p.patchSnapshot[a]=p.patchSnapshot[a]||{};p.patchSnapshot[a][b]=val;applyPadLiveParams(idx);STATE.padEditingIdx=idx;STATE.padControlScope='pad';}else{setPath(STATE,path,val);if(path==='mod.vol')setRemoteMaster(val);} }
-  function applyRemoteCommand(m){try{ensureAudioReady&&ensureAudioReady()}catch{}try{switch(m.cmd){
+  function applyRemoteCommand(m){try{ensureAudioReady&&ensureAudioReady()}catch{}try{if(m.fast){const key=m.cmd+':'+(m.key||m.idx||'');if(m.t && m.t<(REMOTE.lastFastCmd[key]||0))return;REMOTE.lastFastCmd[key]=m.t;}if(m.cmd==='wheel'){if(m.t && m.t<(REMOTE.lastWheelCmdT||0))return;REMOTE.lastWheelCmdT=m.t;}switch(m.cmd){
     case 'noteOn':pressNoteByDisplay(+m.midi);break;case 'noteOff':releaseNoteByDisplay(+m.midi);break;
     case 'pad':padTrigger(+m.idx);break;case 'padStop':padStop(+m.idx,true);break;case 'padSelect':selectRemotePad(+m.idx);break;
     case 'padParam':applyPadParam(+m.idx,m.key,m.value);break;case 'padWheelToggle':{const p=ensurePadDefaults(STATE.pads[+m.idx],+m.idx);if(p){p.wheelEnabled=!(p.wheelEnabled!==false);applyPadLiveParams(+m.idx)}}break;
@@ -7015,7 +6440,7 @@ document.addEventListener('keydown',e=>{
     case 'vizToggle':toggleVisualizer(!STATE.viz.active);break;case 'vizAuto':STATE.viz.autoPan=!STATE.viz.autoPan;STATE.viz.autoTarget=null;if(!STATE.viz.active)toggleVisualizer(true);break;case 'vizClean':toggleVizClean(!!m.value);break;case 'vizRandom':vizRandomize();break;case 'vizParam':{const allowed=['sensitivity','particleCount','motion','colorShift','bloom','fog','autoSpeed','micSensitivity'];if(allowed.includes(m.key)){STATE.viz[m.key]=+m.value;if(viz3d)viz3d.applySettings();}}break;case 'vizScene':vizSetScene(String(m.value));break;
     case 'openWindow':toggleWindow(m.id,true);break;}
     rebuildTouchedWindows();remoteSendState();}catch(err){console.warn('remote command failed',err)}}
-  async function startHostPairing(){closeRemoteConnection(true);REMOTE.role='host';const pc=REMOTE.pc=makePeer();const dc=pc.createDataChannel('hold-it-down-remote',{ordered:true});setupChannel(dc);const offer=await pc.createOffer();await pc.setLocalDescription(offer);await waitIce(pc);REMOTE.hostOffer=enc(pc.localDescription);buildRemoteWindow();toast('Host code ready');}
+  async function startHostPairing(){closeRemoteConnection(true);REMOTE.role='host';const pc=REMOTE.pc=makePeer();const dc=pc.createDataChannel('hold-it-down-remote',{ordered:false,maxPacketLifeTime:120});setupChannel(dc);const offer=await pc.createOffer();await pc.setLocalDescription(offer);await waitIce(pc);REMOTE.hostOffer=enc(pc.localDescription);buildRemoteWindow();toast('Host code ready');}
   async function acceptControllerAnswer(code){if(!REMOTE.pc||REMOTE.role!=='host'){toast('Start HOST first');return}try{await REMOTE.pc.setRemoteDescription(new RTCSessionDescription(dec(code)));toast('Answer accepted');buildRemoteWindow()}catch(e){toast('Could not read controller answer');console.warn(e)}}
   async function startControllerPairing(offerCode){closeRemoteConnection(true);REMOTE.role='controller';const pc=REMOTE.pc=makePeer();pc.ondatachannel=e=>setupChannel(e.channel);try{await pc.setRemoteDescription(new RTCSessionDescription(dec(offerCode)));const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await waitIce(pc);REMOTE.controllerAnswer=enc(pc.localDescription);buildRemoteWindow();toast('Controller answer ready')}catch(e){toast('Could not read host code');console.warn(e);buildRemoteWindow()}}
   function noteLabel(m){const names=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return names[((m%12)+12)%12]+(Math.floor(m/12)-1)}
@@ -7027,22 +6452,43 @@ document.addEventListener('keydown',e=>{
   function soundControlsHTML(){const st=REMOTE.lastState||{};const scope=REMOTE.soundScope||st.scope||'global';const padIdx=Number.isFinite(REMOTE.selectedPad)?REMOTE.selectedPad:(st.padEditingIdx>=0?st.padEditingIdx:0);const src=st.sound||{amp:{},filt:{},mod:{}};const rows=[['ATK','amp.a',0,3,.01,getPath(src,'amp.a',.005),'s'],['DEC','amp.d',0,3,.01,getPath(src,'amp.d',.5),'s'],['SUS','amp.s',0,1,.01,getPath(src,'amp.s',.7),''],['REL','amp.r',0,4,.01,getPath(src,'amp.r',.5),'s'],['CUTOFF','filt.co',80,12000,1,getPath(src,'filt.co',2400),'Hz'],['RES','filt.q',.1,20,.1,getPath(src,'filt.q',3),''],['LFO R','mod.lfoR',0,14,.01,getPath(src,'mod.lfoR',5),'Hz'],['LFO D','mod.lfoD',0,.25,.001,getPath(src,'mod.lfoD',.02),''],['GLIDE','mod.glide',0,1,.01,getPath(src,'mod.glide',0),''],['VOL','mod.vol',0,1.2,.01,getPath(src,'mod.vol',.7),''],['DRIVE','mod.drive',0,1,.01,getPath(src,'mod.drive',.3),''],['PAN','mod.pan',-1,1,.01,getPath(src,'mod.pan',0),'']];return `<div class="remote-scope-strip"><button class="btn tiny ${scope==='global'?'on':''}" data-rscope="global">GLOBAL LIVE PATCH</button><button class="btn tiny ${scope==='pad'?'on':''}" data-rscope="pad">SELECTED PAD</button></div><div class="remote-select-row"><label>PAD</label><select id="remote-sound-pad">${(st.pads||[]).map(p=>`<option value="${p.i}" ${p.i===padIdx?'selected':''}>${p.i+1} · ${esc(p.name||'PAD')}</option>`).join('')}</select></div><div class="remote-open-strip"><button class="btn tiny" data-rcmd="patchPrev">PATCH ◀</button><button class="btn tiny" data-rcmd="patchNext">PATCH ▶</button><button class="btn tiny gold" id="remote-copy-patch">COPY PATCH TO PAD</button></div><div class="remote-hint" style="margin:5px 0">Current live patch: <b style="color:var(--neon3)">${esc(st.patch||'PATCH')}</b></div><div class="remote-knob-table">${rows.map(r=>pSlider(r[0],'rsnd-'+r[1].replace('.','-'),r[2],r[3],r[4],r[5],`data-rsound="${r[1]}"`,r[6]==='Hz'?Math.round(+r[5]):r[6]==='s'?(+r[5]).toFixed(2)+'s':(r[1]==='mod.pan'?(+r[5]).toFixed(2):Math.round((+r[5])*100)+'%'))).join('')}</div>`}
   function arpVizHTML(){const st=REMOTE.lastState||{},a=st.arp||{},v=st.viz||{};return `<div class="remote-toggle-row"><button class="btn gold ${a.enabled?'on':''}" data-rcmd="arpToggle">ARP ${a.enabled?'ON':'OFF'}</button><button class="btn" data-rcmd="tap">TAP TEMPO</button></div>${pSlider('ARP BPM','rarp-bpm',40,220,1,a.bpm||st.bpm||STATE.bpm,'data-rarp="bpm"',a.bpm||st.bpm||STATE.bpm)}${pSlider('GATE','rarp-gate',0.05,1,.01,a.gate??.55,'data-rarp="gate"',Math.round((a.gate??.55)*100)+'%')}${pSlider('SWING','rarp-swing',0,.7,.01,a.swing??0,'data-rarp="swing"',Math.round((a.swing??0)*100)+'%')}<div class="remote-toggle-row" style="margin-top:6px"><button class="btn ${v.active?'on':''}" data-rviz-cmd="toggle">VISUALIZER</button><button class="btn ${v.autoPan?'on':''}" data-rviz-cmd="auto">AUTO-PAN</button></div>${pSlider('AUTO SPD','rviz-speed',0.1,6,.05,v.autoSpeed||1,'data-rviz="autoSpeed"',(v.autoSpeed||1).toFixed(2))}${pSlider('SENS','rviz-sens',0.2,3.4,.05,v.sensitivity||1.2,'data-rviz="sensitivity"',(v.sensitivity||1.2).toFixed(2))}${pSlider('MOTION','rviz-mot',0.08,3.9,.05,v.motion||1,'data-rviz="motion"',(v.motion||1).toFixed(2))}${pSlider('BLOOM','rviz-bloom',0.2,2.9,.05,v.bloom||1,'data-rviz="bloom"',(v.bloom||1).toFixed(2))}<div class="remote-open-strip" style="margin-top:5px"><button class="btn tiny" data-rviz-cmd="random">RANDOM VIZ</button><button class="btn tiny" data-rviz-cmd="clean">CLEAN DOT</button></div>`}
   function hostPanelHTML(){return `<div class="remote-section"><div class="remote-subtitle">1 · HOST CODE FROM IPAD</div><textarea id="remote-host-offer" readonly placeholder="Tap START HOST to create a code">${REMOTE.hostOffer||''}</textarea><div class="remote-row"><button class="btn gold" id="remote-start-host">${REMOTE.hostOffer?'RESTART HOST':'START HOST'}</button><button class="btn" id="remote-copy-offer" ${REMOTE.hostOffer?'':'disabled'}>COPY HOST CODE</button></div></div><div class="remote-section"><div class="remote-subtitle">2 · PASTE IPHONE ANSWER HERE</div><textarea id="remote-answer-in" placeholder="Paste the controller answer code from your iPhone"></textarea><div class="remote-row"><button class="btn gold" id="remote-accept-answer">ACCEPT ANSWER</button><button class="btn warn" id="remote-disconnect">DISCONNECT</button></div></div>`}
-  function controllerPanelHTML(){const st=REMOTE.lastState||{};return `<div class="remote-section"><div class="remote-subtitle">1 · PASTE IPAD HOST CODE</div><textarea id="remote-offer-in" placeholder="Paste the host code from your iPad">${REMOTE.hostOffer||''}</textarea><div class="remote-row"><button class="btn gold" id="remote-start-controller">CONNECT AS CONTROLLER</button><button class="btn warn" id="remote-disconnect-c">DISCONNECT</button></div></div><div class="remote-section"><div class="remote-subtitle">2 · COPY THIS ANSWER BACK TO IPAD</div><textarea id="remote-controller-answer" readonly placeholder="Your answer code appears here after connecting">${REMOTE.controllerAnswer||''}</textarea><div class="remote-row"><button class="btn" id="remote-copy-answer" ${REMOTE.controllerAnswer?'':'disabled'}>COPY ANSWER CODE</button></div></div><div class="remote-controller ${REMOTE.connected?'live':'locked'}"><div class="remote-strip"><span>COMPLETE REMOTE CONTROL BOARD</span><b>${REMOTE.connected?'LIVE':'PAIR FIRST'}</b></div><div class="remote-board"><div class="remote-board-col"><div class="remote-panel-card gold"><div class="remote-mini-title">PADS / SAMPLER <span>trigger · select · mix · PB</span></div>${padGridHTML()}</div><div class="remote-panel-card"><div class="remote-mini-title">SLOTS / CHORD BANK <span>window slots</span></div><div class="remote-toggle-row three"><button class="btn tiny" data-rcmd="slotPrev">PREV</button><button class="btn tiny gold" data-rcmd="slotNext">NEXT</button><button class="btn tiny gold" data-rcmd="slotCount">3s COUNT</button></div>${slotGridHTML()}</div></div><div class="remote-board-col"><div class="remote-panel-card"><div class="remote-mini-title">GLOBAL TRANSPORT / MIX <span>${esc(st.patch||'')}</span></div><div class="remote-row remote-transport"><button class="btn warn" data-rcmd="kill">KILL</button><button class="btn warn" data-rcmd="stopAll">STOP ALL</button><button class="btn gold" data-rcmd="tap">TAP</button><button class="btn" data-rcmd="sustainToggle">SUSTAIN</button></div>${pSlider('BPM','remote-bpm',40,220,1,st.bpm||STATE.bpm,'',''+(st.bpm||STATE.bpm))}${pSlider('MASTER','remote-master',0,1.2,.01,getPath(st,'sound.mod.vol',.7),'',Math.round(getPath(st,'sound.mod.vol',.7)*100)+'%')}<div class="remote-wheel-zone"><div class="remote-param"><label>PITCH</label><input type="range" id="remote-wheel" min="-12" max="12" step="0.01" value="0"><span class="v" id="remote-wheel-v">0.00</span></div><div class="remote-wheel-pad" id="remote-wheel-pad">DRAG LEFT / RIGHT · LOCKED NO PAGE SCROLL</div><button class="btn tiny" id="remote-wheel-zero" style="width:100%;margin-top:4px">CENTER PITCH</button></div></div><div class="remote-panel-card mag"><div class="remote-mini-title">EQ / FX RACK <span>global bus</span></div>${fxControlsHTML()}</div></div><div class="remote-board-col"><div class="remote-panel-card gold"><div class="remote-mini-title">SOUND DESIGN <span>global or selected pad</span></div>${soundControlsHTML()}</div><div class="remote-panel-card"><div class="remote-mini-title">ARP / VISUALIZER <span>tempo + autopan</span></div>${arpVizHTML()}</div><div class="remote-panel-card"><div class="remote-mini-title">WINDOW SHORTCUTS <span>open on iPad</span></div><div class="remote-window-grid">${[['pads','PADS'],['slots','SLOTS'],['sound','SOUND'],['fx','FX'],['arp','ARP'],['spatial','3D SOUND'],['bank','BANK'],['help','HELP']].map(w=>`<button class="btn tiny" data-rwin="${w[0]}">${w[1]}</button>`).join('')}</div></div></div></div><div class="remote-subtitle">TWO-OCTAVE NOTE SURFACE</div><div class="remote-note-grid" id="remote-note-grid">${pianoHTML()}</div><div class="remote-hint">The iPhone sends control only. Keep the iPad connected to speakers/headphones. Pitch wheel and pad controls lock touch scrolling while active.</div></div>`}
-  function buildRemoteWindow(){const w=WIN.remote;if(!w)return;const body=w.el.querySelector('.win-body');const role=REMOTE.role||'none';body.innerHTML=`<div class="remote-root"><div class="pad-target-strip"><span>REMOTE LINK: <b>${remoteStatusText()}</b></span><span class="scope">GitHub Pages · WebRTC direct</span></div><div class="remote-role-row"><button class="btn gold ${role==='host'?'on':''}" id="remote-role-host">THIS DEVICE IS iPAD HOST</button><button class="btn ${role==='controller'?'on':''}" id="remote-role-controller">THIS DEVICE IS iPHONE CONTROLLER</button></div><div class="remote-hint">Pair once, then this panel becomes a full mixer/control board for pads, chord slots, sound design, EQ/FX, arp, visualizer, and windows.</div><div id="remote-panel">${role==='host'?hostPanelHTML():role==='controller'?controllerPanelHTML():'<div class="remote-empty">Choose HOST on the iPad, or CONTROLLER on the iPhone.</div>'}</div></div>`;body.querySelector('#remote-role-host')?.addEventListener('click',()=>{REMOTE.role='host';buildRemoteWindow()});body.querySelector('#remote-role-controller')?.addEventListener('click',()=>{REMOTE.role='controller';buildRemoteWindow()});body.querySelector('#remote-start-host')?.addEventListener('click',startHostPairing);body.querySelector('#remote-copy-offer')?.addEventListener('click',()=>copyText(REMOTE.hostOffer||body.querySelector('#remote-host-offer')?.value||''));body.querySelector('#remote-accept-answer')?.addEventListener('click',()=>acceptControllerAnswer(body.querySelector('#remote-answer-in')?.value||''));body.querySelector('#remote-disconnect')?.addEventListener('click',()=>closeRemoteConnection());body.querySelector('#remote-start-controller')?.addEventListener('click',()=>startControllerPairing(body.querySelector('#remote-offer-in')?.value||''));body.querySelector('#remote-copy-answer')?.addEventListener('click',()=>copyText(REMOTE.controllerAnswer||body.querySelector('#remote-controller-answer')?.value||''));body.querySelector('#remote-disconnect-c')?.addEventListener('click',()=>closeRemoteConnection());bindControllerSurface(body);}
-  function bindControllerSurface(body){body.querySelectorAll('[data-rcmd]').forEach(b=>b.onclick=()=>cmd(b.dataset.rcmd));const bpm=body.querySelector('#remote-bpm');if(bpm){bpm.oninput=e=>{e.target.nextElementSibling.textContent=e.target.value;cmd('bpm',{value:+e.target.value})}}const masterEl=body.querySelector('#remote-master');if(masterEl)masterEl.oninput=e=>{e.target.nextElementSibling.textContent=Math.round(+e.target.value*100)+'%';cmd('master',{value:+e.target.value})};
-    const wheel=body.querySelector('#remote-wheel'), wheelV=body.querySelector('#remote-wheel-v');if(wheel){const send=e=>{e.preventDefault?.();const val=+wheel.value;wheelV&&(wheelV.textContent=val.toFixed(2));cmd('wheel',{value:val})};['pointerdown','touchstart'].forEach(ev=>wheel.addEventListener(ev,e=>{REMOTE.activeWheel=true;e.preventDefault();},{passive:false}));['input','pointermove','touchmove'].forEach(ev=>wheel.addEventListener(ev,send,{passive:false}));['change','pointerup','pointercancel','touchend','touchcancel'].forEach(ev=>wheel.addEventListener(ev,e=>{REMOTE.activeWheel=false;e.preventDefault?.();cmd('wheelRelease')},{passive:false}));}
-    const wheelPad=body.querySelector('#remote-wheel-pad');if(wheelPad){let startX=0,startVal=0;const setFromEvent=e=>{e.preventDefault();const dx=(e.clientX??(e.touches?.[0]?.clientX||startX))-startX;const val=clampLocal(startVal+dx/9,-12,12);if(wheel){wheel.value=val;wheelV&&(wheelV.textContent=val.toFixed(2));}cmd('wheel',{value:val});};wheelPad.addEventListener('pointerdown',e=>{REMOTE.activeWheel=true;wheelPad.classList.add('active');startX=e.clientX;startVal=+(wheel?.value||0);try{wheelPad.setPointerCapture(e.pointerId)}catch{}e.preventDefault()},{passive:false});wheelPad.addEventListener('pointermove',e=>{if(!REMOTE.activeWheel)return;setFromEvent(e)},{passive:false});const end=e=>{REMOTE.activeWheel=false;wheelPad.classList.remove('active');cmd('wheelRelease');e.preventDefault?.()};wheelPad.addEventListener('pointerup',end,{passive:false});wheelPad.addEventListener('pointercancel',end,{passive:false});}
-    body.querySelector('#remote-wheel-zero')?.addEventListener('click',()=>{if(wheel)wheel.value=0;if(wheelV)wheelV.textContent='0.00';cmd('wheel',{value:0});cmd('wheelRelease')});
-    body.querySelectorAll('[data-rpad]').forEach(b=>{b.addEventListener('pointerdown',e=>{if(e.target.closest('input,button.remote-pad-pb'))return;e.preventDefault();cmd('pad',{idx:+b.dataset.rpad});cmd('padSelect',{idx:+b.dataset.rpad});b.classList.add('hit');},{passive:false});b.addEventListener('pointerup',()=>b.classList.remove('hit'));b.addEventListener('pointercancel',()=>b.classList.remove('hit'));});
-    body.querySelectorAll('[data-pad-cell]').forEach(c=>c.addEventListener('dblclick',()=>cmd('padSelect',{idx:+c.dataset.padCell})));body.querySelectorAll('[data-rpad-wheel]').forEach(b=>b.onclick=e=>{e.stopPropagation();cmd('padWheelToggle',{idx:+b.dataset.rpadWheel})});body.querySelectorAll('[data-rpad-vol]').forEach(r=>r.oninput=e=>{e.target.nextElementSibling.textContent=Math.round(+e.target.value*100);cmd('padParam',{idx:+r.dataset.rpadVol,key:'volume',value:+e.target.value})});body.querySelectorAll('[data-rpad-fx]').forEach(r=>r.oninput=e=>{e.target.nextElementSibling.textContent=Math.round(+e.target.value*100);cmd('padParam',{idx:+r.dataset.rpadFx,key:'fxSend',value:+e.target.value})});
+  function controllerPanelHTML(){const st=REMOTE.lastState||{};return `<div class="remote-fs-header"><div class="rtitle">H.I.D. REMOTE BOARD<br><b>${REMOTE.connected?'LIVE CONTROL':'PAIR / SETUP'}</b></div><button class="btn tiny gold" id="remote-fs-toggle">${REMOTE.fullScreen?'NORMAL VIEW':'FULL SCREEN'}</button></div><div class="remote-section"><div class="remote-subtitle">1 · PASTE IPAD HOST CODE</div><textarea id="remote-offer-in" placeholder="Paste the host code from your iPad">${REMOTE.hostOffer||''}</textarea><div class="remote-row"><button class="btn gold" id="remote-start-controller">CONNECT AS CONTROLLER</button><button class="btn warn" id="remote-disconnect-c">DISCONNECT</button></div></div><div class="remote-section"><div class="remote-subtitle">2 · COPY THIS ANSWER BACK TO IPAD</div><textarea id="remote-controller-answer" readonly placeholder="Your answer code appears here after connecting">${REMOTE.controllerAnswer||''}</textarea><div class="remote-row"><button class="btn" id="remote-copy-answer" ${REMOTE.controllerAnswer?'':'disabled'}>COPY ANSWER CODE</button></div></div><div class="remote-controller ${REMOTE.connected?'live':'locked'}"><div class="remote-strip"><span>COMPLETE REMOTE CONTROL BOARD</span><b>${REMOTE.connected?'LIVE':'PAIR FIRST'}</b></div><div class="remote-board"><div class="remote-board-col"><div class="remote-panel-card gold"><div class="remote-mini-title">PADS / SAMPLER <span>trigger · select · mix · PB</span></div>${padGridHTML()}</div><div class="remote-panel-card"><div class="remote-mini-title">SLOTS / CHORD BANK <span>window slots</span></div><div class="remote-toggle-row three"><button class="btn tiny" data-rcmd="slotPrev">PREV</button><button class="btn tiny gold" data-rcmd="slotNext">NEXT</button><button class="btn tiny gold" data-rcmd="slotCount">3s COUNT</button></div>${slotGridHTML()}</div></div><div class="remote-board-col"><div class="remote-panel-card"><div class="remote-mini-title">GLOBAL TRANSPORT / MIX <span>${esc(st.patch||'')}</span></div><div class="remote-row remote-transport"><button class="btn warn" data-rcmd="kill">KILL</button><button class="btn warn" data-rcmd="stopAll">STOP ALL</button><button class="btn gold" data-rcmd="tap">TAP</button><button class="btn" data-rcmd="sustainToggle">SUSTAIN</button></div>${pSlider('BPM','remote-bpm',40,220,1,st.bpm||STATE.bpm,'',''+(st.bpm||STATE.bpm))}${pSlider('MASTER','remote-master',0,1.2,.01,getPath(st,'sound.mod.vol',.7),'',Math.round(getPath(st,'sound.mod.vol',.7)*100)+'%')}<div class="remote-wheel-zone"><div class="remote-param"><label>PITCH</label><input type="range" id="remote-wheel" min="-12" max="12" step="0.01" value="0"><span class="v" id="remote-wheel-v">0.00</span></div><div class="remote-wheel-pad" id="remote-wheel-pad"><div class="remote-wheel-thumb" id="remote-wheel-thumb"></div><div class="remote-wheel-readout" id="remote-wheel-readout">0.00 ST</div><span>GLIDE PITCH LEFT / RIGHT</span></div><button class="btn tiny" id="remote-wheel-zero" style="width:100%;margin-top:4px">CENTER PITCH</button></div></div><div class="remote-panel-card mag"><div class="remote-mini-title">EQ / FX RACK <span>global bus</span></div>${fxControlsHTML()}</div></div><div class="remote-board-col"><div class="remote-panel-card gold"><div class="remote-mini-title">SOUND DESIGN <span>global or selected pad</span></div>${soundControlsHTML()}</div><div class="remote-panel-card"><div class="remote-mini-title">ARP / VISUALIZER <span>tempo + autopan</span></div>${arpVizHTML()}</div><div class="remote-panel-card"><div class="remote-mini-title">WINDOW SHORTCUTS <span>open on iPad</span></div><div class="remote-window-grid">${[['pads','PADS'],['slots','SLOTS'],['sound','SOUND'],['fx','FX'],['arp','ARP'],['spatial','3D SOUND'],['bank','BANK'],['help','HELP']].map(w=>`<button class="btn tiny" data-rwin="${w[0]}">${w[1]}</button>`).join('')}</div></div></div></div><div class="remote-subtitle">TWO-OCTAVE NOTE SURFACE</div><div class="remote-note-grid" id="remote-note-grid">${pianoHTML()}</div><div class="remote-hint">The iPhone sends control only. Keep the iPad connected to speakers/headphones. Pitch wheel and pad controls lock touch scrolling while active.</div></div>`}
+  function buildRemoteWindow(){
+    const w=WIN.remote;if(!w)return;
+    const body=w.el.querySelector('.win-body');
+    const role=REMOTE.role||'none';
+    if(role==='controller' && !REMOTE.manualNormal)REMOTE.fullScreen=true;
+    if(role!=='controller')REMOTE.fullScreen=false;
+    setRemoteFullScreen(role==='controller'&&!!REMOTE.fullScreen);
+    body.innerHTML=`<div class="remote-root"><div class="pad-target-strip"><span>REMOTE LINK: <b>${remoteStatusText()}</b></span><span class="scope">GitHub Pages · WebRTC direct</span></div><div class="remote-role-row"><button class="btn gold ${role==='host'?'on':''}" id="remote-role-host">THIS DEVICE IS iPAD HOST</button><button class="btn ${role==='controller'?'on':''}" id="remote-role-controller">THIS DEVICE IS iPHONE CONTROLLER</button></div><div class="remote-hint">Pair once, then this panel becomes a full mixer/control board for pads, chord slots, sound design, EQ/FX, arp, visualizer, and windows.</div><div id="remote-panel">${role==='host'?hostPanelHTML():role==='controller'?controllerPanelHTML():'<div class="remote-empty">Choose HOST on the iPad, or CONTROLLER on the iPhone.</div>'}</div></div>`;
+    body.querySelector('#remote-role-host')?.addEventListener('click',()=>{REMOTE.role='host';REMOTE.fullScreen=false;REMOTE.manualNormal=false;buildRemoteWindow()});
+    body.querySelector('#remote-role-controller')?.addEventListener('click',()=>{REMOTE.role='controller';REMOTE.fullScreen=true;REMOTE.manualNormal=false;buildRemoteWindow()});
+    body.querySelector('#remote-fs-toggle')?.addEventListener('click',()=>{REMOTE.fullScreen=!REMOTE.fullScreen;REMOTE.manualNormal=!REMOTE.fullScreen;setRemoteFullScreen(REMOTE.role==='controller'&&REMOTE.fullScreen);buildRemoteWindow()});
+    body.querySelector('#remote-start-host')?.addEventListener('click',startHostPairing);
+    body.querySelector('#remote-copy-offer')?.addEventListener('click',()=>copyText(REMOTE.hostOffer||body.querySelector('#remote-host-offer')?.value||''));
+    body.querySelector('#remote-accept-answer')?.addEventListener('click',()=>acceptControllerAnswer(body.querySelector('#remote-answer-in')?.value||''));
+    body.querySelector('#remote-disconnect')?.addEventListener('click',()=>closeRemoteConnection());
+    body.querySelector('#remote-start-controller')?.addEventListener('click',()=>startControllerPairing(body.querySelector('#remote-offer-in')?.value||''));
+    body.querySelector('#remote-copy-answer')?.addEventListener('click',()=>copyText(REMOTE.controllerAnswer||body.querySelector('#remote-controller-answer')?.value||''));
+    body.querySelector('#remote-disconnect-c')?.addEventListener('click',()=>closeRemoteConnection());
+    bindControllerSurface(body);
+  }
+  function bindControllerSurface(body){['pointerdown','touchstart','input'].forEach(ev=>body.addEventListener(ev,()=>markRemoteBusy(1000),{capture:true,passive:true}));body.querySelectorAll('[data-rcmd]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();cmd(b.dataset.rcmd)}));const bpm=body.querySelector('#remote-bpm');if(bpm){bpm.oninput=e=>{e.target.nextElementSibling.textContent=e.target.value;cmdFast('bpm',{value:+e.target.value})}}const masterEl=body.querySelector('#remote-master');if(masterEl)masterEl.oninput=e=>{e.target.nextElementSibling.textContent=Math.round(+e.target.value*100)+'%';cmdFast('master',{value:+e.target.value})};
+    const wheel=body.querySelector('#remote-wheel'), wheelV=body.querySelector('#remote-wheel-v'), wheelThumb=body.querySelector('#remote-wheel-thumb'), wheelRead=body.querySelector('#remote-wheel-readout');
+    const updateWheelUI=val=>{val=clampLocal(+val||0,-12,12);if(wheel)wheel.value=val;if(wheelV)wheelV.textContent=val.toFixed(2);if(wheelRead)wheelRead.textContent=val.toFixed(2)+' ST';if(wheelThumb)wheelThumb.style.left=((val+12)/24*100).toFixed(2)+'%';};
+    if(wheel){const send=e=>{e.preventDefault?.();markRemoteBusy(900);const val=+wheel.value;updateWheelUI(val);cmdFast('wheel',{value:val})};['pointerdown','touchstart'].forEach(ev=>wheel.addEventListener(ev,e=>{REMOTE.activeWheel=true;document.body.classList.add('remote-wheel-lock');markRemoteBusy(1200);e.preventDefault();},{passive:false}));['input','pointermove','touchmove'].forEach(ev=>wheel.addEventListener(ev,send,{passive:false}));['change','pointerup','pointercancel','touchend','touchcancel'].forEach(ev=>wheel.addEventListener(ev,e=>{REMOTE.activeWheel=false;document.body.classList.remove('remote-wheel-lock');e.preventDefault?.();cmd('wheelRelease');if(!STATE.modWheel?.holdMode)updateWheelUI(0)},{passive:false}));updateWheelUI(+wheel.value||0);}
+    const wheelPad=body.querySelector('#remote-wheel-pad');if(wheelPad){const valFromX=x=>{const r=wheelPad.getBoundingClientRect();return clampLocal(((x-r.left)/Math.max(1,r.width)-0.5)*24,-12,12)};const setFromEvent=e=>{const x=e.clientX??(e.touches?.[0]?.clientX);if(x==null)return;e.preventDefault();markRemoteBusy(900);const val=valFromX(x);updateWheelUI(val);cmdFast('wheel',{value:val});};wheelPad.addEventListener('pointerdown',e=>{REMOTE.activeWheel=true;document.body.classList.add('remote-wheel-lock');wheelPad.classList.add('active');try{wheelPad.setPointerCapture(e.pointerId)}catch{}setFromEvent(e)},{passive:false});wheelPad.addEventListener('pointermove',e=>{if(!REMOTE.activeWheel)return;setFromEvent(e)},{passive:false});const end=e=>{if(!REMOTE.activeWheel)return;REMOTE.activeWheel=false;document.body.classList.remove('remote-wheel-lock');wheelPad.classList.remove('active');cmd('wheelRelease');if(!STATE.modWheel?.holdMode)updateWheelUI(0);e.preventDefault?.()};wheelPad.addEventListener('pointerup',end,{passive:false});wheelPad.addEventListener('pointercancel',end,{passive:false});wheelPad.addEventListener('lostpointercapture',end,{passive:false});}
+    body.querySelector('#remote-wheel-zero')?.addEventListener('click',()=>{updateWheelUI(0);cmd('wheel',{value:0});cmd('wheelRelease')});
+    body.querySelectorAll('[data-rpad]').forEach(b=>{b.addEventListener('pointerdown',e=>{if(e.target.closest('input,button.remote-pad-pb'))return;e.preventDefault();markRemoteBusy(600);cmd('pad',{idx:+b.dataset.rpad});cmd('padSelect',{idx:+b.dataset.rpad});b.classList.add('hit');},{passive:false});b.addEventListener('pointerup',()=>b.classList.remove('hit'));b.addEventListener('pointercancel',()=>b.classList.remove('hit'));});
+    body.querySelectorAll('[data-pad-cell]').forEach(c=>c.addEventListener('dblclick',()=>cmd('padSelect',{idx:+c.dataset.padCell})));body.querySelectorAll('[data-rpad-wheel]').forEach(b=>b.onclick=e=>{e.stopPropagation();cmd('padWheelToggle',{idx:+b.dataset.rpadWheel})});body.querySelectorAll('[data-rpad-vol]').forEach(r=>r.oninput=e=>{e.target.nextElementSibling.textContent=Math.round(+e.target.value*100);cmdFast('padParam',{idx:+r.dataset.rpadVol,key:'volume',value:+e.target.value})});body.querySelectorAll('[data-rpad-fx]').forEach(r=>r.oninput=e=>{e.target.nextElementSibling.textContent=Math.round(+e.target.value*100);cmdFast('padParam',{idx:+r.dataset.rpadFx,key:'fxSend',value:+e.target.value})});
     body.querySelectorAll('[data-rslot]').forEach(b=>{b.onclick=e=>{e.preventDefault();cmd('slot',{idx:+b.dataset.rslot})};b.oncontextmenu=e=>{e.preventDefault();cmd('slotToggle',{idx:+b.dataset.rslot})}});
-    body.querySelectorAll('[data-rfx]').forEach(r=>r.oninput=e=>{const v=+e.target.value;e.target.nextElementSibling.textContent=(['eqLow','eqMid','eqHigh'].includes(r.dataset.rfx)?v.toFixed(1)+'dB':Math.round(v*100)+'%');cmd('fxSet',{key:r.dataset.rfx,value:v})});body.querySelectorAll('[data-rfx-toggle]').forEach(b=>b.onclick=()=>cmd('fxToggle',{key:b.dataset.rfxToggle}));
-    body.querySelectorAll('[data-rscope]').forEach(b=>b.onclick=()=>{REMOTE.soundScope=b.dataset.rscope;cmd('soundScope',{scope:REMOTE.soundScope,padIdx:+(body.querySelector('#remote-sound-pad')?.value||0)});buildRemoteWindow()});const sndPad=body.querySelector('#remote-sound-pad');if(sndPad)sndPad.onchange=e=>{REMOTE.selectedPad=+e.target.value;cmd('padSelect',{idx:REMOTE.selectedPad});};body.querySelector('#remote-copy-patch')?.addEventListener('click',()=>cmd('copyPatchToPad',{idx:+(sndPad?.value||0)}));body.querySelectorAll('[data-rsound]').forEach(r=>r.oninput=e=>{const path=r.dataset.rsound,val=+e.target.value;e.target.nextElementSibling.textContent=(path.includes('amp.')?val.toFixed(2)+'s':path==='filt.co'?Math.round(val):path==='mod.pan'?val.toFixed(2):Math.round(val*100)+'%');cmd('soundSet',{scope:REMOTE.soundScope||'global',padIdx:+(sndPad?.value||0),path,value:val})});
-    body.querySelectorAll('[data-rarp]').forEach(r=>r.oninput=e=>{const k=r.dataset.rarp,v=+e.target.value;e.target.nextElementSibling.textContent=k==='bpm'?v:k==='gate'||k==='swing'?Math.round(v*100)+'%':v;cmd('arpParam',{key:k,value:v})});body.querySelectorAll('[data-rviz]').forEach(r=>r.oninput=e=>{const v=+e.target.value;e.target.nextElementSibling.textContent=v.toFixed(2);cmd('vizParam',{key:r.dataset.rviz,value:v})});body.querySelectorAll('[data-rviz-cmd]').forEach(b=>b.onclick=()=>{const c=b.dataset.rvizCmd;if(c==='toggle')cmd('vizToggle');else if(c==='auto')cmd('vizAuto');else if(c==='random')cmd('vizRandom');else if(c==='clean')cmd('vizClean',{value:true})});body.querySelectorAll('[data-rwin]').forEach(b=>b.onclick=()=>cmd('openWindow',{id:b.dataset.rwin}));
-    body.querySelectorAll('[data-rnote]').forEach(b=>{const midi=+b.dataset.rnote;const on=e=>{e.preventDefault();if(REMOTE.pressed.has(midi))return;REMOTE.pressed.add(midi);b.classList.add('hit');cmd('noteOn',{midi});try{b.setPointerCapture(e.pointerId)}catch{}};const off=e=>{if(!REMOTE.pressed.has(midi))return;REMOTE.pressed.delete(midi);b.classList.remove('hit');cmd('noteOff',{midi});try{b.releasePointerCapture(e.pointerId)}catch{}};b.addEventListener('pointerdown',on,{passive:false});b.addEventListener('pointerup',off,{passive:false});b.addEventListener('pointercancel',off,{passive:false});b.addEventListener('lostpointercapture',off,{passive:false});});
+    body.querySelectorAll('[data-rfx]').forEach(r=>r.oninput=e=>{const v=+e.target.value;e.target.nextElementSibling.textContent=(['eqLow','eqMid','eqHigh'].includes(r.dataset.rfx)?v.toFixed(1)+'dB':Math.round(v*100)+'%');cmdFast('fxSet',{key:r.dataset.rfx,value:v})});body.querySelectorAll('[data-rfx-toggle]').forEach(b=>b.onclick=()=>cmd('fxToggle',{key:b.dataset.rfxToggle}));
+    body.querySelectorAll('[data-rscope]').forEach(b=>b.onclick=()=>{REMOTE.soundScope=b.dataset.rscope;cmd('soundScope',{scope:REMOTE.soundScope,padIdx:+(body.querySelector('#remote-sound-pad')?.value||0)});buildRemoteWindow()});const sndPad=body.querySelector('#remote-sound-pad');if(sndPad)sndPad.onchange=e=>{REMOTE.selectedPad=+e.target.value;cmd('padSelect',{idx:REMOTE.selectedPad});};body.querySelector('#remote-copy-patch')?.addEventListener('click',()=>cmd('copyPatchToPad',{idx:+(sndPad?.value||0)}));body.querySelectorAll('[data-rsound]').forEach(r=>r.oninput=e=>{const path=r.dataset.rsound,val=+e.target.value;e.target.nextElementSibling.textContent=(path.includes('amp.')?val.toFixed(2)+'s':path==='filt.co'?Math.round(val):path==='mod.pan'?val.toFixed(2):Math.round(val*100)+'%');cmdFast('soundSet',{scope:REMOTE.soundScope||'global',padIdx:+(sndPad?.value||0),path,value:val})});
+    body.querySelectorAll('[data-rarp]').forEach(r=>r.oninput=e=>{const k=r.dataset.rarp,v=+e.target.value;e.target.nextElementSibling.textContent=k==='bpm'?v:k==='gate'||k==='swing'?Math.round(v*100)+'%':v;cmdFast('arpParam',{key:k,value:v})});body.querySelectorAll('[data-rviz]').forEach(r=>r.oninput=e=>{const v=+e.target.value;e.target.nextElementSibling.textContent=v.toFixed(2);cmdFast('vizParam',{key:r.dataset.rviz,value:v})});body.querySelectorAll('[data-rviz-cmd]').forEach(b=>b.onclick=()=>{const c=b.dataset.rvizCmd;if(c==='toggle')cmd('vizToggle');else if(c==='auto')cmd('vizAuto');else if(c==='random')cmd('vizRandom');else if(c==='clean')cmd('vizClean',{value:true})});body.querySelectorAll('[data-rwin]').forEach(b=>b.onclick=()=>cmd('openWindow',{id:b.dataset.rwin}));
+    body.querySelectorAll('[data-rnote]').forEach(b=>{const midi=+b.dataset.rnote;const on=e=>{e.preventDefault();markRemoteBusy(1000);if(REMOTE.pressed.has(midi))return;REMOTE.pressed.add(midi);b.classList.add('hit');cmd('noteOn',{midi});try{b.setPointerCapture(e.pointerId)}catch{}};const off=e=>{if(!REMOTE.pressed.has(midi))return;REMOTE.pressed.delete(midi);b.classList.remove('hit');cmd('noteOff',{midi});try{b.releasePointerCapture(e.pointerId)}catch{}};b.addEventListener('pointerdown',on,{passive:false});b.addEventListener('pointerup',off,{passive:false});b.addEventListener('pointercancel',off,{passive:false});b.addEventListener('lostpointercapture',off,{passive:false});});
   }
   window.addEventListener('touchmove',e=>{if(REMOTE.activeWheel)e.preventDefault()},{passive:false});
-  function updateControllerState(){const w=WIN.remote;if(!w||REMOTE.role!=='controller')return;const hidden=w.el.classList.contains('hidden');if(!hidden)buildRemoteWindow();}
+  function updateControllerState(){const w=WIN.remote;if(!w||REMOTE.role!=='controller')return;const hidden=w.el.classList.contains('hidden');if(hidden)return;const now=performance.now();if(REMOTE.uiBusy||now-(REMOTE.lastTouch||0)<1100){clearTimeout(REMOTE.renderTimer);REMOTE.renderTimer=setTimeout(()=>{REMOTE.uiBusy=false;updateControllerState();},1200);return;}buildRemoteWindow();}
   function installRemoteControl(){if(WIN.remote)return;const dw=$('#desktop')?.clientWidth||900,dh=$('#desktop')?.clientHeight||600;makeWindow('remote','REMOTE CONTROL','',{x:Math.max(10,dw-620),y:45,w:Math.min(760,Math.max(420,dw-30)),h:Math.min(720,dh-60)});buildRemoteWindow();const lb=$('#launcher-bar');if(lb&&!lb.querySelector('[data-w="remote"]')){const b=document.createElement('button');b.className='launcher-btn';b.dataset.w='remote';b.textContent='REMOTE';b.onclick=()=>toggleWindow('remote');lb.appendChild(b)}const top=$('.topbar');const help=$('#btn-help');if(top&&!$('#btn-remote-top')){const b=document.createElement('button');b.className='btn gold';b.id='btn-remote-top';b.textContent='↔ REMOTE';b.onclick=()=>toggleWindow('remote',true);top.insertBefore(b,help||null)}}
   const oldInit=window.initApp||initApp;initApp=function(){oldInit();installRemoteControl();};window.HID_REMOTE={startHostPairing,startControllerPairing,close:closeRemoteConnection,send:cmd};
 })();
