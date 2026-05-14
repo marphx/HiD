@@ -6197,125 +6197,129 @@ window.addEventListener('keyup',e=>{
 });
 
 
-/* ===== LAUNCH ===== */
+/* ===== LAUNCH — retry-safe direct start ===== */
 let __launchReady=false;
+let __launchStarting=false;
+
 async function startAppFromLaunch(ev){
   if(ev){ ev.preventDefault?.(); ev.stopPropagation?.(); }
-  if(__launchReady)return;
-  __launchReady=true;
-  try{
-    initAudio();
-    if(ctx && ctx.state!=='running'){
-      await ctx.resume();
-    }
-    if(ctx){
-      const _unlockOsc=ctx.createOscillator();
-      const _unlockGain=ctx.createGain();
-      _unlockGain.gain.value=0.00001;
-      _unlockOsc.connect(_unlockGain).connect(master||ctx.destination);
-      _unlockOsc.start();
-      _unlockOsc.stop(ctx.currentTime+0.01);
-    }
-  }catch(err){ console.warn('launch audio unlock failed',err); }
-  const modal=$('#prelaunch-modal');
+  if(__launchReady || __launchStarting) return;
+  __launchStarting=true;
+
+  const launchEl=document.getElementById('launch');
+  const appEl=document.getElementById('app');
+  const modal=document.getElementById('prelaunch-modal');
+
+  // Immediately move the user past the home screen so a slow/blocked audio
+  // unlock never makes the Launch button feel broken.
   if(modal){
     modal.classList.remove('show');
     modal.setAttribute('aria-hidden','true');
     modal.style.pointerEvents='none';
   }
+  if(launchEl) launchEl.style.display='none';
+  if(appEl) appEl.classList.add('active');
   window.__keyboardNavMode=false;
-  $('#launch').style.display='none';
-  $('#app').classList.add('active');
-  if(!window.__appInitialized){
-    window.__appInitialized=true;
-    initApp();
-  }else{
-    ensureAudioReady();
+
+  try{
+    if(!window.__appInitialized){
+      window.__appInitialized=true;
+      initApp();
+    }
+    // Audio unlock should happen after the app UI exists, and it should never
+    // block app launch if Safari/iOS delays AudioContext startup.
+    try{
+      initAudio();
+      if(ctx && ctx.state!=='running') await ctx.resume().catch(()=>{});
+      if(ctx){
+        const _unlockOsc=ctx.createOscillator();
+        const _unlockGain=ctx.createGain();
+        _unlockGain.gain.value=0.00001;
+        _unlockOsc.connect(_unlockGain).connect(master||ctx.destination);
+        _unlockOsc.start();
+        _unlockOsc.stop(ctx.currentTime+0.01);
+      }
+    }catch(audioErr){
+      console.warn('launch audio unlock delayed/failed',audioErr);
+    }
+    __launchReady=true;
+  }catch(err){
+    console.error('App startup failed. Launch lock released so you can try again.',err);
+    __launchReady=false;
+    window.__appInitialized=false;
+    // Give a visible recovery path instead of leaving the user stuck.
+    if(launchEl) launchEl.style.display='grid';
+    if(appEl) appEl.classList.remove('active');
+    try{ toast('Startup hit an error — tap Launch again'); }catch{}
+  }finally{
+    __launchStarting=false;
   }
 }
+
 function openPrelaunchReminder(ev){
-  if(ev){ ev.preventDefault?.(); ev.stopPropagation?.(); }
-  const modal=$('#prelaunch-modal');
-  if(modal){
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden','false');
-    modal.style.pointerEvents='auto';
-  }
+  // Direct-launch now: this prevents the advisory modal from blocking startup
+  // on iPad/iPhone when pointer/touch events arrive in a different order.
+  return startAppFromLaunch(ev);
 }
+
 function bindLaunchAction(el,fn){
-  if(!el) return;
-  let fired=false;
+  if(!el || el.__hidLaunchBound) return;
+  el.__hidLaunchBound=true;
+  let last=0;
   const run=(ev)=>{
-    if(ev){ ev.preventDefault?.(); ev.stopPropagation?.(); }
-    if(fired) return;
-    fired=true;
+    const now=performance.now();
+    if(now-last<250){ ev?.preventDefault?.(); ev?.stopPropagation?.(); return; }
+    last=now;
     fn(ev);
-    setTimeout(()=>{ fired=false; },180);
   };
-  el.addEventListener('click',run,{passive:false});
-  el.addEventListener('pointerdown',run,{passive:false});
   el.addEventListener('pointerup',run,{passive:false});
+  el.addEventListener('click',run,{passive:false});
   el.addEventListener('touchend',run,{passive:false});
 }
 
-bindLaunchAction($('#launch-btn'),openPrelaunchReminder);
-bindLaunchAction($('#prelaunch-continue'),startAppFromLaunch);
-const __launchBtn=$('#launch-btn');
-const __prelaunchBtn=$('#prelaunch-continue');
-if(__launchBtn) __launchBtn.onclick=openPrelaunchReminder;
-if(__prelaunchBtn) __prelaunchBtn.onclick=startAppFromLaunch;
-
-/* Delegated, bulletproof handlers — survive DOM-order issues where the
-   modal HTML is parsed after the script that binds it. Capture phase, both
-   pointer and click events, with a debounce flag so it only fires once. */
-let __delegatedFired=0;
-const __delegatedHandler=(e)=>{
-  const t=e.target;
-  if(!t || !t.closest) return;
-  const continueBtn=t.closest('#prelaunch-continue');
-  const launchBtn=t.closest('#launch-btn');
-  if(!continueBtn && !launchBtn) return;
-  const now=performance.now();
-  if(now-__delegatedFired<200) { e.preventDefault?.(); e.stopPropagation?.(); return; }
-  __delegatedFired=now;
-  e.preventDefault?.();
-  e.stopPropagation?.();
-  if(continueBtn) startAppFromLaunch(e);
-  else if(launchBtn) openPrelaunchReminder(e);
-};
-document.addEventListener('pointerup',__delegatedHandler,{capture:true,passive:false});
-document.addEventListener('click',__delegatedHandler,{capture:true,passive:false});
-/* Rebind once DOM is fully parsed (covers cases where the buttons render after this script) */
-const __rebindLaunch=()=>{
+function __bindLaunchButtons(){
   const lb=document.getElementById('launch-btn');
   const cb=document.getElementById('prelaunch-continue');
-  if(lb && !lb.__bound){ lb.__bound=true; bindLaunchAction(lb,openPrelaunchReminder); lb.onclick=openPrelaunchReminder; }
-  if(cb && !cb.__bound){ cb.__bound=true; bindLaunchAction(cb,startAppFromLaunch); cb.onclick=startAppFromLaunch; }
-};
-if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',__rebindLaunch,{once:true});
-}else{
-  __rebindLaunch();
+  bindLaunchAction(lb,startAppFromLaunch);
+  bindLaunchAction(cb,startAppFromLaunch);
+  if(lb) lb.onclick=startAppFromLaunch;
+  if(cb) cb.onclick=startAppFromLaunch;
 }
-window.addEventListener('load',__rebindLaunch,{once:true});
-$('#prelaunch-modal')?.addEventListener('pointerdown',e=>{
-  if(e.target?.id==='prelaunch-modal'){
-    e.preventDefault();
-    e.stopPropagation();
-  }
-},{passive:false});
+
+__bindLaunchButtons();
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',__bindLaunchButtons,{once:true});
+window.addEventListener('load',__bindLaunchButtons,{once:true});
+
+// Capture-phase fallback: even if another overlay/window steals the normal
+// click, the home-screen Launch and modal Continue buttons still start the app.
+document.addEventListener('pointerup',e=>{
+  const t=e.target;
+  if(!t || !t.closest) return;
+  if(t.closest('#launch-btn') || t.closest('#prelaunch-continue')) startAppFromLaunch(e);
+},{capture:true,passive:false});
+document.addEventListener('click',e=>{
+  const t=e.target;
+  if(!t || !t.closest) return;
+  if(t.closest('#launch-btn') || t.closest('#prelaunch-continue')) startAppFromLaunch(e);
+},{capture:true,passive:false});
+
 window.addEventListener('keydown',e=>{
   if(e.code==='Tab') window.__keyboardNavMode=true;
-  if($('#launch').style.display!=='none' && e.code==='Enter'){
+  const launchEl=document.getElementById('launch');
+  if(launchEl && getComputedStyle(launchEl).display!=='none' && e.code==='Enter'){
     e.preventDefault();
-    if($('#prelaunch-modal')?.classList.contains('show')) startAppFromLaunch(e);
-    else openPrelaunchReminder(e);
+    startAppFromLaunch(e);
   }
 });
 document.addEventListener('keydown',e=>{
-  if(e.code==='Escape' && $('#prelaunch-modal')?.classList.contains('show')){
-    e.preventDefault();
-    $('#prelaunch-modal').classList.remove('show');
+  if(e.code==='Escape'){
+    const modal=document.getElementById('prelaunch-modal');
+    if(modal?.classList.contains('show')){
+      e.preventDefault();
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden','true');
+      modal.style.pointerEvents='none';
+    }
   }
 });
 /* ===== LAUNCH SCREEN UI POPULATORS ===== */
