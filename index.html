@@ -10,7 +10,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script id="hid-optional-three-loader">
+/* Optional non-blocking Three.js loader. Never blocks the home screen or launch button. */
+window.__HID_THREE_READY=new Promise(function(resolve){
+  try{
+    var s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    s.async=true;
+    s.onload=function(){resolve(window.THREE||null)};
+    s.onerror=function(){console.warn('Optional Three.js CDN load skipped');resolve(null)};
+    setTimeout(function(){resolve(window.THREE||null)},3500);
+    document.head.appendChild(s);
+  }catch(e){resolve(null)}
+});
+</script>
 <script>
 // Prevent iOS double-tap zoom & pinch-zoom
 document.addEventListener('gesturestart',e=>e.preventDefault());
@@ -19,6 +32,82 @@ document.addEventListener('dblclick',e=>e.preventDefault());
 let __lastTouchEnd=0;
 document.addEventListener('touchend',e=>{const n=Date.now();if(n-__lastTouchEnd<=350)e.preventDefault();__lastTouchEnd=n;},{passive:false});
 </script>
+
+<script id="hid-direct-enter-harness">
+/* HOLD IT DOWN — independent launch bypass.
+   This runs before the large app script, so the home screen can never trap the user
+   just because a later module fails during startup. */
+(function(){
+  if(window.__HID_DIRECT_ENTER_INSTALLED) return;
+  window.__HID_DIRECT_ENTER_INSTALLED=true;
+  let bootTimer=null;
+  function showMain(){
+    try{
+      const modal=document.getElementById('prelaunch-modal');
+      if(modal){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');modal.style.pointerEvents='none';modal.style.display='none';}
+      const launch=document.getElementById('launch');
+      if(launch){launch.style.display='none';launch.style.pointerEvents='none';launch.setAttribute('aria-hidden','true');}
+      const app=document.getElementById('app');
+      if(app){
+        app.style.display='flex';
+        app.style.visibility='visible';
+        app.style.opacity='1';
+        app.classList.add('active');
+        app.removeAttribute('aria-hidden');
+      }
+      document.documentElement.classList.add('hid-entered');
+      document.body && document.body.classList.add('hid-entered');
+    }catch(err){ console.warn('Direct enter visual handoff recovered',err); }
+  }
+  function unlockAudioSoftly(){
+    try{
+      if(typeof window.initAudio==='function') window.initAudio();
+      if(window.ctx && window.ctx.state && window.ctx.state!=='running') window.ctx.resume().catch(function(){});
+    }catch(err){ console.warn('Direct enter audio unlock skipped',err); }
+  }
+  function bootWhenReady(){
+    if(bootTimer) return;
+    let tries=0;
+    const attempt=function(){
+      tries++;
+      showMain();
+      try{
+        if(typeof window.initApp==='function' && !window.__appInitialized){
+          window.initApp();
+          window.__appInitialized=true;
+        }
+        unlockAudioSoftly();
+        return;
+      }catch(err){
+        window.__lastStartupError=err;
+        console.error('Direct enter startup recovered; keeping main screen open.',err);
+      }
+      if(tries<80) bootTimer=setTimeout(attempt,150);
+    };
+    bootTimer=setTimeout(attempt,0);
+  }
+  window.__HID_DIRECT_ENTER=function(ev){
+    try{ ev && ev.preventDefault && ev.preventDefault(); ev && ev.stopPropagation && ev.stopPropagation(); }catch(e){}
+    showMain();
+    bootWhenReady();
+    return false;
+  };
+  function maybeEnter(ev){
+    const t=ev && ev.target;
+    if(!t || !t.closest) return;
+    if(t.closest('#launch-btn,#hid-safe-enter,#prelaunch-continue,.launch-actions .lb') || t.closest('#launch')) window.__HID_DIRECT_ENTER(ev);
+  }
+  ['pointerdown','touchstart','click'].forEach(function(type){
+    document.addEventListener(type,maybeEnter,{capture:true,passive:false});
+  });
+  document.addEventListener('keydown',function(ev){
+    if((ev.code==='Enter'||ev.key==='Enter') && document.getElementById('launch') && getComputedStyle(document.getElementById('launch')).display!=='none'){
+      window.__HID_DIRECT_ENTER(ev);
+    }
+  },{capture:true});
+})();
+</script>
+
 <style>
 :root{
   --bg:#000;--neon:#00ffd5;--neon2:#ff00aa;--neon3:#ffe600;
@@ -1144,6 +1233,10 @@ body.remote-fullscreen .desktop{position:fixed!important;inset:0!important;z-ind
 @media(min-width:1140px){.window.remote-fs .remote-board{grid-template-columns:1.05fr 1.1fr 1fr}.window.remote-fs .remote-board-col:nth-child(3){grid-column:auto}}
 @media(max-width:560px){.window.remote-fs .remote-root{padding:7px 6px calc(16px + env(safe-area-inset-bottom))}.window.remote-fs .remote-pad-grid.big{grid-template-columns:repeat(2,1fr)}.window.remote-fs .remote-slot-grid{grid-template-columns:repeat(2,1fr)}.window.remote-fs .remote-note-grid{grid-template-columns:repeat(6,1fr)}.window.remote-fs .remote-param{grid-template-columns:68px 1fr 44px;gap:6px}.window.remote-fs .remote-param label{font-size:12px}.window.remote-fs .remote-param input[type=range]{min-width:0}.remote-fs-header .rtitle{font-size:7px}.remote-fs-header .btn{font-size:11px!important}}
 
+
+html.hid-entered #launch, body.hid-entered #launch{display:none!important;pointer-events:none!important}
+html.hid-entered #app, body.hid-entered #app{display:flex!important;visibility:visible!important;opacity:1!important}
+
 </style>
 </head>
 <body>
@@ -1239,7 +1332,7 @@ body.remote-fullscreen .desktop{position:fixed!important;inset:0!important;z-ind
           <div class="lh-boot-info"><span>INITIALISING DSP</span><span>SECURE LINK <b>★★★★★</b></span><span>STATUS <b>NOMINAL</b></span></div>
         </div>
 
-        <div class="launch-actions"><button class="lb" id="launch-btn">▶ LAUNCH</button></div>
+        <div class="launch-actions"><button class="lb" id="launch-btn" onpointerdown="return window.__HID_DIRECT_ENTER&&window.__HID_DIRECT_ENTER(event)" ontouchstart="return window.__HID_DIRECT_ENTER&&window.__HID_DIRECT_ENTER(event)" onclick="return window.__HID_DIRECT_ENTER&&window.__HID_DIRECT_ENTER(event)">▶ LAUNCH</button><button class="lb" id="hid-safe-enter" style="font-size:11px;padding:10px 22px;margin-left:8px;border-color:var(--neon);color:var(--neon);box-shadow:0 0 14px var(--neon)" onpointerdown="return window.__HID_DIRECT_ENTER&&window.__HID_DIRECT_ENTER(event)" ontouchstart="return window.__HID_DIRECT_ENTER&&window.__HID_DIRECT_ENTER(event)" onclick="return window.__HID_DIRECT_ENTER&&window.__HID_DIRECT_ENTER(event)">ENTER APP</button></div>
         <div class="launch-note">This app functions best with a computer keyboard for the full live-performance shortcut set and piano control.</div>
       </section>
 
@@ -6581,7 +6674,7 @@ document.addEventListener('keydown',e=>{
     <p>This app functions best with a <b>computer keyboard</b>. You can still use touch and on-screen controls, but the live piano and many performance shortcuts are designed for a hardware keyboard.</p>
     <p style="color:var(--dim);font-size:13px">You can continue anyway and launch the app.</p>
     <div class="overlay-actions">
-      <button class="btn gold" id="prelaunch-continue">CONTINUE</button>
+      <button class="btn gold" id="prelaunch-continue" onpointerdown="return window.__HID_DIRECT_ENTER&&window.__HID_DIRECT_ENTER(event)" ontouchstart="return window.__HID_DIRECT_ENTER&&window.__HID_DIRECT_ENTER(event)" onclick="return window.__HID_DIRECT_ENTER&&window.__HID_DIRECT_ENTER(event)">CONTINUE</button>
     </div>
   </div>
 </div>
